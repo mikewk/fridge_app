@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>
+  Add Item To {{storage.name}}
+</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input [(ngModel)]="foodItem.name" matInput>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="tag-chip-list">
+    <mat-label>Tags</mat-label>
+    <mat-chip-list #chipList aria-label="Tags">
+      <mat-chip (removed)="remove(tag)" *ngFor="let tag of foodItem.tags">
+        {{tag}}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+      <input (matChipInputTokenEnd)="add($event)"
+             [matChipInputAddOnBlur]="addOnBlur"
+             [matChipInputFor]="chipList"
+             [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+             placeholder="New tag...">
+    </mat-chip-list>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close=>Cancel</button>
+  <button *ngIf="!editing" [mat-dialog-close]="foodItem" mat-button>Add Item</button>
+  <button *ngIf="editing" [mat-dialog-close]="foodItem" mat-button>Update Item</button>
+</div>

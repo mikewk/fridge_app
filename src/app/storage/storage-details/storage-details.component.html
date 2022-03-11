@@ -1,0 +1,16 @@
+<div *ngIf="currentStorage">
+  <h2>{{currentStorage.name}}</h2>
+  <h3>Food Items</h3>
+  <ul *ngIf="currentStorage.foodItems && currentStorage.foodItems.length">
+    <li *ngFor="let foodItem of currentStorage.foodItems">
+      {{foodItem.name}}
+      <span *ngIf="foodItem.tags.length">
+        [ <span *ngFor="let tag of foodItem.tags">{{tag}} </span>]
+      </span>
+    </li>
+  </ul>
+  <p>
+    <button (click)="openDialog()">Add Item</button>
+  </p>
+
+</div>

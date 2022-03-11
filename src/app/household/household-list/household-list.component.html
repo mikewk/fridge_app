@@ -1,0 +1,5 @@
+<ul>
+  <li *ngFor="let household of households">
+    <a routerLink="/household/{{household.id}}">{{household.name}} in {{household.location}}</a>
+  </li>
+</ul>

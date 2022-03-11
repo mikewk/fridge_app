@@ -1,0 +1,17 @@
+<div *ngIf="currentHousehold">
+  <h2>{{currentHousehold.name}}</h2>
+  <h4>in {{currentHousehold.location}}</h4>
+  <h3>Storages</h3>
+  <ul *ngIf="currentHousehold.storages.length">
+    <li *ngFor="let storage of currentHousehold.storages">
+      <a routerLink="/storage/{{storage.id}}">{{storage.name}}</a>
+    </li>
+  </ul>
+  <p *ngIf="!currentHousehold.storages.length">
+    <a routerLink="/addStorage/{{currentHousehold.id}}">Add your first storage!</a>
+  </p>
+  <p *ngIf="currentHousehold.storages.length">
+    <a routerLink="/addStorage/{{currentHousehold.id}}">Add another storage.</a>
+  </p>
+
+</div>
