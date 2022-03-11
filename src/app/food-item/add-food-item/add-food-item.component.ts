@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog'
-import {QL_Storage} from "../../types";
+import {QL_Storage} from "../../graphql.types";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
 
@@ -9,6 +9,9 @@ export interface AddFoodItem {
   tags: string[];
 }
 
+/**
+ * Material Dialog component for adding and editing food items
+ */
 @Component({
   selector: 'app-add-food-item',
   templateUrl: './add-food-item.component.html',
@@ -32,6 +35,9 @@ export class AddFoodItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Add a chip to the tag list
+   */
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
@@ -44,6 +50,9 @@ export class AddFoodItemComponent implements OnInit {
     event.chipInput!.clear();
   }
 
+  /**
+   * Remove a chip from the tag list
+   */
   remove(value: string): void {
     const index = this.foodItem.tags.indexOf(value);
 

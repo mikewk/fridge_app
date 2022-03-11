@@ -1,3 +1,7 @@
+/**
+ * A set of types based off the GraphQL API schema to help facilitate parsing objects in and out of the API
+ */
+
 export type User = {
   id: number
   email: string

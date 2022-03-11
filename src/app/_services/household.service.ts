@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
-import {HouseholdsPayload} from "../types";
+import {HouseholdsPayload} from "../graphql.types";
 
+//GraphQL Queries
 export const GetHousehold = gql`
   query getHousehold($householdId: Int!) {
       getHousehold(householdId: $householdId)
@@ -13,7 +14,6 @@ export const GetHousehold = gql`
       }
     }
 `;
-
 export const GetMemberHousehold = gql`
       query {
         getMemberHouseholds
@@ -35,6 +35,9 @@ export const GetMemberHousehold = gql`
       }
 `;
 
+/**
+ * This service provides API access to Household related queries and mutations via GraphQL*
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -43,12 +46,18 @@ export class HouseholdService {
   constructor(private apollo: Apollo) {
   }
 
+  /**
+   * Gets all households the authenticated user is a member of
+   */
   getMemberHouseholds(): Observable<any> {
     return this.apollo.query<HouseholdsPayload>({
       query: GetMemberHousehold
     }).pipe(map((result) => result.data));
   }
 
+  /**
+   * Get the household identified by id
+   */
   getHousehold(id: number): Observable<any> {
     return this.apollo.query<HouseholdsPayload>(
       {
@@ -60,6 +69,4 @@ export class HouseholdService {
       }
     ).pipe(map((result) => result.data));
   }
-
-
 }

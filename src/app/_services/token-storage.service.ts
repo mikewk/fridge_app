@@ -3,6 +3,9 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 
 const TOKEN_KEY = 'auth-token';
 
+/**
+ * This service helps manage the JWT authentication token in local storage
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +26,9 @@ export class TokenStorageService {
     return window.sessionStorage.getItem(TOKEN_KEY);
   }
 
+  /**
+   * Decode the JWT token in an object, if it exists
+   */
   public getUser(): any {
     const token = window.sessionStorage.getItem(TOKEN_KEY);
     if (token) {

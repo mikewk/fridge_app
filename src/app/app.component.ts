@@ -21,6 +21,7 @@ export class AppComponent {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
 
     if (this.isLoggedIn) {
+      //If we're logged in, keep trade of email, name, and user id to be used in other places
       const user = this.tokenStorageService.getUser();
       this.email = user.email;
       this.name = user.name;
@@ -28,6 +29,9 @@ export class AppComponent {
     }
   }
 
+  /**
+   * Log the user out by telling the token service to Mount Doom the token.
+   */
   logout(): void {
     this.tokenStorageService.signOut();
     window.location.reload();

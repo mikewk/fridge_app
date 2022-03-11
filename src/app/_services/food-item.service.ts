@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
-import {FoodItem, FoodItemsPayload} from "../types";
+import {FoodItem, FoodItemsPayload} from "../graphql.types";
 import {map, Observable} from "rxjs";
 import {GetStorage} from "./storage.service";
 
+//GraphQL Queries
 export const AddFoodItem = gql`
   mutation addFoodItem($storageId: Int!, $name: String!, $tags:[String]) {
     addFoodItemToStorage(name: $name, storageId: $storageId, tags: $tags)
@@ -15,6 +16,9 @@ export const AddFoodItem = gql`
   }
 `
 
+/**
+ * This service provides API access to FoodItem related queries and mutations via GraphQL
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +27,9 @@ export class FoodItemService {
   constructor(private apollo: Apollo) {
   }
 
+  /**
+   * Add a FoodItem to the storage identified by storageId
+   */
   addFoodItem(storageId: number, foodItem: FoodItem): Observable<any> {
     return this.apollo.mutate<FoodItemsPayload>(
       {

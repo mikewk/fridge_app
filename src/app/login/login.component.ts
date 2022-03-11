@@ -3,6 +3,9 @@ import {AuthService} from '../_services/auth.service';
 import {TokenStorageService} from '../_services/token-storage.service';
 import {ActivatedRoute, Router} from "@angular/router";
 
+/**
+ * A login prompt component
+ */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -45,20 +48,27 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     const {username, password} = this.form;
 
+    //Use the auth service to try to loging with the supplied credentials
     this.authService.login(username, password).subscribe({
       next: data => {
+        //If the error field is set, something went wrong
+        //TODO: Create an error class/type system so errors can be handled appropriately on the front-end
         if (data.login.error) {
           this.errorMessage = data.signup.error;
           this.isLoginFailed = true;
         } else {
+          //If there's no error, then save the token, and get the user's email to show them they logged in successfully
           this.tokenStorage.saveToken(data.login.token);
           this.email = this.tokenStorage.getUser().email;
           this.isLoginFailed = false;
           this.isLoggedIn = true;
+
+          //Go to the returnURL if there was one
           this.router.navigate([this.returnUrl])
           this.reloadPage();
         }
       },
+      //This will only happen if there's a much deeper error with the API call
       error: err => {
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;

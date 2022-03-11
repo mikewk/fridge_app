@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {HouseholdService} from "../../_services/household.service";
 
+/**
+ * Component that displays a list of households the user can access as a member
+ */
 @Component({
   selector: 'app-household-list',
   templateUrl: './household-list.component.html',
@@ -16,6 +19,9 @@ export class HouseholdListComponent implements OnInit {
     this.retrieveMemberHousehold();
   }
 
+  /**
+   * Retrieves all households for the authenticated user
+   */
   private retrieveMemberHousehold() {
     this.householdService.getMemberHouseholds().subscribe(
       {

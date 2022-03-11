@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {QL_Storage} from "../../types";
+import {QL_Storage} from "../../graphql.types";
 import {StorageService} from "../../_services/storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
