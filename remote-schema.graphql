@@ -1,0 +1,126 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type AuthPayload {
+  error: String
+  token: String
+}
+
+type FoodItem {
+  entered: String
+  enteredBy: User!
+  expiration: String
+  id: Int!
+  name: String!
+  storageId: Int
+  tags: [String]
+}
+
+type FoodItemsPayload {
+  error: String
+  foodItems: [FoodItem]
+}
+
+type Household {
+  id: Int!
+  location: String!
+  name: String!
+  owner: User!
+  storages: [Storage]
+  users: [User]
+}
+
+type HouseholdsPayload {
+  error: String
+  households: [Household]
+}
+
+type Invite {
+  householdName: String!
+  id: Int!
+  invitee: User!
+  inviter: User!
+  message: String!
+  status: Int!
+}
+
+type InvitesPayload {
+  error: String
+  invites: [Invite]
+}
+
+type Mutation {
+  acceptHouseholdInvite(inviteId: Int!): HouseholdsPayload
+  addFoodItemToStorage(entered: String, expiration: String, name: String!, storageId: Int!, tags: [String]): FoodItemsPayload
+  addStorageToHousehold(householdId: Int!, name: String!, storageType: String!): StoragesPayload
+  addTagsToFoodItem(foodItemId: Int!, tags: [String]!): FoodItemsPayload
+  createHousehold(location: String!, name: String!): HouseholdsPayload
+  inviteUserToHousehold(householdId: Int!, userId: Int!): InvitesPayload
+  login(email: String!, password: String!): AuthPayload
+  moveFoodItemToStorage(foodItemId: Int!, storageId: Int!): FoodItemsPayload
+  rejectHouseholdInvite(inviteId: Int!): RemovalPayload
+  removeFoodItem(foodItemId: Int!): RemovalPayload
+  removeHousehold(householdId: Int!): RemovalPayload
+  removeStorage(storageId: Int!): RemovalPayload
+  removeTagsFromFoodItem(foodItemId: Int!, tags: [String]!): FoodItemsPayload
+  removeUserFromHousehold(householdId: Int!, userId: Int!): RemovalPayload
+  signup(email: String!, name: String!, password: String!): AuthPayload
+  updateFoodItem(expiration: String, foodItemId: Int!, name: String, tags: [String]): FoodItemsPayload
+  updateHousehold(householdId: Int!, location: String, name: String): HouseholdsPayload
+  updateStorage(name: String, storageId: Int!, storageType: String): StoragesPayload
+}
+
+type Query {
+  getFoodItemsInHousehold(householdId: Int!, tagFilter: String): FoodItemsPayload
+  getFoodItemsInStorage(storageId: Int!, tagFilter: String): FoodItemsPayload
+  getHousehold(householdId: Int!): HouseholdsPayload
+  getHouseholdInvites: InvitesPayload
+  getHouseholdMembers(householdID: Int!): UsersPayload
+  getMemberHouseholds: HouseholdsPayload
+  getOwnedHouseholds: HouseholdsPayload
+  getStorage(storageId: Int!): StoragesPayload
+  getStorages(householdId: Int!): StoragesPayload
+  getSuggestions(image: String): SuggestionPayload
+}
+
+type RemovalPayload {
+  error: String
+  success: Int!
+}
+
+type Storage {
+  foodItems: [FoodItem]
+  id: Int!
+  name: String!
+  type: String!
+}
+
+type StoragesPayload {
+  error: String
+  storages: [Storage]
+}
+
+type Suggestion {
+  name: String
+  tags: [String]
+}
+
+type SuggestionPayload {
+  error: String
+  suggestion: Suggestion
+}
+
+type User {
+  email: String
+  id: Int!
+  name: String!
+}
+
+type UsersPayload {
+  error: String
+  users: [User]
+}
