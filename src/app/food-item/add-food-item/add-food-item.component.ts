@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog'
 import {FoodItem, QL_Storage, Suggestion} from "../../graphql.types";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
-import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {SafeResourceUrl} from "@angular/platform-browser";
 import {FoodItemService} from "../../_services/food-item.service";
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
 
@@ -27,7 +27,7 @@ export class AddFoodItemComponent implements OnInit {
   waitingForSuggestion = false;
   readonly separatorKeyCodes = [ENTER, COMMA, SPACE] as const;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private sanitizer: DomSanitizer,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
               private foodItemService: FoodItemService,
               private snackBar: MatSnackBar) {
     if (data.foodItem) {
@@ -44,7 +44,7 @@ export class AddFoodItemComponent implements OnInit {
       this.editing = false;
     }
     this.storage = data.storage;
-    this.safeImage = this.sanitizer.bypassSecurityTrustResourceUrl(data.image);
+    this.safeImage = data.image;
   }
 
   ngOnInit(): void {
@@ -59,7 +59,7 @@ export class AddFoodItemComponent implements OnInit {
 
               //If the user clicked "Get Suggestions" before we were ready and hasn't cancelled
               if( this.waitingForSuggestion ) {
-                //Dismiss the snackback if it's there (It should be, but with auto-suggestions on maybe not)
+                //Dismiss the snackbar if it's there (It should be, but with auto-suggestions on maybe not)
                 this.snackBarRef?.dismiss();
 
                 //Set the tags to our suggestion
@@ -108,7 +108,7 @@ export class AddFoodItemComponent implements OnInit {
   getSuggestion() {
     //If we haven't gotten the suggestions back from the API
     if( !this.suggestion ) {
-      //Show a snackback
+      //Show a snackbar
       this.waitingForSuggestion = true;
       this.snackBarRef = this.snackBar.open("Getting suggestions...", "Cancel");
       this.snackBarRef.onAction().subscribe(
