@@ -7,10 +7,11 @@
       <span *ngIf="foodItem.tags.length">
         [ <span *ngFor="let tag of foodItem.tags">{{tag}} </span>]
       </span>
+      <a mat-button color="primary" (click)="openEditDialog(foodItem)">Edit</a>
+      <a mat-button color="warn" (click)="openDeleteDialog(foodItem)">Delete</a>
     </li>
   </ul>
   <p>
-    <button (click)="openDialog()">Add Item</button>
+    <button (click)="openAddDialog()">Add Item</button>
   </p>
-
 </div>

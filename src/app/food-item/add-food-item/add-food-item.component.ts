@@ -1,13 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog'
-import {QL_Storage} from "../../graphql.types";
+import {FoodItem, QL_Storage} from "../../graphql.types";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
+import {DomSanitizer, SafeResourceUrl} from "@angular/platform-browser";
+import {FoodItemService} from "../../_services/food-item.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
-export interface AddFoodItem {
-  name: string;
-  tags: string[];
-}
 
 /**
  * Material Dialog component for adding and editing food items
@@ -18,18 +17,30 @@ export interface AddFoodItem {
   styleUrls: ['./add-food-item.component.css']
 })
 export class AddFoodItemComponent implements OnInit {
-  foodItem: AddFoodItem = {name: "", tags: []};
+  foodItem: FoodItem;
   addOnBlur = true;
   editing = false;
   storage: QL_Storage;
+  safeImage: SafeResourceUrl;
+  waitingForSuggestion = false;
   readonly separatorKeyCodes = [ENTER, COMMA, SPACE] as const;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private sanitizer: DomSanitizer,
+              private foodItemService: FoodItemService,
+              private snackBar: MatSnackBar) {
     if (data.foodItem) {
-      this.foodItem = data.foodItem;
+      //Make a copy of the food item
+      this.foodItem = Object.assign({}, data.foodItem);
+      this.foodItem.tags = [...data.foodItem.tags];
       this.editing = true;
     }
+    else
+    {
+      this.foodItem = {name:"", tags:[]};
+      this.editing = false;
+    }
     this.storage = data.storage;
+    this.safeImage = this.sanitizer.bypassSecurityTrustResourceUrl(data.image);
   }
 
   ngOnInit(): void {
@@ -61,4 +72,38 @@ export class AddFoodItemComponent implements OnInit {
     }
   }
 
+  getSuggestion() {
+    this.waitingForSuggestion = true;
+    let snackBarRef = this.snackBar.open("Getting suggestions...","Cancel");
+    snackBarRef.onAction().subscribe(
+      {
+        next: () => {
+          this.waitingForSuggestion = false;
+          snackBarRef.dismiss();
+        }
+      }
+    );
+
+    this.foodItemService.getSuggestions(this.safeImage.toString()).subscribe(
+      {
+        next: data => {
+          snackBarRef.dismiss();
+          //If the API call was successful
+            if (data.getSuggestions && this.waitingForSuggestion) {
+              this.waitingForSuggestion = false;
+              //Check to see if they've cancelled the suggestion
+              this.foodItem.name = data.getSuggestions.suggestion.name;
+              this.foodItem.tags = data.getSuggestions.suggestion.tags;
+            } else {
+              console.log(data);
+            }
+          },
+          error: err => {
+          this.waitingForSuggestion = false;
+          snackBarRef.dismiss();
+            console.log(err);
+          }
+        }
+    );
+  }
 }

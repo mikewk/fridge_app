@@ -36,6 +36,8 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+.graphqlconfig
+remote-schema.graphql
 
 # System files
 .DS_Store

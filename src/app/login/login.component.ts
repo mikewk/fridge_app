@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
         //If the error field is set, something went wrong
         //TODO: Create an error class/type system so errors can be handled appropriately on the front-end
         if (data.login.error) {
-          this.errorMessage = data.signup.error;
+          this.errorMessage = data.login.error;
           this.isLoginFailed = true;
         } else {
           //If there's no error, then save the token, and get the user's email to show them they logged in successfully
