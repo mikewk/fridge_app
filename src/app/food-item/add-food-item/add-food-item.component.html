@@ -30,6 +30,7 @@
 <div mat-dialog-actions>
   <button mat-button mat-dialog-close=>Cancel</button>
   <button *ngIf="!editing" (click)="tryToAddItem()" mat-button>Add Item</button>
+  <button *ngIf="!editing" (click)="getSuggestion()">Get Suggestions</button>
   <button *ngIf="editing" [mat-dialog-close]="foodItem" mat-button>Update Item</button>
-  <button (click)="getSuggestion()">Get Suggestions</button>
+
 </div>
