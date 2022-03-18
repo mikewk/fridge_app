@@ -17,6 +17,7 @@ import {EMPTY, mergeMap} from "rxjs";
 })
 export class StorageDetailsComponent implements OnInit {
   currentStorage?: QL_Storage;
+
   constructor(private storageService: StorageService,
               private foodItemService: FoodItemService,
               private route: ActivatedRoute,
@@ -89,7 +90,7 @@ export class StorageDetailsComponent implements OnInit {
 
     this.imageCompress.uploadFile().then(
       ({image, orientation})=>{
-        this.imageCompress.compressFile(image, orientation, undefined, 75, 1024, 1024).
+        this.imageCompress.compressFile(image, orientation, undefined, 75, 100, 100, "image/jpeg").
           then( (compressedImage) => {
             return compressedImage;
         }).then((image)=>{

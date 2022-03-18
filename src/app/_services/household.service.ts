@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
-import {HouseholdsPayload} from "../graphql.types";
+import {Household, HouseholdsPayload} from "../graphql.types";
 
 //GraphQL Queries
 export const GetHousehold = gql`
@@ -14,6 +14,7 @@ export const GetHousehold = gql`
       }
     }
 `;
+
 export const GetMemberHousehold = gql`
       query {
         getMemberHouseholds
@@ -33,6 +34,20 @@ export const GetMemberHousehold = gql`
           }
         }
       }
+`;
+
+export const AddHousehold = gql`
+  mutation createHousehold($name: String!, $location: String!)
+  {
+    createHousehold(name: $name, location: $location)
+    {
+      households
+      {
+        id, name, location
+      },
+      error
+    }
+  }
 `;
 
 /**
@@ -66,6 +81,15 @@ export class HouseholdService {
           {
             householdId: id
           }
+      }
+    ).pipe(map((result) => result.data));
+  }
+
+  addHousehold(household: Household): Observable<any> {
+    return this.apollo.mutate<HouseholdsPayload>(
+      {
+        mutation: AddHousehold,
+        variables: household
       }
     ).pipe(map((result) => result.data));
   }

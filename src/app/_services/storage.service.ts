@@ -10,7 +10,7 @@ export const GetStorage = gql`
     getStorage(storageId: $storageId)
     {
       storages
-      {id, name, type, foodItems {id, name, tags, storageId}}
+      {id, name, type, foodItems {id, name, tags, storageId, filename}}
       error
     }
   }

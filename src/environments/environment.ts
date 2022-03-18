@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  image_base_url: "https://d33stfk6gvmz1c.cloudfront.net/"
 };
 
 /*

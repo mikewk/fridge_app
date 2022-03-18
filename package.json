@@ -22,7 +22,7 @@
     "@angular/router": "~13.2.0",
     "@auth0/angular-jwt": "^5.0.2",
     "apollo-angular": "^3.0.0",
-    "ngx-image-compress": "^13.1.9",
+    "ngx-image-compress": "https://gitpkg.now.sh/mikewk/ngx-image-compress/dist/ngx-image-compress?master",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

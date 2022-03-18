@@ -27,6 +27,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatChipsModule} from "@angular/material/chips";
 import {MatIconModule} from "@angular/material/icon";
+import {SecureImageComponent} from "./_helpers/secure-image.component";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {MatIconModule} from "@angular/material/icon";
     HouseholdAddComponent,
     HouseholdListComponent,
     MustMatchDirective,
-    AddFoodItemComponent
+    AddFoodItemComponent,
+    SecureImageComponent,
   ],
   imports: [
     BrowserModule,

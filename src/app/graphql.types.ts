@@ -1,7 +1,6 @@
 /**
  * A set of types based off the GraphQL API schema to help facilitate parsing objects in and out of the API
  */
-import {stringify} from "@angular/compiler/src/util";
 
 export type User = {
   id: number
@@ -17,12 +16,13 @@ export type QL_Storage = {
 }
 
 export type Household = {
-  id: number
+  id?: number
   name: string
   location: string
-  owner: User
-  storages: QL_Storage[]
-  users: User[]
+  folder?: string
+  owner?: User
+  storages?: QL_Storage[]
+  users?: User[]
 }
 
 export type FoodItem = {
@@ -32,10 +32,12 @@ export type FoodItem = {
   enteredBy?: User
   entered?: string
   expiration?: string
+  filename?: string
   tags: string[]
 }
 
 export type Suggestion = {
+  filename: string
   name: string
   tags: string[]
 }
@@ -91,6 +93,6 @@ export type RemoveFoodItem_Mutation = {
   removeFoodItem: RemovalPayload
 }
 
-export type GetSuggestions_Query = {
+export type GetSuggestions_Mutation = {
   getSuggestions: SuggestionPayload
 }

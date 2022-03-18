@@ -1,11 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog'
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 import {FoodItem, QL_Storage, Suggestion} from "../../graphql.types";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {SafeResourceUrl} from "@angular/platform-browser";
 import {FoodItemService} from "../../_services/food-item.service";
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
+import {environment} from "../../../environments/environment";
 
 
 /**
@@ -17,6 +18,7 @@ import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
   styleUrls: ['./add-food-item.component.css']
 })
 export class AddFoodItemComponent implements OnInit {
+  image_base_url: string = environment.image_base_url;
   foodItem: FoodItem;
   addOnBlur = true;
   editing = false;
@@ -26,25 +28,29 @@ export class AddFoodItemComponent implements OnInit {
   snackBarRef?: MatSnackBarRef<any>;
   waitingForSuggestion = false;
   readonly separatorKeyCodes = [ENTER, COMMA, SPACE] as const;
+  private waitingForFilename: boolean = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
               private foodItemService: FoodItemService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private matDialogRef: MatDialogRef<AddFoodItemComponent>) {
     if (data.foodItem) {
       //Make a copy of the food item
       this.foodItem = Object.assign({}, data.foodItem);
       this.foodItem.tags = [...data.foodItem.tags];
       //If we have a food item, then we're editing not adding
       this.editing = true;
+      this.safeImage = this.image_base_url+this.foodItem.filename;
     }
     else
     {
       //No food item?  Create one and we're not editing
       this.foodItem = {name:"", tags:[]};
       this.editing = false;
+      this.safeImage = data.image;
     }
     this.storage = data.storage;
-    this.safeImage = data.image;
+
   }
 
   ngOnInit(): void {
@@ -53,7 +59,7 @@ export class AddFoodItemComponent implements OnInit {
       {
         next: data => {
           //If the API call was successful
-            if (data.getSuggestions) {
+            if (data?.getSuggestions) {
               //Set the suggestion
               this.suggestion = data.getSuggestions.suggestion;
 
@@ -65,6 +71,11 @@ export class AddFoodItemComponent implements OnInit {
                 //Set the tags to our suggestion
                 this.foodItem.name = this.suggestion.name;
                 this.foodItem.tags = this.suggestion.tags;
+              }
+              if( this.waitingForFilename )
+              {
+                this.foodItem.filename = this.suggestion.filename;
+                this.matDialogRef.close(this.foodItem);
               }
             } else {
               console.log(data);
@@ -125,6 +136,29 @@ export class AddFoodItemComponent implements OnInit {
       //Fill them in since we've got em
       this.foodItem.name = this.suggestion.name;
       this.foodItem.tags = this.suggestion.tags;
+    }
+  }
+
+  tryToAddItem() {
+    if( this.suggestion )
+    {
+      this.foodItem.filename = this.suggestion.filename;
+      this.matDialogRef.close(this.foodItem);
+    }
+    else
+    {
+      //show a snackbar saying we're still uploading the image and they can skip it
+      this.waitingForSuggestion = false;
+      this.waitingForFilename = true;
+      this.snackBarRef = this.snackBar.open("Waiting for image upload...", "Skip upload");
+      this.snackBarRef.onAction().subscribe({
+        next: () => {
+          //If they cancel, change our flag and dismiss the snackbar
+          this.waitingForFilename = false;
+          this.snackBarRef?.dismiss();
+          this.matDialogRef.close(this.foodItem);
+        }
+      });
     }
   }
 }

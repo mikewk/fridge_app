@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {
-  AddFoodItem_Mutation, FoodItem, GetStorage_Query, GetSuggestions_Query,
+  AddFoodItem_Mutation, FoodItem, GetStorage_Query, GetSuggestions_Mutation,
   RemoveFoodItem_Mutation, StoragesPayload, SuggestionPayload, UpdateFoodItem_Mutation
 } from "../graphql.types";
 import {delay, map, Observable} from "rxjs";
@@ -10,11 +10,11 @@ import {DataUrl} from "ngx-image-compress";
 
 //GraphQL Queries
 export const AddFoodItem = gql`
-  mutation addFoodItem($storageId: Int!, $name: String!, $tags:[String]) {
-    addFoodItemToStorage(name: $name, storageId: $storageId, tags: $tags)
+  mutation addFoodItem($storageId: Int!, $name: String!, $tags:[String], $filename:String) {
+    addFoodItemToStorage(name: $name, storageId: $storageId, tags: $tags, filename:$filename)
     {
       foodItems
-      {id, name, storageId, enteredBy {name}, tags}
+      {id, name, storageId, enteredBy {name}, tags, filename}
       error
     }
   }
@@ -41,10 +41,10 @@ mutation removeFoodItem($foodItemId: Int!) {
 `
 
 export const GetSuggestions = gql`
-  query getSuggestions($image: String) {
+  mutation getSuggestions($image: String) {
     getSuggestions(image: $image)
     {
-      suggestion{name, tags},
+      suggestion{name, tags, filename},
       error
     }
   }
@@ -68,10 +68,12 @@ export class FoodItemService {
     return this.apollo.mutate<AddFoodItem_Mutation>(
       {
         mutation: AddFoodItem,
+        // TODO: Store storageId in fileitem before calling function, so variable can just be fooditem
         variables: {
             storageId: storageId,
             name: foodItem.name,
-            tags: foodItem.tags
+            tags: foodItem.tags,
+            filename: foodItem.filename
           },
         update: (store, {data: payload})=> {
           if( payload && payload.addFoodItemToStorage.foodItems )
@@ -82,6 +84,7 @@ export class FoodItemService {
             //Make sure we have data in the cache (we bloody should)
             if( data )
             {
+              console.log("Updating cache");
               let foodItems;
               //If we have a food items array, spread it and add our new one to the end
               if( data.getStorage.storages[0].foodItems)
@@ -92,9 +95,10 @@ export class FoodItemService {
 
               //Write our change back to the cache
               store.writeFragment({id: "Storage:"+storageId, fragment: gql`
-              fragment myStorage on Storage {
-                foodItems
-                }`,data:{foodItems}});
+                  # noinspection GraphQLSchemaValidation
+                  fragment myStorage on Storage {
+                    foodItems
+                  }`,data:{foodItems}});
 
             }
           }
@@ -156,6 +160,7 @@ export class FoodItemService {
                 //Write our change back to the cache
                 store.writeFragment({
                   id: "Storage:" + storageId, fragment: gql`
+                    # noinspection GraphQLSchemaValidation
                     fragment myStorage on Storage {
                       foodItems
                     }`, data: {foodItems}
@@ -169,9 +174,9 @@ export class FoodItemService {
   }
 
   getSuggestions(image: DataUrl) {
-    return this.apollo.query<GetSuggestions_Query>(
+    return this.apollo.mutate<GetSuggestions_Mutation>(
       {
-        query: GetSuggestions,
+        mutation: GetSuggestions,
         variables:
           {
             image: image

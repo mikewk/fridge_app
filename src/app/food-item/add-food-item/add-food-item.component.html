@@ -1,7 +1,10 @@
-<h1 mat-dialog-title>
+<h1 *ngIf="!editing" mat-dialog-title>
   Add Item To {{storage.name}}
 </h1>
-<img [src]="safeImage">
+<h1 *ngIf="editing">
+  Edit {{foodItem.name}}
+</h1>
+<secured-image [src]="safeImage"></secured-image>
 <div mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
@@ -26,7 +29,7 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button mat-dialog-close=>Cancel</button>
-  <button *ngIf="!editing" [mat-dialog-close]="foodItem" mat-button>Add Item</button>
+  <button *ngIf="!editing" (click)="tryToAddItem()" mat-button>Add Item</button>
   <button *ngIf="editing" [mat-dialog-close]="foodItem" mat-button>Update Item</button>
   <button (click)="getSuggestion()">Get Suggestions</button>
 </div>
