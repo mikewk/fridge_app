@@ -1,10 +1,16 @@
-<h1 *ngIf="!editing" mat-dialog-title>
-  Add Item To {{storage.name}}
-</h1>
-<h1 *ngIf="editing">
-  Edit {{foodItem.name}}
-</h1>
-<secured-image [src]="safeImage"></secured-image>
+<div *ngIf="!editing" class="item_dialog_top">
+  <h1 *ngIf="!editing" mat-dialog-title>
+    Add Item To {{storage.name}}
+  </h1>
+  <img [src]="image">
+</div>
+<div *ngIf="editing" class="item_dialog_top">
+  <h1 *ngIf="editing">
+    Edit {{foodItem.name}}
+  </h1>
+  <secured-image [src]="image"></secured-image>
+</div>
+
 <div mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>

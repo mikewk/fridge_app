@@ -30,26 +30,6 @@ export class StorageDetailsComponent implements OnInit {
     this.getStorage(Number(this.route.snapshot.paramMap.get("id")));
   }
 
-  openDeleteDialog(foodItem: FoodItem)
-  {
-    if(confirm("Are you sure?"))
-    {
-      this.foodItemService.removeFoodItem(foodItem).subscribe(
-        {
-          next: data=> {
-            if( data.removeFoodItem && data.removeFoodItem.success)
-            {
-              this.getStorage(this.currentStorage!.id!);
-            }
-          },
-          error: err => {
-            console.log(err);
-          }
-        }
-      );
-    }
-  }
-
   openEditDialog(foodItem: FoodItem){
     const dialogRef = this.dialog.open(AddFoodItemComponent,
       {
@@ -90,7 +70,7 @@ export class StorageDetailsComponent implements OnInit {
 
     this.imageCompress.uploadFile().then(
       ({image, orientation})=>{
-        this.imageCompress.compressFile(image, orientation, undefined, 75, 100, 100, "image/jpeg").
+        this.imageCompress.compressFile(image, orientation, undefined, 75, 1024, 1024, "image/jpeg").
           then( (compressedImage) => {
             return compressedImage;
         }).then((image)=>{

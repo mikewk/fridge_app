@@ -10,7 +10,7 @@ export const GetStorage = gql`
     getStorage(storageId: $storageId)
     {
       storages
-      {id, name, type, foodItems {id, name, tags, storageId, filename}}
+      {id, name, type, foodItems {id, name, tags, storageName, filename}}
       error
     }
   }
@@ -64,7 +64,7 @@ export class StorageService {
    * Get the storage identified by id
    */
   getStorage(id: number): Observable<any> {
-    return this.apollo.query<StoragesPayload>(
+    return this.apollo.watchQuery<StoragesPayload>(
       {
         query: GetStorage,
         variables:
@@ -72,6 +72,6 @@ export class StorageService {
             storageId: id
           }
       }
-    ).pipe(map((result) => result.data));
+    ).valueChanges.pipe(map((result) => result.data));
   }
 }

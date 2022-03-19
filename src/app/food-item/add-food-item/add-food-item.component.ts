@@ -3,7 +3,6 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 import {FoodItem, QL_Storage, Suggestion} from "../../graphql.types";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
-import {SafeResourceUrl} from "@angular/platform-browser";
 import {FoodItemService} from "../../_services/food-item.service";
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
 import {environment} from "../../../environments/environment";
@@ -23,7 +22,7 @@ export class AddFoodItemComponent implements OnInit {
   addOnBlur = true;
   editing = false;
   storage: QL_Storage;
-  safeImage: SafeResourceUrl;
+  image?: string;
   suggestion?: Suggestion;
   snackBarRef?: MatSnackBarRef<any>;
   waitingForSuggestion = false;
@@ -40,14 +39,14 @@ export class AddFoodItemComponent implements OnInit {
       this.foodItem.tags = [...data.foodItem.tags];
       //If we have a food item, then we're editing not adding
       this.editing = true;
-      this.safeImage = this.image_base_url+this.foodItem.filename;
+      this.image = this.foodItem.filename;
     }
     else
     {
       //No food item?  Create one and we're not editing
       this.foodItem = {name:"", tags:[]};
       this.editing = false;
-      this.safeImage = data.image;
+      this.image = data.image;
     }
     this.storage = data.storage;
 
@@ -55,7 +54,7 @@ export class AddFoodItemComponent implements OnInit {
 
   ngOnInit(): void {
     //Go get our suggestions immediately
-    this.foodItemService.getSuggestions(this.safeImage.toString()).subscribe(
+    this.foodItemService.getSuggestions(this.image).subscribe(
       {
         next: data => {
           //If the API call was successful

@@ -22,12 +22,10 @@ import {HouseholdAddComponent, HouseholdDetailsComponent, HouseholdListComponent
 import {authInterceptorProviders} from './_helpers/auth.interceptor';
 import {MustMatchDirective} from './_helpers/must-match.directive';
 import {GraphQLModule} from './graphql.module';
-import {AddFoodItemComponent} from "./food-item/add-food-item/add-food-item.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatChipsModule} from "@angular/material/chips";
 import {MatIconModule} from "@angular/material/icon";
-import {SecureImageComponent} from "./_helpers/secure-image.component";
 
 @NgModule({
   declarations: [
@@ -39,8 +37,6 @@ import {SecureImageComponent} from "./_helpers/secure-image.component";
     HouseholdAddComponent,
     HouseholdListComponent,
     MustMatchDirective,
-    AddFoodItemComponent,
-    SecureImageComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +61,8 @@ import {SecureImageComponent} from "./_helpers/secure-image.component";
   ],
   providers: [authInterceptorProviders,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}],
+  exports: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

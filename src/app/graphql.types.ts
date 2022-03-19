@@ -28,7 +28,7 @@ export type Household = {
 export type FoodItem = {
   id?: number
   name: string
-  storageId?: number
+  storageName?: string
   enteredBy?: User
   entered?: string
   expiration?: string
@@ -68,6 +68,7 @@ export type FoodItemsPayload = {
 }
 
 export type RemovalPayload = {
+  id: number
   success: number
   error: string
 }

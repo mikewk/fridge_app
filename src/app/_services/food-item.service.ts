@@ -6,7 +6,6 @@ import {
 } from "../graphql.types";
 import {delay, map, Observable} from "rxjs";
 import {GetStorage} from "./storage.service";
-import {DataUrl} from "ngx-image-compress";
 
 //GraphQL Queries
 export const AddFoodItem = gql`
@@ -14,7 +13,7 @@ export const AddFoodItem = gql`
     addFoodItemToStorage(name: $name, storageId: $storageId, tags: $tags, filename:$filename)
     {
       foodItems
-      {id, name, storageId, enteredBy {name}, tags, filename}
+      {id, name, storageName, enteredBy {name}, tags, filename}
       error
     }
   }
@@ -24,7 +23,7 @@ export const UpdateFoodItem=gql`
   mutation updateFoodItem($foodItemId: Int!, $name: String!, $tags:[String], $expiration: String) {
     updateFoodItem(foodItemId: $foodItemId, name: $name, expiration: $expiration, tags: $tags)
     {
-      foodItems {id, name, storageId, enteredBy {name}, tags, expiration},
+      foodItems {id, name, storageName, enteredBy {name}, tags, expiration},
       error
     }
   }
@@ -35,6 +34,7 @@ mutation removeFoodItem($foodItemId: Int!) {
   removeFoodItem(foodItemId: $foodItemId)
   {
     success,
+    id,
     error
   }
 }
@@ -146,7 +146,7 @@ export class FoodItemService {
           {
             //Write our change back to the cache
             //First we need to remove the item from the storage
-            let storageId = foodItem.storageId;
+            let storageId = payload.removeFoodItem.id;
             let data = store.readQuery<GetStorage_Query>({query: GetStorage, variables: {storageId: storageId}});
             let foodItems: FoodItem[];
             //If we have a food items array, get it and remove our food item
@@ -173,7 +173,7 @@ export class FoodItemService {
     ).pipe(map((result) => result.data));
   }
 
-  getSuggestions(image: DataUrl) {
+  getSuggestions(image: string | undefined) {
     return this.apollo.mutate<GetSuggestions_Mutation>(
       {
         mutation: GetSuggestions,

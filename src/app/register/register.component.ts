@@ -49,6 +49,7 @@ export class RegisterComponent implements OnInit {
       },
       //This is a much deeper error in the API call
       error: err => {
+        console.log(err);
         this.errorMessage = err.error.message;
         this.isSignUpFailed = true;
       }

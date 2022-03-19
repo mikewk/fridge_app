@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
       },
       //This will only happen if there's a much deeper error with the API call
       error: err => {
+        console.log(err);
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
       }

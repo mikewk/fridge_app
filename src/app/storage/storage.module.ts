@@ -8,6 +8,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
+import {FoodItemModule} from "../food-item/food-item.module";
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {MatInputModule} from "@angular/material/input";
     MatDialogModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    FoodItemModule
   ]
 })
 export class StorageModule {

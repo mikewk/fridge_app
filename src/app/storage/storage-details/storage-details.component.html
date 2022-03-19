@@ -1,6 +1,6 @@
 <div *ngIf="currentStorage">
-  <h2>{{currentStorage.name}}</h2>
-  <h3>Food Items</h3>
+  <h1>{{currentStorage.name}}</h1>
+  <!--
   <ul *ngIf="currentStorage.foodItems && currentStorage.foodItems.length">
     <li *ngFor="let foodItem of currentStorage.foodItems">
       {{foodItem.name}}
@@ -11,6 +11,8 @@
       <a mat-button color="warn" (click)="openDeleteDialog(foodItem)">Delete</a>
     </li>
   </ul>
+  -->
+  <food-item-card *ngFor="let foodItem of currentStorage.foodItems" [foodItem]="foodItem"></food-item-card>
   <p>
     <button (click)="openAddDialog()">Add Item</button>
   </p>

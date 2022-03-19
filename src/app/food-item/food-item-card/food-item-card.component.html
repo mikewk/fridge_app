@@ -1,0 +1,24 @@
+<mat-drawer-container>
+  <mat-drawer-content >
+    <mat-card class="food_item_card">
+      <secured-image (click)="snav.toggle()" [src]=foodItem.filename></secured-image>
+
+      <mat-card-content>
+        <table class="food_item_card_header">
+          <tr>
+            <td id="foodItemName">{{foodItem.name}}</td>
+            <td id="foodItemStorage">{{foodItem.storageName}}</td>
+          </tr>
+      </table>
+            <mat-chip-list>
+          <mat-chip *ngFor="let tag of foodItem.tags" class="food_tag_chip">{{tag}}</mat-chip>
+        </mat-chip-list>
+        <span id="foodItemExpiration">Expires: {{foodItem.expiration}}</span>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-drawer-content>
+  <mat-drawer [autoFocus]="false" mode="push" #snav position="end">
+    <button (click)="openDeleteDialog(foodItem)">Delete</button>
+  </mat-drawer>
+</mat-drawer-container>
