@@ -20,18 +20,15 @@ export class LocalStorageService {
     window.sessionStorage.clear();
   }
 
-  public getHousehold(): Household | undefined
-  {
+  public getHousehold(): Household | undefined {
     const household = window.sessionStorage.getItem(HOUSEHOLD_KEY);
-    if( household )
-    {
+    if (household) {
       return JSON.parse(household);
     }
     return;
   }
 
-  public saveHousehold(household: Household)
-  {
+  public saveHousehold(household: Household) {
     window.sessionStorage.removeItem(HOUSEHOLD_KEY);
     window.sessionStorage.setItem(HOUSEHOLD_KEY, JSON.stringify(household));
   }
@@ -52,12 +49,9 @@ export class LocalStorageService {
 
   public getUser(): User | null {
     const userString = window.sessionStorage.getItem(USER_KEY);
-    if( userString )
-    {
+    if (userString) {
       return JSON.parse(userString);
-    }
-    else
-    {
+    } else {
       return null;
     }
   }

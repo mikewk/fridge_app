@@ -6,51 +6,50 @@ import {
   GetHousehold_Query,
   GetMemberHouseholds_Query,
   Household,
-  HouseholdsPayload,
-  SuggestionPayload
+  HouseholdsPayload
 } from "../graphql.types";
 
 //GraphQL Queries
 export const GetHousehold = gql`
   query getHousehold($householdId: Int!) {
-      getHousehold(householdId: $householdId)
+    getHousehold(householdId: $householdId)
+    {
+      households
       {
-        households
-        {
-          id, name, location,
-          owner {name},
-          users {name},
-          storages
-            {id, name, type, foodItems {
-              id, name, filename, tags, storage {
-                id, name, type
-              }
-            }}
-        },
-        error
-      }
+        id, name, location,
+        owner {name},
+        users {name},
+        storages
+        {id, name, type, foodItems {
+          id, name, filename, tags, storage {
+            id, name, type
+          }
+        }}
+      },
+      error
     }
+  }
 `;
 
 export const GetMemberHousehold = gql`
-      query {
-        getMemberHouseholds
-        {
-          error, households {
-            id, name, location, owner {
-                name
-              },
-            users {
-                name
-              },
-            storages {
-              name, type, foodItems {
-                name
-              }
-            }
-          }
+  query {
+    getMemberHouseholds
+    {
+      error, households {
+      id, name, location, owner {
+        name
+      },
+      users {
+        name
+      },
+      storages {
+        name, type, foodItems {
+          name
         }
       }
+    }
+    }
+  }
 `;
 
 export const AddHousehold = gql`
@@ -85,15 +84,11 @@ export class HouseholdService {
     return this.apollo.query<GetMemberHouseholds_Query>({
       query: GetMemberHousehold
     }).pipe(map((result) => {
-      if( result.errors )
-      {
-        return {error:result.errors.join(",")};
-      }
-      else if( !result.data?.getMemberHouseholds)
-      {
-        return {error:"An unknown error occurred"};
-      }
-      else {
+      if (result.errors) {
+        return {error: result.errors.join(",")};
+      } else if (!result.data?.getMemberHouseholds) {
+        return {error: "An unknown error occurred"};
+      } else {
         return result.data.getMemberHouseholds;
       }
     }));
@@ -112,15 +107,11 @@ export class HouseholdService {
           }
       }
     ).valueChanges.pipe(map((result) => {
-      if( result.errors )
-      {
-        return {error:result.errors.join(",")};
-      }
-      else if( !result.data?.getHousehold)
-      {
-        return {error:"An unknown error occurred"};
-      }
-      else {
+      if (result.errors) {
+        return {error: result.errors.join(",")};
+      } else if (!result.data?.getHousehold) {
+        return {error: "An unknown error occurred"};
+      } else {
         return result.data.getHousehold;
       }
     }));
@@ -133,15 +124,11 @@ export class HouseholdService {
         variables: household
       }
     ).pipe(map((result) => {
-      if( result.errors )
-      {
-        return {error:result.errors.join(",")};
-      }
-      else if( !result.data?.createHousehold)
-      {
-        return {error:"An unknown error occurred"};
-      }
-      else {
+      if (result.errors) {
+        return {error: result.errors.join(",")};
+      } else if (!result.data?.createHousehold) {
+        return {error: "An unknown error occurred"};
+      } else {
         return result.data.createHousehold;
       }
     }));

@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from '../_services/auth.service';
-import {LocalStorageService} from '../_services/local-storage.service';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, Validators} from "@angular/forms";
+
+import {AuthService} from '../_graphql-services/auth.service';
+import {LocalStorageService} from '../_services/local-storage.service';
 
 /**
  * A login prompt component
@@ -46,19 +47,16 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  determineRoute() : void  {
+  determineRoute(): void {
     const user = this.localStorage.getUser();
-    if( !this.localStorage.getHousehold() && user?.defaultHousehold)
-    {
+    if (!this.localStorage.getHousehold() && user?.defaultHousehold) {
       this.localStorage.saveHousehold(user.defaultHousehold);
     }
 
-    if( this.returnUrl )
-    {
+    if (this.returnUrl) {
       this.router.navigate([this.returnUrl]);
-    }
-    else {
-      if( this.localStorage.getHousehold() ) {
+    } else {
+      if (this.localStorage.getHousehold()) {
         this.router.navigate(["/dashboard"]);
       } else {
         this.router.navigate(["/welcome"]);

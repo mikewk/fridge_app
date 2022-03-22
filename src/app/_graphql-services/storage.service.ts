@@ -1,13 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
-import {
-  AddStorageToHousehold_Mutation,
-  GetStorage_Query,
-  HouseholdsPayload,
-  QL_Storage,
-  StoragesPayload
-} from "../graphql.types";
+import {AddStorageToHousehold_Mutation, GetStorage_Query, QL_Storage, StoragesPayload} from "../graphql.types";
 import {GetHousehold} from "./household.service"
 
 //GraphQL Queries
@@ -22,16 +16,16 @@ export const GetStorage = gql`
   }
 `
 export const AddStorageGQL = gql`
-      mutation addStorage($id: Int!, $name: String!, $type: String!){
-        addStorageToHousehold(householdId:$id, name:$name, storageType:$type)
-        {
-          error,
-          storages
-          {
-            id, name, type
-          }
-        }
+  mutation addStorage($id: Int!, $name: String!, $type: String!){
+    addStorageToHousehold(householdId:$id, name:$name, storageType:$type)
+    {
+      error,
+      storages
+      {
+        id, name, type
       }
+    }
+  }
 `;
 
 /**
@@ -63,16 +57,12 @@ export class StorageService {
           name: storage.name,
           type: storage.type
         }
-    }).pipe(map((result) =>{
-      if( result.errors )
-      {
-        return {error:result.errors.join(",")};
-      }
-      else if( !result.data?.addStorageToHousehold)
-      {
-        return {error:"An unknown error occurred"};
-      }
-      else {
+    }).pipe(map((result) => {
+      if (result.errors) {
+        return {error: result.errors.join(",")};
+      } else if (!result.data?.addStorageToHousehold) {
+        return {error: "An unknown error occurred"};
+      } else {
         return result.data.addStorageToHousehold;
       }
     }));
@@ -91,15 +81,11 @@ export class StorageService {
           }
       }
     ).valueChanges.pipe(map((result) => {
-      if( result.errors )
-      {
-        return {error:result.errors.join(",")};
-      }
-      else if( !result.data?.getStorage)
-      {
-        return {error:"An unknown error occurred"};
-      }
-      else {
+      if (result.errors) {
+        return {error: result.errors.join(",")};
+      } else if (!result.data?.getStorage) {
+        return {error: "An unknown error occurred"};
+      } else {
         return result.data.getStorage;
       }
     }));

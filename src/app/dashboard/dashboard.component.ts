@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {FoodItem, Household, QL_Storage} from "../graphql.types";
-import {StorageService} from "../_services/storage.service";
 import {ActivatedRoute} from "@angular/router";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {AddFoodItemComponent} from "../food-item/add-food-item/add-food-item.component";
-import {FoodItemService} from "../_services/food-item.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {NgxImageCompressService} from "ngx-image-compress"
-import {EMPTY, mergeMap} from "rxjs";
-import {HouseholdService} from "../_services/household.service";
+
+import {MatDialog} from "@angular/material/dialog";
+import {MatSnackBar} from "@angular/material/snack-bar";
+
+import {StorageService} from "../_graphql-services/storage.service";
+import {FoodItemService} from "../_graphql-services/food-item.service";
+import {HouseholdService} from "../_graphql-services/household.service";
 import {LocalStorageService} from "../_services/local-storage.service";
 import {ItemDialogService} from "../_services/item-dialog.service";
+import {FoodItem, Household, QL_Storage} from "../graphql.types";
 
 
 @Component({
@@ -35,23 +35,20 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.route.snapshot.paramMap.get("id"))
-    {
+    if (this.route.snapshot.paramMap.get("id")) {
       this.getHousehold(Number(this.route.snapshot.paramMap.get("id")));
-    }
-    else
-    {
+    } else {
       //This is safe because SelectedGuard won't let us in without a selectedHousehold
       this.getHousehold(this.localStorageService.getHousehold()!.id!)
     }
   }
 
   trackFoodItem(index: number, item: FoodItem) {
-    return "FoodItem:"+item.id;
+    return "FoodItem:" + item.id;
   }
 
   trackStorage(index: number, item: QL_Storage) {
-    return "Storage:"+item.id;
+    return "Storage:" + item.id;
   }
 
   /**
@@ -60,19 +57,19 @@ export class DashboardComponent implements OnInit {
   openAddDialog() {
 
     this.itemDialogService.addItem(this.household!).subscribe({
-        next: data => {
-          //If the API call was successful
-          if (data.addFoodItemToStorage) {
-            this.snackBar.open("Food Item Added Successfully",undefined,
-                        { duration: 2000, panelClass: ['simple-snack-bar']});
-          } else {
-            console.log(data);
-          }
-        },
-        error: err => {
-          console.log(err);
+      next: data => {
+        //If the API call was successful
+        if (data.addFoodItemToStorage) {
+          this.snackBar.open("Food Item Added Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+        } else {
+          console.log(data);
         }
-      });
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   /**
@@ -84,16 +81,13 @@ export class DashboardComponent implements OnInit {
         next: data => {
           if (data.households) {
             this.household = data.households[0];
-            if(!this.selectedStorages)
-            {
+            if (!this.selectedStorages) {
               this.selectedStorages = [...this.household.storages!];
-            }
-            else
-            {
+            } else {
               this.selectedStorages = this.household.storages!.filter(
-                (x: QL_Storage)=> {
+                (x: QL_Storage) => {
                   return this.selectedStorages!.reduce(
-                    (a: boolean, b: QL_Storage)=> {
+                    (a: boolean, b: QL_Storage) => {
                       return a || b.id == x.id
                     }, false);
                 });

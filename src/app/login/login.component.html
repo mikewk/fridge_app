@@ -1,25 +1,26 @@
-    <mat-card class="login-card">
-      <mat-card-title>Login to Fridge Tracker</mat-card-title>
+<mat-card class="login-card">
+  <mat-card-title>Login to Fridge Tracker</mat-card-title>
 
-      <mat-card-content>
+  <mat-card-content>
     <form #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()"
-      *ngIf="!isLoggedIn" name="form" novalidate >
+          *ngIf="!isLoggedIn" name="form" novalidate>
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
-        <input  [(ngModel)]="form.username" name="username" [formControl]="emailForm" matInput required type="text" />
+        <input [(ngModel)]="form.username" [formControl]="emailForm" matInput name="username" required type="text"/>
         <mat-error *ngIf="emailForm.hasError('email')">Must be a valid email</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
-        <input [(ngModel)]="form.password" name="password" [formControl]="passwordForm" matInput required type="password" />
+        <input [(ngModel)]="form.password" [formControl]="passwordForm" matInput name="password" required
+               type="password"/>
       </mat-form-field>
 
       <button class="login-button" mat-raised-button>Login</button>
       <mat-error *ngIf="f.submitted && isLoginFailed">Login Failed: {{errorMessage}}</mat-error>
 
     </form>
-    </mat-card-content>
-    <div *ngIf="isLoggedIn" class="alert alert-success">
-      Logged in as {{ email }}.
-    </div>
-  </mat-card>
+  </mat-card-content>
+  <div *ngIf="isLoggedIn" class="alert alert-success">
+    Logged in as {{ email }}.
+  </div>
+</mat-card>

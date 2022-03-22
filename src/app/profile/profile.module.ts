@@ -1,15 +1,17 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ProfileLandingComponent } from './landing/profile-landing.component';
-import {MatListModule} from "@angular/material/list";
-import {ProfileAddHouseholdComponent} from "./add-household/profile-add-household.component";
-import {MatFormFieldModule} from "@angular/material/form-field";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FormsModule} from "@angular/forms";
+
+import {MatListModule} from "@angular/material/list";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
-import {ProfileChangeDefaultComponent} from "./change-default/profile-change-default.component";
+import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
+
+import {ProfileChangeDefaultComponent} from "./change-default/profile-change-default.component";
+import {ProfileAddHouseholdComponent} from "./profile-add-household/profile-add-household.component";
+import {ProfileLandingComponent} from './profile-landing/profile-landing.component';
 
 export {ProfileLandingComponent}
 
@@ -21,17 +23,18 @@ export {ProfileLandingComponent}
   ],
   imports: [
     CommonModule,
+    FormsModule,
     MatListModule,
     MatFormFieldModule,
-    FormsModule,
     MatDialogModule,
     MatInputModule,
     MatButtonModule,
     MatSelectModule
   ],
   exports:
-  [
-    ProfileLandingComponent
-  ]
+    [
+      ProfileLandingComponent
+    ]
 })
-export class ProfileModule { }
+export class ProfileModule {
+}

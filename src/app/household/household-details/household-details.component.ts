@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {HouseholdService} from "../../_services/household.service";
+import {HouseholdService} from "../../_graphql-services/household.service";
 import {ActivatedRoute} from "@angular/router";
 import {Household} from "../../graphql.types";
 

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from '../_services/auth.service';
+import {AuthService} from '../_graphql-services/auth.service';
 import {LocalStorageService} from "../_services/local-storage.service";
 
 

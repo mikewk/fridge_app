@@ -15,6 +15,7 @@ export class AppComponent {
   showModeratorBoard = false;
   user?: User;
   selectedHousehold?: Household;
+
   constructor(private localStorageService: LocalStorageService,
               private addFoodItemHandler: ItemDialogService,
               private snackBar: MatSnackBar) {
@@ -39,7 +40,7 @@ export class AppComponent {
   }
 
   addItemToSelected() {
-    if( this.selectedHousehold ) {
+    if (this.selectedHousehold) {
       this.addFoodItemHandler.addItem(this.selectedHousehold).subscribe(
         {
           next: data => {

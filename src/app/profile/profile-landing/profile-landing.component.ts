@@ -1,18 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import {ComponentType} from "@angular/cdk/overlay";
-import {EMPTY, mergeMap, Observable} from "rxjs";
-import {HouseholdService} from "../../_services/household.service";
-import {ProfileAddHouseholdComponent} from "../add-household/profile-add-household.component";
+import {Component, OnInit} from '@angular/core';
+
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
+
 import {DialogHelperService} from "../../_helpers/dialog-helper.service";
-import {HouseholdsPayload, User} from "../../graphql.types";
 import {ProfileChangeDefaultComponent} from "../change-default/profile-change-default.component";
-import {UserService} from "../../_services/user.service";
+import {UserService} from "../../_graphql-services/user.service";
 import {LocalStorageService} from "../../_services/local-storage.service";
+import {HouseholdService} from "../../_graphql-services/household.service";
+import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add-household.component";
 
 @Component({
-  selector: 'app-landing',
+  selector: 'app-profile-landing',
   templateUrl: './profile-landing.component.html',
   styleUrls: ['./profile-landing.component.css']
 })
@@ -23,20 +21,21 @@ export class ProfileLandingComponent implements OnInit {
               private snackBar: MatSnackBar,
               private dialogHelper: DialogHelperService,
               private localStorage: LocalStorageService
-              ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
   changeDefault() {
     this.dialogHelper.launchDialog(ProfileChangeDefaultComponent,
-                                  (x:any) => this.userService.changeDefault(x)).subscribe({
+      (x: any) => this.userService.changeDefault(x)).subscribe({
       next: data => {
         if (data.users[0]) {
           this.snackBar.open("Default Household Changed Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
           let user = this.localStorage.getUser();
-          if( user ) {
+          if (user) {
             user.defaultHousehold = data.users[0].defaultHousehold;
             this.localStorage.saveUser(user);
           }
@@ -52,7 +51,8 @@ export class ProfileLandingComponent implements OnInit {
   }
 
   addHousehold() {
-    this.dialogHelper.launchDialog(ProfileAddHouseholdComponent, (x: any) => this.householdService.addHousehold(x)).subscribe({
+    this.dialogHelper.launchDialog(ProfileAddHouseholdComponent,
+                                  (x: any) => this.householdService.addHousehold(x)).subscribe({
       next: data => {
         //If the API call was successful
         if (data.household) {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {StorageService} from "../../_services/storage.service";
+import {StorageService} from "../../_graphql-services/storage.service";
 
 /**
  * A simple component to add a storage to a household

@@ -1,7 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
+
 import {MAT_DIALOG_DATA} from '@angular/material/dialog'
-import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
+import {MatSnackBarRef} from "@angular/material/snack-bar";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
+
 import {Household} from "../../graphql.types";
 
 
@@ -9,12 +11,12 @@ import {Household} from "../../graphql.types";
  * Material Dialog component for adding and editing food items
  */
 @Component({
-  selector: 'app-add-household',
+  selector: 'app-profile-add-household',
   templateUrl: './profile-add-household.component.html',
   styleUrls: ['./profile-add-household.component.css']
 })
 export class ProfileAddHouseholdComponent implements OnInit {
-  household: Household = {name:"", location:""};
+  household: Household = {name: "", location: ""};
   snackBarRef?: MatSnackBarRef<any>;
   readonly separatorKeyCodes = [ENTER, COMMA, SPACE] as const;
 

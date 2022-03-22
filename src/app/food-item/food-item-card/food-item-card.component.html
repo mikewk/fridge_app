@@ -1,5 +1,5 @@
 <mat-drawer-container>
-  <mat-drawer-content >
+  <mat-drawer-content>
     <mat-card class="food_item_card">
       <secured-image (click)="snav.toggle()" [src]=foodItem.filename></secured-image>
 
@@ -9,8 +9,8 @@
             <td id="foodItemName">{{foodItem.name}}</td>
             <td id="foodItemStorage">{{foodItem.storage!.name}}</td>
           </tr>
-      </table>
-            <mat-chip-list>
+        </table>
+        <mat-chip-list>
           <mat-chip *ngFor="let tag of foodItem.tags" class="food_tag_chip">{{tag}}</mat-chip>
         </mat-chip-list>
         <span id="foodItemExpiration">Expires: {{foodItem.expiration}}</span>
@@ -18,10 +18,18 @@
       </mat-card-content>
     </mat-card>
   </mat-drawer-content>
-  <mat-drawer [autoFocus]="false" mode="push" #snav position="end">
+  <mat-drawer #snav [autoFocus]="false" mode="push" position="end">
     <mat-list>
-      <mat-list-item><button mat-raised-button (click)="openEditDialog(foodItem)"><mat-icon>edit_note</mat-icon></button></mat-list-item>
-      <mat-list-item><button mat-raised-button color="warn" (click)="openDeleteDialog(foodItem)"><mat-icon>delete</mat-icon></button></mat-list-item>
+      <mat-list-item>
+        <button (click)="openEditDialog(foodItem)" mat-raised-button>
+          <mat-icon>edit_note</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button (click)="openDeleteDialog(foodItem)" color="warn" mat-raised-button>
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
     </mat-list>
   </mat-drawer>
 </mat-drawer-container>

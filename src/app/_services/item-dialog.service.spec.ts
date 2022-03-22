@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { ItemDialogService } from './item-dialog.service';
+import {ItemDialogService} from './item-dialog.service';
 
 describe('AddItemHandlerService', () => {
   let service: ItemDialogService;

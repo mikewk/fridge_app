@@ -26,9 +26,9 @@ export {StorageAddComponent} from "./storage-add/storage-add.component";
     FoodItemModule
   ],
   exports:
-  [
-    StorageAddComponent
-  ]
+    [
+      StorageAddComponent
+    ]
 })
 export class StorageModule {
 }

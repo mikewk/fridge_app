@@ -91,14 +91,14 @@ export type GetHousehold_Query = {
 }
 
 export type GetMemberHouseholds_Query =
-{
-  getMemberHouseholds: HouseholdsPayload;
-}
+  {
+    getMemberHouseholds: HouseholdsPayload;
+  }
 
 export type AddHousehold_Mutation =
-{
-  createHousehold: HouseholdsPayload;
-}
+  {
+    createHousehold: HouseholdsPayload;
+  }
 
 export type UpdateFoodItem_Mutation = {
   updateFoodItem: FoodItemsPayload

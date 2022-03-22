@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { DialogHelperService } from './dialog-helper.service';
+import {DialogHelperService} from './dialog-helper.service';
 
 describe('DialogHelperService', () => {
   let service: DialogHelperService;

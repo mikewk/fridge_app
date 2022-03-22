@@ -1,0 +1,52 @@
+<form #myForm="ngForm">
+  <div *ngIf="!editing" class="item_dialog_top">
+
+    <h1 *ngIf="!editing" mat-dialog-title>
+      Add Item To
+      <mat-form-field appearance="fill">
+        <mat-label>Storage</mat-label>
+        <mat-select [(ngModel)]="foodItem.storage" name="storage" required>
+          <mat-option *ngFor="let storage of household.storages" [value]="storage">
+            {{storage.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </h1>
+    <img [src]="image">
+  </div>
+  <div *ngIf="editing" class="item_dialog_top">
+    <h1 *ngIf="editing">
+      Edit {{foodItem.name}}
+    </h1>
+    <secured-image [src]="image"></secured-image>
+  </div>
+
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input [(ngModel)]="foodItem.name" matInput name="name" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="tag-chip-list">
+      <mat-label>Tags</mat-label>
+      <mat-chip-list #chipList aria-label="Tags">
+        <mat-chip (removed)="remove(tag)" *ngFor="let tag of foodItem.tags">
+          {{tag}}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input (matChipInputTokenEnd)="add($event)"
+               [matChipInputAddOnBlur]="addOnBlur"
+               [matChipInputFor]="chipList"
+               [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+               placeholder="New tag...">
+      </mat-chip-list>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button (click)="tryToAddItem()" *ngIf="!editing" [disabled]=myForm.invalid mat-button>Add Item</button>
+    <button (click)="getSuggestion()" *ngIf="!editing">Get Suggestions</button>
+    <button *ngIf="editing" [mat-dialog-close]="foodItem" mat-button>Update Item</button>
+  </div>
+</form>

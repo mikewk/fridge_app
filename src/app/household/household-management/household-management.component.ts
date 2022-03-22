@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import {HouseholdService} from "../../_services/household.service";
-import {EMPTY, mergeMap, Observable} from "rxjs";
+import {HouseholdService} from "../../_graphql-services/household.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-  selector: 'app-manage-households',
-  templateUrl: './manage-households.component.html',
-  styleUrls: ['./manage-households.component.css']
+  selector: 'app-household-management',
+  templateUrl: './household-management.component.html',
+  styleUrls: ['./household-management.component.css']
 })
-export class ManageHouseholdsComponent implements OnInit {
+export class HouseholdManagementComponent implements OnInit {
 
   constructor(private dialog: MatDialog,
               private householdService: HouseholdService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar) {
+  }
 
   ngOnInit(): void {
   }
@@ -33,7 +33,6 @@ export class ManageHouseholdsComponent implements OnInit {
   editHousehold() {
 
   }
-
 
 
   addStorage() {

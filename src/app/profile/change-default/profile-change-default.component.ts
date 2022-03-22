@@ -1,8 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {Household, User} from "../../graphql.types";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {FoodItemService} from "../../_services/food-item.service";
+import {Component, OnInit} from '@angular/core';
+
 import {MatSnackBar} from "@angular/material/snack-bar";
+
+import {Household, User} from "../../graphql.types";
 import {LocalStorageService} from "../../_services/local-storage.service";
 
 @Component({
@@ -14,6 +14,7 @@ export class ProfileChangeDefaultComponent implements OnInit {
   defaultHousehold?: Household;
   households: Household[];
   user: User;
+
   constructor(private snackBar: MatSnackBar,
               private storageService: LocalStorageService) {
     this.user = this.storageService.getUser()!;
@@ -24,9 +25,8 @@ export class ProfileChangeDefaultComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  compareHouseholds(a: Household, b: Household): boolean
-  {
-    return a.id==b.id;
+  compareHouseholds(a: Household, b: Household): boolean {
+    return a.id == b.id;
   }
 
 }

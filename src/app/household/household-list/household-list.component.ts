@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {HouseholdService} from "../../_services/household.service";
-import {EMPTY, mergeMap} from "rxjs";
+import {HouseholdService} from "../../_graphql-services/household.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {ProfileAddHouseholdComponent} from "../../profile/add-household/profile-add-household.component";
 
 /**
  * Component that displays a list of households the user can access as a member
@@ -28,7 +26,7 @@ export class HouseholdListComponent implements OnInit {
   async openAddDialog() {
 
 
-   }
+  }
 
 
   /**
