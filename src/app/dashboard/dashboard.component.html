@@ -1,0 +1,17 @@
+<div *ngIf="household">
+  <h1>{{household.name}} in {{household.location}}</h1>
+  <mat-form-field appearance="fill">
+  <mat-label>Show/Hide Storages</mat-label>
+  <mat-select [(ngModel)]="selectedStorages" multiple>
+    <mat-option *ngFor="let storage of household.storages" [value]="storage">{{storage.name}}</mat-option>
+  </mat-select>
+  </mat-form-field>
+
+  <div *ngFor="let storage of selectedStorages trackBy: trackStorage">
+    <h3>{{storage.name}}</h3>
+    <food-item-card *ngFor="let foodItem of storage.foodItems trackBy: trackFoodItem" [foodItem]="foodItem"></food-item-card>
+  </div>
+  <p>
+    <button (click)="openAddDialog()">Add Item</button>
+  </p>
+</div>

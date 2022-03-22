@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../_services/auth.service';
-import {TokenStorageService} from "../_services/token-storage.service";
+import {LocalStorageService} from "../_services/local-storage.service";
 
 
 /**
@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
   isSignUpFailed = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService) {
+  constructor(private authService: AuthService, private tokenStorage: LocalStorageService) {
   }
 
   ngOnInit(): void {
@@ -36,12 +36,12 @@ export class RegisterComponent implements OnInit {
     this.authService.register(name, email, password).subscribe({
       next: data => {
         //If we have an API error, it will end up here
-        if (data.signup.error) {
-          this.errorMessage = data.signup.error;
+        if (data.error) {
+          this.errorMessage = data.error;
           this.isSignUpFailed = true;
         } else {
           //If successful, save our token to keep us logged in
-          this.tokenStorage.saveToken(data.signup.token)
+          this.tokenStorage.saveToken(data.token)
           this.isSuccessful = true;
           this.isSignUpFailed = false;
         }

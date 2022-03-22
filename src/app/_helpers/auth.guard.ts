@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {Observable} from 'rxjs';
-import {TokenStorageService} from "../_services/token-storage.service";
+import {LocalStorageService} from "../_services/local-storage.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private tokenStorage: TokenStorageService, private router: Router) {
+  constructor(private tokenStorage: LocalStorageService, private router: Router) {
   }
 
   canActivate(

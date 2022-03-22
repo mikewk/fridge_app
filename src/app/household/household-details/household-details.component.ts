@@ -29,8 +29,8 @@ export class HouseholdDetailsComponent implements OnInit {
     this.householdService.getHousehold(id).subscribe(
       {
         next: data => {
-          if (data.getHousehold.households) {
-            this.currentHousehold = data.getHousehold.households[0];
+          if (data.households) {
+            this.currentHousehold = data.households[0];
           } else {
             console.log(data);
           }

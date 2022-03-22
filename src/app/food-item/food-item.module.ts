@@ -12,6 +12,8 @@ import {AddFoodItemComponent} from "./add-food-item/add-food-item.component";
 import {SecureImageComponent} from "../_helpers/secure-image.component";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatSelectModule} from "@angular/material/select";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
@@ -21,11 +23,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
   ],
   exports: [
     FoodItemCardComponent,
-    AddFoodItemComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
+    AddFoodItemComponent,
     MatDialogModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -34,7 +32,21 @@ import {MatSidenavModule} from "@angular/material/sidenav";
     MatChipsModule,
     MatIconModule,
     MatSidenavModule,
-  ]
+  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatInputModule,
+        MatCardModule,
+        MatChipsModule,
+        MatIconModule,
+        MatSidenavModule,
+        MatSelectModule,
+        MatListModule,
+    ]
 })
 export class FoodItemModule {
 }

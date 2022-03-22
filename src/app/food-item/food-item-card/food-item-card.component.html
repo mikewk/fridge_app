@@ -7,7 +7,7 @@
         <table class="food_item_card_header">
           <tr>
             <td id="foodItemName">{{foodItem.name}}</td>
-            <td id="foodItemStorage">{{foodItem.storageName}}</td>
+            <td id="foodItemStorage">{{foodItem.storage!.name}}</td>
           </tr>
       </table>
             <mat-chip-list>
@@ -19,6 +19,9 @@
     </mat-card>
   </mat-drawer-content>
   <mat-drawer [autoFocus]="false" mode="push" #snav position="end">
-    <button (click)="openDeleteDialog(foodItem)">Delete</button>
+    <mat-list>
+      <mat-list-item><button mat-raised-button (click)="openEditDialog(foodItem)"><mat-icon>edit_note</mat-icon></button></mat-list-item>
+      <mat-list-item><button mat-raised-button color="warn" (click)="openDeleteDialog(foodItem)"><mat-icon>delete</mat-icon></button></mat-list-item>
+    </mat-list>
   </mat-drawer>
 </mat-drawer-container>

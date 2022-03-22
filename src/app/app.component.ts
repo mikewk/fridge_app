@@ -1,5 +1,8 @@
 import {Component} from '@angular/core';
-import {TokenStorageService} from './_services/token-storage.service';
+import {LocalStorageService} from './_services/local-storage.service';
+import {Household, User} from "./graphql.types";
+import {ItemDialogService} from "./_services/item-dialog.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-root',
@@ -10,22 +13,20 @@ export class AppComponent {
   isLoggedIn = false;
   showAdminBoard = false;
   showModeratorBoard = false;
-  email?: string;
-  name?: string;
-  id?: number;
-
-  constructor(private tokenStorageService: TokenStorageService) {
+  user?: User;
+  selectedHousehold?: Household;
+  constructor(private localStorageService: LocalStorageService,
+              private addFoodItemHandler: ItemDialogService,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
-    this.isLoggedIn = !!this.tokenStorageService.getToken();
+    this.isLoggedIn = !!this.localStorageService.getToken();
 
     if (this.isLoggedIn) {
       //If we're logged in, keep trade of email, name, and user id to be used in other places
-      const user = this.tokenStorageService.getUser();
-      this.email = user.email;
-      this.name = user.name;
-      this.id = user.id
+      this.user = this.localStorageService.getUser()!;
+      this.selectedHousehold = this.localStorageService.getHousehold();
     }
   }
 
@@ -33,7 +34,33 @@ export class AppComponent {
    * Log the user out by telling the token service to Mount Doom the token.
    */
   logout(): void {
-    this.tokenStorageService.signOut();
+    this.localStorageService.signOut();
+    window.location.reload();
+  }
+
+  addItemToSelected() {
+    if( this.selectedHousehold ) {
+      this.addFoodItemHandler.addItem(this.selectedHousehold).subscribe(
+        {
+          next: data => {
+            //If the API call was successful
+            if (data.addFoodItemToStorage) {
+              this.snackBar.open("Food Item Added Successfully", undefined,
+                {duration: 2000, panelClass: ['simple-snack-bar']});
+            } else {
+              console.log(data);
+            }
+          },
+          error: err => {
+            console.log(err);
+          }
+        });
+    }
+  }
+
+  changeSelected(household: Household) {
+    this.localStorageService.saveHousehold(household);
+    this.selectedHousehold = household;
     window.location.reload();
   }
 }

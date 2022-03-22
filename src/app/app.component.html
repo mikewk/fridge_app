@@ -1,33 +1,46 @@
 <div id="app">
-  <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Fridge Tracker</a>
-    <ul class="navbar-nav mr-auto" routerLinkActive="active">
-      <li class="nav-item">
-        <a class="nav-link" href="/home" routerLink="home">Home </a>
+  <mat-toolbar class="navbar-expand" color="primary"><span>Fridge Tracker</span>
+    <ul *ngIf="isLoggedIn" class="navbar-nav mr-auto">
+      <li *ngIf="this.selectedHousehold">
+        <button mat-icon-button (click)="addItemToSelected()">
+          <mat-icon>add_a_photo</mat-icon>
+        </button>
       </li>
-      <li class="nav-item">
-        <a *ngIf="isLoggedIn" class="nav-link" href="/user" routerLink="household">Households</a>
-      </li>
-    </ul>
 
+    </ul>
     <ul *ngIf="!isLoggedIn" class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" href="/register" routerLink="register">Sign Up</a>
+        <a class="nav-link" routerLink="register">Sign Up</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/login" routerLink="login">Login</a>
+        <a class="nav-link" routerLink="login">Login</a>
       </li>
     </ul>
 
     <ul *ngIf="isLoggedIn" class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/profile" routerLink="profile">{{ name }}</a>
+      <li *ngIf="this.selectedHousehold" class="nav-item">
+        <a class="nav-link-inner" mat-icon-button routerLink="dashboard">
+          <mat-icon>home</mat-icon>
+        </a>
       </li>
       <li class="nav-item">
-        <a (click)="logout()" class="nav-link" href>LogOut</a>
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #profileMenu="matMenu" xPosition="before">
+          <button mat-menu-item routerLink="profile">Profile</button>
+          <button *ngIf="this.user!.memberHouseholds!.length>1" mat-menu-item [matMenuTriggerFor]="householdMenu">
+            Change Household</button>
+          <button mat-menu-item routerLink="manage">Manage Households</button>
+          <button (click)="logout()" mat-menu-item>Log Out</button>
+        </mat-menu>
+
+        <mat-menu #householdMenu="matMenu" xPosition="before">
+          <button mat-menu-item *ngFor="let household of this.user!.memberHouseholds" (click)="changeSelected(household)">{{household.name}}: {{household.location}}</button>
+        </mat-menu>
       </li>
     </ul>
-  </nav>
+  </mat-toolbar>
 
   <div class="container">
     <router-outlet></router-outlet>

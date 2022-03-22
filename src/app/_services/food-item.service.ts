@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {
-  AddFoodItem_Mutation, FoodItem, GetStorage_Query, GetSuggestions_Mutation,
+  AddFoodItem_Mutation, AuthPayload, FoodItem, GetStorage_Query, GetSuggestions_Mutation, RemovalPayload,
   RemoveFoodItem_Mutation, StoragesPayload, SuggestionPayload, UpdateFoodItem_Mutation
 } from "../graphql.types";
 import {delay, map, Observable} from "rxjs";
 import {GetStorage} from "./storage.service";
+import {GetHousehold} from "./household.service";
 
 //GraphQL Queries
 export const AddFoodItem = gql`
@@ -13,7 +14,7 @@ export const AddFoodItem = gql`
     addFoodItemToStorage(name: $name, storageId: $storageId, tags: $tags, filename:$filename)
     {
       foodItems
-      {id, name, storageName, enteredBy {name}, tags, filename}
+      {id, name, storage {id, name, type}, enteredBy {name}, tags, filename}
       error
     }
   }
@@ -23,7 +24,7 @@ export const UpdateFoodItem=gql`
   mutation updateFoodItem($foodItemId: Int!, $name: String!, $tags:[String], $expiration: String) {
     updateFoodItem(foodItemId: $foodItemId, name: $name, expiration: $expiration, tags: $tags)
     {
-      foodItems {id, name, storageName, enteredBy {name}, tags, expiration},
+      foodItems {id, name, storage {id, name, type}, enteredBy {name}, tags, expiration},
       error
     }
   }
@@ -64,13 +65,13 @@ export class FoodItemService {
   /**
    * Add a FoodItem to the storage identified by storageId
    */
-  addFoodItem(storageId: number, foodItem: FoodItem): Observable<any> {
+  addFoodItem(foodItem: FoodItem): Observable<any> {
     return this.apollo.mutate<AddFoodItem_Mutation>(
       {
         mutation: AddFoodItem,
-        // TODO: Store storageId in fileitem before calling function, so variable can just be fooditem
+        refetchQueries:[GetHousehold],
         variables: {
-            storageId: storageId,
+            storageId: foodItem.storage!.id,
             name: foodItem.name,
             tags: foodItem.tags,
             filename: foodItem.filename
@@ -78,11 +79,12 @@ export class FoodItemService {
         update: (store, {data: payload})=> {
           if( payload && payload.addFoodItemToStorage.foodItems )
           {
+            const storageId = foodItem.storage?.id;
             //Get the current storage from cache
             const data = store.readQuery<GetStorage_Query>({query: GetStorage, variables: {storageId: storageId}});
 
             //Make sure we have data in the cache (we bloody should)
-            if( data )
+            if( data?.getStorage?.storages )
             {
               console.log("Updating cache");
               let foodItems;
@@ -111,6 +113,7 @@ export class FoodItemService {
     return this.apollo.mutate<UpdateFoodItem_Mutation>(
       {
         mutation: UpdateFoodItem,
+        refetchQueries: [GetHousehold],
         variables: {
             foodItemId: foodItem.id,
             name: foodItem.name,
@@ -134,10 +137,11 @@ export class FoodItemService {
     ).pipe(map((result) => result.data));
   }
 
-  removeFoodItem(foodItem: FoodItem): Observable<any> {
+  removeFoodItem(foodItem: FoodItem): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveFoodItem_Mutation>(
       {
         mutation: RemoveFoodItem,
+        refetchQueries:[GetHousehold],
         variables: {
             foodItemId: foodItem.id
           },
@@ -146,12 +150,12 @@ export class FoodItemService {
           {
             //Write our change back to the cache
             //First we need to remove the item from the storage
-            let storageId = payload.removeFoodItem.id;
+            let storageId = foodItem.storage?.id;
             let data = store.readQuery<GetStorage_Query>({query: GetStorage, variables: {storageId: storageId}});
             let foodItems: FoodItem[];
             //If we have a food items array, get it and remove our food item
             //If we don't have a food item array anymore... something something race condition we'll just do nothing
-            if( data ) {
+            if( data?.getStorage?.storages) {
               if (data.getStorage.storages[0].foodItems) {
                 //Find our foodItem
                 let index = data.getStorage.storages[0].foodItems.findIndex(food => food.id == foodItem.id);
@@ -170,10 +174,24 @@ export class FoodItemService {
           }
         }
       }
-    ).pipe(map((result) => result.data));
+    ).pipe(map((result) => {
+      if( result.errors )
+      {
+        let payload: RemovalPayload = {error:result.errors.join(","), success:0, id:-1};
+        return payload;
+      }
+      else if( !result.data?.removeFoodItem)
+      {
+        let payload: RemovalPayload = {"error":"An unknown error occurred", success:0, id:-1};
+        return payload;
+      }
+      else {
+        return result.data.removeFoodItem;
+      }
+    }));
   }
 
-  getSuggestions(image: string | undefined) {
+  getSuggestions(image: string | undefined): Observable<SuggestionPayload> {
     return this.apollo.mutate<GetSuggestions_Mutation>(
       {
         mutation: GetSuggestions,
@@ -182,6 +200,20 @@ export class FoodItemService {
             image: image
           }
       }
-    ).pipe(map((result) => result.data));
+    ).pipe(map((result) =>{
+      if( result.errors )
+      {
+        let payload: SuggestionPayload = {error:result.errors.join(",")};
+        return payload;
+      }
+      else if( !result.data?.getSuggestions)
+      {
+        let payload: SuggestionPayload = {error:"An unknown error occurred"};
+        return payload;
+      }
+      else {
+        return result.data.getSuggestions;
+      }
+    }));
   }
 }

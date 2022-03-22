@@ -1,6 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FoodItem} from "../../graphql.types";
 import {FoodItemService} from "../../_services/food-item.service";
+import {ItemDialogService} from "../../_services/item-dialog.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatSidenav} from "@angular/material/sidenav";
 
 @Component({
   selector: 'food-item-card',
@@ -9,11 +12,31 @@ import {FoodItemService} from "../../_services/food-item.service";
 })
 export class FoodItemCardComponent implements OnInit {
   @Input() foodItem!: FoodItem;
-  constructor(private foodItemService:FoodItemService) { }
+  @ViewChild('snav') sidenav!: MatSidenav;
+  constructor(private foodItemService: FoodItemService,
+              private itemDialogService: ItemDialogService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
 
+   openEditDialog(foodItem: FoodItem){
+    this.itemDialogService.editItem(foodItem).subscribe({
+          next: data => {
+            //If the API call was successful
+            if (!data.error) {
+              this.snackBar.open("Food Item Edited Successfully", undefined,
+                          { duration: 2000, panelClass: ['simple-snack-bar']});
+              this.sidenav.close();
+          } else {
+            console.log(data);
+          }
+        },
+        error: err => {
+          console.log(err);
+        }
+      });
+  }
 
   openDeleteDialog(foodItem: FoodItem)
   {
@@ -22,9 +45,10 @@ export class FoodItemCardComponent implements OnInit {
       this.foodItemService.removeFoodItem(foodItem).subscribe(
         {
           next: data=> {
-            if( data.removeFoodItem && data.removeFoodItem.success)
+            if( !data.error)
             {
-              // TODO: Figure out how to trigger refresh of parent
+               this.snackBar.open("Food Item Deleted Successfully",undefined,
+                          { duration: 2000, panelClass: ['simple-snack-bar']});
             }
           },
           error: err => {

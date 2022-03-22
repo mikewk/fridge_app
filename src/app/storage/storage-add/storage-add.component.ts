@@ -30,17 +30,17 @@ export class StorageAddComponent implements OnInit {
    */
   createStorage(): void {
     let storage = {name: this.name, type: this.type};
-    //Utilizae storage service to try to add storage to this household
+    //Utilize storage service to try to add storage to this household
     this.storageService.addStorage(this.householdId, storage).subscribe(
       {
         next: data => {
           //If we don't have an error, update the storage ID
-          if (!data.addStorageToHousehold.error) {
+          if (data.storages) {
             this.submitted = true;
-            this.storageId = data.addStorageToHousehold.storages[0].id;
+            this.storageId = data.storages[0].id;
           } else {
             //TODO: Handle errors more gracefully
-            console.log(data.addStorageToHousehold.error)
+            console.log(data.error)
           }
         },
         error: err => {

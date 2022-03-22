@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {map, Observable} from 'rxjs';
+import {map, Observable, of} from 'rxjs';
 import {Apollo, gql} from "apollo-angular";
 
-import {AuthPayload} from '../graphql.types'
+import {AuthPayload, Login_Mutation, Signup_Mutation} from '../graphql.types'
 
 //GraphQL Constants
 const LoginGQL = gql`
@@ -10,6 +10,29 @@ const LoginGQL = gql`
         login(email:$email, password:$password)
         {
           error,
+          user
+          {
+            id,
+            name,
+            defaultHousehold {
+              id,
+              name,
+              location
+              storages {
+                id, name, foodItems {id}
+              }
+            },
+            memberHouseholds {
+              id,
+              name,
+              location
+            },
+            ownedHouseholds {
+              id,
+              name,
+              location
+            }
+          }
           token
         }
       }
@@ -38,21 +61,36 @@ export class AuthService {
   /**
    * Login via GraphQL
    */
-  login(email: string, password: string): Observable<any> {
-    return this.apollo.mutate<AuthPayload>({
+  login(email: string, password: string): Observable<AuthPayload> {
+    return this.apollo.mutate<Login_Mutation>({
       mutation: LoginGQL,
       variables:
         {
           email: email,
           password: password
         }
-    }).pipe(map((result) => result.data));
+    }).pipe(map((result) =>
+    {
+      if( result.errors )
+      {
+        let payload: AuthPayload = {error:result.errors.join(","), token:""};
+        return payload;
+      }
+      else if( !result.data?.login)
+      {
+        let payload: AuthPayload = {"error":"No data returned", token:"" };
+        return payload;
+      }
+      else {
+        return result.data.login;
+      }
+    }));
   }
   /**
    * Register for account via GraphQL
    */
-  register(name: string, email: string, password: string): Observable<any> {
-    return this.apollo.mutate<AuthPayload>({
+  register(name: string, email: string, password: string): Observable<AuthPayload> {
+    return this.apollo.mutate<Signup_Mutation>({
       mutation: RegisterGQL,
       variables:
         {
@@ -60,6 +98,21 @@ export class AuthService {
           name: name,
           password: password
         }
-    }).pipe(map((result) => result.data));
+    }).pipe(map((result) =>
+    {
+      if( result.errors )
+      {
+        let payload: AuthPayload = {error:result.errors.join(","), token:""};
+        return payload;
+      }
+      else if( !result.data?.signup)
+      {
+        let payload: AuthPayload = {"error":"No data returned", token:"" };
+        return payload;
+      }
+      else {
+        return result.data.signup;
+      }
+    }));
   }
 }

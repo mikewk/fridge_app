@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../_services/auth.service';
-import {TokenStorageService} from '../_services/token-storage.service';
+import {LocalStorageService} from '../_services/local-storage.service';
 import {ActivatedRoute, Router} from "@angular/router";
 
 /**
@@ -23,26 +23,43 @@ export class LoginComponent implements OnInit {
   returnUrl: string = '';
 
   constructor(private authService: AuthService,
-              private tokenStorage: TokenStorageService,
+              private tokenStorage: LocalStorageService,
               private route: ActivatedRoute,
               private router: Router) {
     let token = this.tokenStorage.getToken()
     if (token) {
       this.isLoggedIn = true;
-      this.email = this.tokenStorage.getUser().email;
-      this.router.navigate(["/"]);
+      this.determineRoute();
     }
   }
 
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
     let token = this.tokenStorage.getToken()
     if (token != null) {
       this.isLoggedIn = true;
-      this.email = this.tokenStorage.getUser().email;
-      this.router.navigate([this.returnUrl])
+      this.determineRoute();
+    }
+  }
+
+  determineRoute() : void  {
+    const user = this.tokenStorage.getUser();
+    if( !this.tokenStorage.getHousehold() && user?.defaultHousehold)
+    {
+      this.tokenStorage.saveHousehold(user.defaultHousehold);
     }
 
+    if( this.returnUrl )
+    {
+      this.router.navigate([this.returnUrl]);
+    }
+    else {
+      if( this.tokenStorage.getHousehold() ) {
+        this.router.navigate(["/dashboard"]);
+      } else {
+        this.router.navigate(["/welcome"]);
+      }
+    }
   }
 
   onSubmit(): void {
@@ -53,18 +70,16 @@ export class LoginComponent implements OnInit {
       next: data => {
         //If the error field is set, something went wrong
         //TODO: Create an error class/type system so errors can be handled appropriately on the front-end
-        if (data.login.error) {
-          this.errorMessage = data.login.error;
+        if (data.error) {
+          this.errorMessage = data.error;
           this.isLoginFailed = true;
         } else {
           //If there's no error, then save the token, and get the user's email to show them they logged in successfully
-          this.tokenStorage.saveToken(data.login.token);
-          this.email = this.tokenStorage.getUser().email;
+          this.tokenStorage.saveToken(data.token);
+          this.tokenStorage.saveUser(data.user!);
           this.isLoginFailed = false;
           this.isLoggedIn = true;
-
-          //Go to the returnURL if there was one
-          this.router.navigate([this.returnUrl])
+          this.determineRoute();
           this.reloadPage();
         }
       },

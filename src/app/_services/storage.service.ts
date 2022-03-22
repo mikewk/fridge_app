@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
-import {QL_Storage, StoragesPayload} from "../graphql.types";
+import {
+  AddStorageToHousehold_Mutation,
+  GetStorage_Query,
+  HouseholdsPayload,
+  QL_Storage,
+  StoragesPayload
+} from "../graphql.types";
 import {GetHousehold} from "./household.service"
 
 //GraphQL Queries
@@ -10,7 +16,7 @@ export const GetStorage = gql`
     getStorage(storageId: $storageId)
     {
       storages
-      {id, name, type, foodItems {id, name, tags, storageName, filename}}
+      {id, name, type, foodItems {id, name, tags, storage {id, name, type}, filename}}
       error
     }
   }
@@ -42,8 +48,8 @@ export class StorageService {
   /**
    * Add a storage to the household identified by id
    */
-  addStorage(id: number, storage: QL_Storage): Observable<any> {
-    return this.apollo.mutate<StoragesPayload>({
+  addStorage(id: number, storage: QL_Storage): Observable<StoragesPayload> {
+    return this.apollo.mutate<AddStorageToHousehold_Mutation>({
       mutation: AddStorageGQL,
       refetchQueries: [
         {
@@ -57,14 +63,26 @@ export class StorageService {
           name: storage.name,
           type: storage.type
         }
-    }).pipe(map((result) => result.data));
+    }).pipe(map((result) =>{
+      if( result.errors )
+      {
+        return {error:result.errors.join(",")};
+      }
+      else if( !result.data?.addStorageToHousehold)
+      {
+        return {error:"An unknown error occurred"};
+      }
+      else {
+        return result.data.addStorageToHousehold;
+      }
+    }));
   }
 
   /**
    * Get the storage identified by id
    */
-  getStorage(id: number): Observable<any> {
-    return this.apollo.watchQuery<StoragesPayload>(
+  getStorage(id: number): Observable<StoragesPayload> {
+    return this.apollo.watchQuery<GetStorage_Query>(
       {
         query: GetStorage,
         variables:
@@ -72,6 +90,18 @@ export class StorageService {
             storageId: id
           }
       }
-    ).valueChanges.pipe(map((result) => result.data));
+    ).valueChanges.pipe(map((result) => {
+      if( result.errors )
+      {
+        return {error:result.errors.join(",")};
+      }
+      else if( !result.data?.getStorage)
+      {
+        return {error:"An unknown error occurred"};
+      }
+      else {
+        return result.data.getStorage;
+      }
+    }));
   }
 }

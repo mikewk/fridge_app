@@ -1,7 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
-import {Household, HouseholdsPayload} from "../graphql.types";
+import {
+  AddHousehold_Mutation,
+  GetHousehold_Query,
+  GetMemberHouseholds_Query,
+  Household,
+  HouseholdsPayload,
+  SuggestionPayload
+} from "../graphql.types";
 
 //GraphQL Queries
 export const GetHousehold = gql`
@@ -9,7 +16,17 @@ export const GetHousehold = gql`
       getHousehold(householdId: $householdId)
       {
         households
-        {id, name, location, owner {name}, users {name}, storages {id, name, type}},
+        {
+          id, name, location,
+          owner {name},
+          users {name},
+          storages
+            {id, name, type, foodItems {
+              id, name, filename, tags, storage {
+                id, name, type
+              }
+            }}
+        },
         error
       }
     }
@@ -64,17 +81,29 @@ export class HouseholdService {
   /**
    * Gets all households the authenticated user is a member of
    */
-  getMemberHouseholds(): Observable<any> {
-    return this.apollo.query<HouseholdsPayload>({
+  getMemberHouseholds(): Observable<HouseholdsPayload> {
+    return this.apollo.query<GetMemberHouseholds_Query>({
       query: GetMemberHousehold
-    }).pipe(map((result) => result.data));
+    }).pipe(map((result) => {
+      if( result.errors )
+      {
+        return {error:result.errors.join(",")};
+      }
+      else if( !result.data?.getMemberHouseholds)
+      {
+        return {error:"An unknown error occurred"};
+      }
+      else {
+        return result.data.getMemberHouseholds;
+      }
+    }));
   }
 
   /**
    * Get the household identified by id
    */
-  getHousehold(id: number): Observable<any> {
-    return this.apollo.query<HouseholdsPayload>(
+  getHousehold(id: number): Observable<HouseholdsPayload> {
+    return this.apollo.watchQuery<GetHousehold_Query>(
       {
         query: GetHousehold,
         variables:
@@ -82,15 +111,39 @@ export class HouseholdService {
             householdId: id
           }
       }
-    ).pipe(map((result) => result.data));
+    ).valueChanges.pipe(map((result) => {
+      if( result.errors )
+      {
+        return {error:result.errors.join(",")};
+      }
+      else if( !result.data?.getHousehold)
+      {
+        return {error:"An unknown error occurred"};
+      }
+      else {
+        return result.data.getHousehold;
+      }
+    }));
   }
 
-  addHousehold(household: Household): Observable<any> {
-    return this.apollo.mutate<HouseholdsPayload>(
+  addHousehold(household: Household): Observable<HouseholdsPayload> {
+    return this.apollo.mutate<AddHousehold_Mutation>(
       {
         mutation: AddHousehold,
         variables: household
       }
-    ).pipe(map((result) => result.data));
+    ).pipe(map((result) => {
+      if( result.errors )
+      {
+        return {error:result.errors.join(",")};
+      }
+      else if( !result.data?.createHousehold)
+      {
+        return {error:"An unknown error occurred"};
+      }
+      else {
+        return result.data.createHousehold;
+      }
+    }));
   }
 }

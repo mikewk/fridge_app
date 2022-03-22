@@ -6,6 +6,9 @@ export type User = {
   id: number
   email: string
   name: string
+  defaultHousehold?: Household
+  memberHouseholds: Household[]
+  ownedHouseholds: Household[]
 }
 
 export type QL_Storage = {
@@ -28,7 +31,7 @@ export type Household = {
 export type FoodItem = {
   id?: number
   name: string
-  storageName?: string
+  storage?: QL_Storage
   enteredBy?: User
   entered?: string
   expiration?: string
@@ -45,20 +48,21 @@ export type Suggestion = {
 export type AuthPayload = {
   token: string
   error: string
+  user?: User
 }
 
 export type HouseholdsPayload = {
-  households: Household[]
+  households?: Household[]
   error: string
 }
 
 export type StoragesPayload = {
-  storages: QL_Storage[]
+  storages?: QL_Storage[]
   error: string
 }
 
 export type UsersPayload = {
-  users: User[]
+  users?: User[]
   error: string
 }
 
@@ -74,16 +78,26 @@ export type RemovalPayload = {
 }
 
 export type SuggestionPayload = {
-  suggestion: Suggestion
+  suggestion?: Suggestion
   error: string
-}
-
-export type AddFoodItem_Mutation = {
-  addFoodItemToStorage: FoodItemsPayload
 }
 
 export type GetStorage_Query = {
   getStorage: StoragesPayload
+}
+
+export type GetHousehold_Query = {
+  getHousehold: HouseholdsPayload
+}
+
+export type GetMemberHouseholds_Query =
+{
+  getMemberHouseholds: HouseholdsPayload;
+}
+
+export type AddHousehold_Mutation =
+{
+  createHousehold: HouseholdsPayload;
 }
 
 export type UpdateFoodItem_Mutation = {
@@ -96,4 +110,20 @@ export type RemoveFoodItem_Mutation = {
 
 export type GetSuggestions_Mutation = {
   getSuggestions: SuggestionPayload
+}
+
+export type Login_Mutation = {
+  login: AuthPayload
+}
+
+export type Signup_Mutation = {
+  signup: AuthPayload
+}
+
+export type AddFoodItem_Mutation = {
+  addFoodItemToStorage: FoodItemsPayload
+}
+
+export type AddStorageToHousehold_Mutation = {
+  addStorageToHousehold: HouseholdsPayload;
 }

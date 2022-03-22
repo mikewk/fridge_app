@@ -1,11 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
-import {FoodItem, QL_Storage, Suggestion} from "../../graphql.types";
+import {FoodItem, Household, QL_Storage, Suggestion} from "../../graphql.types";
 import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {FoodItemService} from "../../_services/food-item.service";
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
-import {environment} from "../../../environments/environment";
 
 
 /**
@@ -17,11 +16,11 @@ import {environment} from "../../../environments/environment";
   styleUrls: ['./add-food-item.component.css']
 })
 export class AddFoodItemComponent implements OnInit {
-  image_base_url: string = environment.image_base_url;
   foodItem: FoodItem;
   addOnBlur = true;
   editing = false;
   storage: QL_Storage;
+  household: Household;
   image?: string;
   suggestion?: Suggestion;
   snackBarRef?: MatSnackBarRef<any>;
@@ -33,6 +32,7 @@ export class AddFoodItemComponent implements OnInit {
               private foodItemService: FoodItemService,
               private snackBar: MatSnackBar,
               private matDialogRef: MatDialogRef<AddFoodItemComponent>) {
+    this.household = data.household;
     if (data.foodItem) {
       //Make a copy of the food item
       this.foodItem = Object.assign({}, data.foodItem);
@@ -40,30 +40,33 @@ export class AddFoodItemComponent implements OnInit {
       //If we have a food item, then we're editing not adding
       this.editing = true;
       this.image = this.foodItem.filename;
+      this.storage = data.foodItem.storage;
     }
     else
     {
       //No food item?  Create one and we're not editing
       this.foodItem = {name:"", tags:[]};
       this.editing = false;
-      this.image = data.image;
+      this.image = data.image
+      this.storage = data.household.storages[0];
     }
-    this.storage = data.storage;
+
 
   }
 
   ngOnInit(): void {
     //Go get our suggestions immediately
-    this.foodItemService.getSuggestions(this.image).subscribe(
-      {
-        next: data => {
-          //If the API call was successful
-            if (data?.getSuggestions) {
+    if( !this.editing ) {
+      this.foodItemService.getSuggestions(this.image).subscribe(
+        {
+          next: data => {
+            //If the API call was successful
+            if (data?.suggestion) {
               //Set the suggestion
-              this.suggestion = data.getSuggestions.suggestion;
+              this.suggestion = data.suggestion;
 
               //If the user clicked "Get Suggestions" before we were ready and hasn't cancelled
-              if( this.waitingForSuggestion ) {
+              if (this.waitingForSuggestion) {
                 //Dismiss the snackbar if it's there (It should be, but with auto-suggestions on maybe not)
                 this.snackBarRef?.dismiss();
 
@@ -71,8 +74,7 @@ export class AddFoodItemComponent implements OnInit {
                 this.foodItem.name = this.suggestion.name;
                 this.foodItem.tags = this.suggestion.tags;
               }
-              if( this.waitingForFilename )
-              {
+              if (this.waitingForFilename) {
                 this.foodItem.filename = this.suggestion.filename;
                 this.matDialogRef.close(this.foodItem);
               }
@@ -81,12 +83,13 @@ export class AddFoodItemComponent implements OnInit {
             }
           },
           error: err => {
-          this.waitingForSuggestion = false;
-          this.snackBarRef?.dismiss();
+            this.waitingForSuggestion = false;
+            this.snackBarRef?.dismiss();
             console.log(err);
           }
         }
-    );
+      );
+    }
   }
 
   /**
