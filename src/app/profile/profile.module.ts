@@ -9,6 +9,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {ProfileChangeDefaultComponent} from "./change-default/profile-change-default.component";
+import {MatSelectModule} from "@angular/material/select";
 
 export {ProfileLandingComponent}
 
@@ -25,7 +26,8 @@ export {ProfileLandingComponent}
     FormsModule,
     MatDialogModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ],
   exports:
   [

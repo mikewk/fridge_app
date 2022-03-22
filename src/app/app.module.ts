@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {JwtModule} from "@auth0/angular-jwt";
 import {StorageModule} from "./storage/storage.module";
@@ -28,6 +28,8 @@ import {MatMenuModule} from "@angular/material/menu";
 import {FoodItemModule} from "./food-item/food-item.module";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSelectModule} from "@angular/material/select";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [
@@ -39,29 +41,34 @@ import {MatSelectModule} from "@angular/material/select";
     WelcomeComponent,
     DashboardComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        HttpClientModule,
-        GraphQLModule,
-        StorageModule,
-        HouseholdModule,
-        FoodItemModule,
-        BrowserAnimationsModule,
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: () => localStorage.getItem('access_token')
-            }
-        }),
-        MatToolbarModule,
-        MatSnackBarModule,
-        MatMenuModule,
-        MatSelectModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    GraphQLModule,
+    StorageModule,
+    HouseholdModule,
+    FoodItemModule,
+    BrowserAnimationsModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('access_token')
+      }
+    }),
+    MatToolbarModule,
+    MatSnackBarModule,
+    MatMenuModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule
+  ],
   providers: [authInterceptorProviders,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}],
   exports: [
+    MatFormFieldModule,
+    MatInputModule
   ],
   bootstrap: [AppComponent]
 })

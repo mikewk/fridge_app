@@ -127,3 +127,9 @@ export type AddFoodItem_Mutation = {
 export type AddStorageToHousehold_Mutation = {
   addStorageToHousehold: HouseholdsPayload;
 }
+
+export type ChangeDefaultHousehold_Mutation = {
+  changeDefaultHousehold: UsersPayload
+}
+
+

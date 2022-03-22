@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../_services/auth.service';
 import {LocalStorageService} from '../_services/local-storage.service';
 import {ActivatedRoute, Router} from "@angular/router";
+import {FormControl, Validators} from "@angular/forms";
 
 /**
  * A login prompt component
@@ -22,11 +23,14 @@ export class LoginComponent implements OnInit {
   email: string = '';
   returnUrl: string = '';
 
+  emailForm = new FormControl('', [Validators.required, Validators.email])
+  passwordForm = new FormControl('', [Validators.required]);
+
   constructor(private authService: AuthService,
-              private tokenStorage: LocalStorageService,
+              private localStorage: LocalStorageService,
               private route: ActivatedRoute,
               private router: Router) {
-    let token = this.tokenStorage.getToken()
+    let token = this.localStorage.getToken()
     if (token) {
       this.isLoggedIn = true;
       this.determineRoute();
@@ -35,7 +39,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
-    let token = this.tokenStorage.getToken()
+    let token = this.localStorage.getToken()
     if (token != null) {
       this.isLoggedIn = true;
       this.determineRoute();
@@ -43,10 +47,10 @@ export class LoginComponent implements OnInit {
   }
 
   determineRoute() : void  {
-    const user = this.tokenStorage.getUser();
-    if( !this.tokenStorage.getHousehold() && user?.defaultHousehold)
+    const user = this.localStorage.getUser();
+    if( !this.localStorage.getHousehold() && user?.defaultHousehold)
     {
-      this.tokenStorage.saveHousehold(user.defaultHousehold);
+      this.localStorage.saveHousehold(user.defaultHousehold);
     }
 
     if( this.returnUrl )
@@ -54,7 +58,7 @@ export class LoginComponent implements OnInit {
       this.router.navigate([this.returnUrl]);
     }
     else {
-      if( this.tokenStorage.getHousehold() ) {
+      if( this.localStorage.getHousehold() ) {
         this.router.navigate(["/dashboard"]);
       } else {
         this.router.navigate(["/welcome"]);
@@ -75,8 +79,8 @@ export class LoginComponent implements OnInit {
           this.isLoginFailed = true;
         } else {
           //If there's no error, then save the token, and get the user's email to show them they logged in successfully
-          this.tokenStorage.saveToken(data.token);
-          this.tokenStorage.saveUser(data.user!);
+          this.localStorage.saveToken(data.token);
+          this.localStorage.saveUser(data.user!);
           this.isLoginFailed = false;
           this.isLoggedIn = true;
           this.determineRoute();

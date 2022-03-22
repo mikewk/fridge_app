@@ -19,8 +19,8 @@ export class ItemDialogService {
   editItem(foodItem: FoodItem): Observable<any>
   {
       return this.dialogHelper.launchDialog(AddFoodItemComponent,
-        this.foodItemService.editFoodItem.bind(this.foodItemService),
-        {foodItem: foodItem});
+                                            (x: any)=>this.foodItemService.editFoodItem(x),
+                                            {foodItem: foodItem});
   }
 
   addItem(household: Household): Observable<any>
