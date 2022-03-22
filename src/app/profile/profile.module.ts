@@ -1,25 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileLandingComponent } from './profile-component/profile-landing.component';
+import { ProfileLandingComponent } from './landing/profile-landing.component';
 import {MatListModule} from "@angular/material/list";
-import {HouseholdAddComponent} from "./household-add/household-add.component";
+import {ProfileAddHouseholdComponent} from "./add-household/profile-add-household.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {FormsModule} from "@angular/forms";
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+import {ProfileChangeDefaultComponent} from "./change-default/profile-change-default.component";
 
 export {ProfileLandingComponent}
 
 @NgModule({
   declarations: [
     ProfileLandingComponent,
-    HouseholdAddComponent
+    ProfileAddHouseholdComponent,
+    ProfileChangeDefaultComponent
   ],
   imports: [
     CommonModule,
     MatListModule,
     MatFormFieldModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatInputModule,
+    MatButtonModule
   ],
   exports:
   [

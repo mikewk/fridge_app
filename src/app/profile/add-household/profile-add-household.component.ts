@@ -10,27 +10,15 @@ import {Household} from "../../graphql.types";
  */
 @Component({
   selector: 'app-add-household',
-  templateUrl: './household-add.component.html',
-  styleUrls: ['./household-add.component.css']
+  templateUrl: './profile-add-household.component.html',
+  styleUrls: ['./profile-add-household.component.css']
 })
-export class HouseholdAddComponent implements OnInit {
-  household: Household;
-  addOnBlur = true;
-  editing = false;
+export class ProfileAddHouseholdComponent implements OnInit {
+  household: Household = {name:"", location:""};
   snackBarRef?: MatSnackBarRef<any>;
   readonly separatorKeyCodes = [ENTER, COMMA, SPACE] as const;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
-    if (data) {
-      //Make a copy of the household
-      this.household = Object.assign({}, data.household);
-      //If we have a household, we're editing
-      this.editing = true;
-    } else {
-      //No household?  Create one and we're not editing
-      this.household = {name: "", location: ""};
-      this.editing = false;
-    }
   }
 
   ngOnInit(): void {

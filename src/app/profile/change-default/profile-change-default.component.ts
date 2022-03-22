@@ -6,11 +6,11 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {LocalStorageService} from "../../_services/local-storage.service";
 
 @Component({
-  selector: 'app-household-change-default',
-  templateUrl: './household-change-default.component.html',
-  styleUrls: ['./household-change-default.component.css']
+  selector: 'app-change-default',
+  templateUrl: './profile-change-default.component.html',
+  styleUrls: ['./profile-change-default.component.css']
 })
-export class HouseholdChangeDefaultComponent implements OnInit {
+export class ProfileChangeDefaultComponent implements OnInit {
   defaultHousehold?: Household;
   households: Household[];
   user: User;

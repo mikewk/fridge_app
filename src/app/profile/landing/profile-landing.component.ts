@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import {ComponentType} from "@angular/cdk/overlay";
 import {EMPTY, mergeMap, Observable} from "rxjs";
 import {HouseholdService} from "../../_services/household.service";
-import {HouseholdAddComponent} from "../household-add/household-add.component";
+import {ProfileAddHouseholdComponent} from "../add-household/profile-add-household.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
+import {DialogHelperService} from "../../_helpers/dialog-helper.service";
+import {HouseholdsPayload} from "../../graphql.types";
 
 @Component({
-  selector: 'app-profile-component',
+  selector: 'app-landing',
   templateUrl: './profile-landing.component.html',
   styleUrls: ['./profile-landing.component.css']
 })
@@ -15,7 +17,7 @@ export class ProfileLandingComponent implements OnInit {
 
   constructor(private householdService: HouseholdService,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog
+              private dialogHelper: DialogHelperService
               ) { }
 
   ngOnInit(): void {
@@ -26,12 +28,12 @@ export class ProfileLandingComponent implements OnInit {
   }
 
   addHousehold() {
-     this.launchDialog(HouseholdAddComponent, (x:any)=>this.householdService.addHousehold(x)) .subscribe({
+    this.dialogHelper.launchDialog(ProfileAddHouseholdComponent, (x: any) => this.householdService.addHousehold(x)).subscribe({
       next: data => {
         //If the API call was successful
-        if (data.changeDefaultHousehold) {
-          this.snackBar.open("Default Changed Successfully",undefined,
-                      { duration: 2000, panelClass: ['simple-snack-bar']});
+        if (data.household) {
+          this.snackBar.open("Household Added Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {
           console.log(data);
         }
@@ -39,28 +41,9 @@ export class ProfileLandingComponent implements OnInit {
       error: err => {
         console.log(err);
       }
-     });
-
-  }
-  launchDialog(dialog: ComponentType<any>, modelCallback: Function) : Observable<any>
-  {
-    const dialogRef = this.dialog.open(dialog,
-    {
-      width: '400px'
     });
 
-   return dialogRef.afterClosed().pipe(mergeMap(
-      (result)=> {
-          //If we have a result, make the add food item call
-          if (result) {
-            return modelCallback(result);
-          } else {
-            return EMPTY;
-          }
-        })
-     );
   }
-
 
   changeName() {
 

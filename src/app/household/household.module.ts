@@ -9,7 +9,6 @@ import {FormsModule} from "@angular/forms";
 import {MatDialogModule} from "@angular/material/dialog";
 import { ManageHouseholdsComponent } from './manage-households/manage-households.component';
 import {MatListModule} from "@angular/material/list";
-import { HouseholdChangeDefaultComponent } from './household-change-default/household-change-default.component';
 import {MatSelectModule} from "@angular/material/select";
 
 export {HouseholdDetailsComponent} from "./household-details/household-details.component";
@@ -21,7 +20,6 @@ export {HouseholdListComponent} from "./household-list/household-list.component"
     HouseholdDetailsComponent,
     HouseholdListComponent,
     ManageHouseholdsComponent,
-    HouseholdChangeDefaultComponent
   ],
     imports: [
         CommonModule,

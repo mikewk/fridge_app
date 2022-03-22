@@ -3,7 +3,7 @@ import {HouseholdService} from "../../_services/household.service";
 import {EMPTY, mergeMap} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {HouseholdAddComponent} from "../../profile/household-add/household-add.component";
+import {ProfileAddHouseholdComponent} from "../../profile/add-household/profile-add-household.component";
 
 /**
  * Component that displays a list of households the user can access as a member
