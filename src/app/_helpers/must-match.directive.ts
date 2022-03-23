@@ -3,7 +3,8 @@ import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/fo
 
 import {MustMatch} from './must-match.validator';
 
-/**This class creates a directive for the MustMatch validator
+/**
+ * This class creates a directive for the MustMatch validator
  * MustMatch is used to ensure both passwords are the same at signup
  * */
 @Directive({

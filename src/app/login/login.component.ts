@@ -6,7 +6,7 @@ import {AuthService} from '../_graphql-services/auth.service';
 import {LocalStorageService} from '../_services/local-storage.service';
 
 /**
- * A login prompt component
+ * A material UI login prompt component with validation
  */
 @Component({
   selector: 'app-login',
@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   email: string = '';
   returnUrl: string = '';
 
+  //Create the validators for email and password
   emailForm = new FormControl('', [Validators.required, Validators.email])
   passwordForm = new FormControl('', [Validators.required]);
 
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
               private localStorage: LocalStorageService,
               private route: ActivatedRoute,
               private router: Router) {
+    //Just double check to make sure we're not logged in already
     let token = this.localStorage.getToken()
     if (token) {
       this.isLoggedIn = true;
@@ -39,6 +41,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //Set returnURL and triple check that we're not logged in already
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
     let token = this.localStorage.getToken()
     if (token != null) {
@@ -48,22 +51,31 @@ export class LoginComponent implements OnInit {
   }
 
   determineRoute(): void {
+    //Determine where to go once we're logged in (or if we're logged in already)
     const user = this.localStorage.getUser();
+
+    //If the user has a default household, save it
     if (!this.localStorage.getHousehold() && user?.defaultHousehold) {
       this.localStorage.saveHousehold(user.defaultHousehold);
     }
 
+    //If there was a returnURL go there
     if (this.returnUrl) {
       this.router.navigate([this.returnUrl]);
     } else {
+      //Otherwise,check if we have a default household, go there if so
       if (this.localStorage.getHousehold()) {
         this.router.navigate(["/dashboard"]);
       } else {
+        //Otherwise go to the welcome page
         this.router.navigate(["/welcome"]);
       }
     }
   }
 
+  /**
+   * Process the login form
+   */
   onSubmit(): void {
     const {username, password} = this.form;
 
@@ -94,6 +106,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * Reload the page for some reason
+   * TODO: Determine if we actually need this
+   */
   reloadPage(): void {
     window.location.reload();
   }

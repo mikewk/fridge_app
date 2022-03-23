@@ -46,6 +46,11 @@ export class UserService {
   constructor(private apollo: Apollo) {
   }
 
+  /**
+   * Chance the default household for a user to the given household
+   * The default household is the one a user will see when relogging in
+   * @param household
+   */
   changeDefault(household: Household): Observable<UsersPayload> {
     return this.apollo.mutate<ChangeDefaultHousehold_Mutation>({
       mutation: ChangeDefaultHousehold_GQL,
@@ -54,6 +59,7 @@ export class UserService {
           householdId: household.id
         }
     }).pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(",")};
       } else if (!result.data?.changeDefaultHousehold) {

@@ -5,7 +5,7 @@ import {LocalStorageService} from "../../_services/local-storage.service";
 import {Household, QL_Storage} from "../../graphql.types";
 
 /**
- * A simple component to add a storage to a household
+ * A simple dialog to add a storage to a household
  */
 @Component({
   selector: 'app-household-add-storage',

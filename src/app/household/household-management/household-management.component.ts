@@ -10,6 +10,9 @@ import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdRemoveStorageComponent} from "../household-remove-storage/household-remove-storage.component";
 import {Household} from "../../graphql.types";
 
+/**
+ * Displays household management menu and handles the callbacks from GraphQL API calls
+ */
 @Component({
   selector: 'app-household-management',
   templateUrl: './household-management.component.html',
@@ -28,6 +31,8 @@ export class HouseholdManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //Load in our household data
+    //TODO: Figure out a way to ensure the household in localstorage IS our household and is updated by watchQuery
     this.householdService.getHousehold(this.localStorage.getHousehold()!.id!).subscribe(
       {
         next: data => {
@@ -45,18 +50,30 @@ export class HouseholdManagementComponent implements OnInit {
     );
   }
 
+  /**
+   * Shows a dialog box to gather information to invite a user to the system
+   */
   inviteUser() {
 
   }
 
+  /**
+   * Show a dialog to remove a user from the system and remove them if okayed.
+   */
   removeUser() {
 
   }
 
+  /**
+   * Remove the household from the system, LOTS OF WARNINGS THIS IS NOT UNDOABLE WHY ARE WE LETTING THEM DO THIS
+   */
   removeHousehold() {
 
   }
 
+  /**
+   * Edit basic household metadata
+   */
   editHousehold() {
 
   }
@@ -84,10 +101,16 @@ export class HouseholdManagementComponent implements OnInit {
 
   }
 
+  /**
+   * Edit basic storage metadata
+   */
   editStorage() {
 
   }
 
+  /**
+   * Remove a storage from the system.  Should probably have a warning about no undo
+   */
   removeStorage() {
     if(this.household?.storages?.length != 0)
     {
@@ -113,6 +136,5 @@ export class HouseholdManagementComponent implements OnInit {
       this.snackBar.open("No Storages To Remove", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
     }
-
   }
 }

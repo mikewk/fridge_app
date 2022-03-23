@@ -4,6 +4,11 @@ import {BehaviorSubject, map, Observable, switchMap} from 'rxjs';
 import {DomSanitizer} from '@angular/platform-browser';
 import {environment} from "../../environments/environment";
 
+/**
+ * This component displays an image from S3.
+ * It is required because GraphQL doesn't play nice with cookies
+ * So we have to send our authorization to S3 via JWT header.
+ */
 @Component({
   selector: 'secured-image',
   styles: ['img { width: 100%; }'],

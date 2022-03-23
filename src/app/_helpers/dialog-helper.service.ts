@@ -3,6 +3,11 @@ import {ComponentType} from "@angular/cdk/overlay";
 import {EMPTY, mergeMap, Observable} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 
+/**
+ * This service helps abstract away a lot of the dialog handling code.
+ * It opens the dialog, sets the data field if it exists, hacks the overlay element, and calls the callback
+ * If the dialog action is selected
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +17,7 @@ export class DialogHelperService {
   }
 
   launchDialog(dialog: ComponentType<any>, modelCallback: Function, data?: any): Observable<any> {
+    //Open a dialog
     const dialogRef = this.dialog.open(dialog,
       {
         width: '400px',
@@ -24,6 +30,7 @@ export class DialogHelperService {
       dialogRef['_overlayRef'].overlayElement.parentElement.className += ' dialog-wrapper';
     }
 
+    //Return the Observable of the dialog closing and the result going through the callback
     return dialogRef.afterClosed().pipe(mergeMap(
       (result) => {
         //If we have a result, make the add food item call

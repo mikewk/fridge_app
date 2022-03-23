@@ -3,6 +3,9 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTre
 import {Observable} from 'rxjs';
 import {LocalStorageService} from "../_services/local-storage.service";
 
+/**
+ * Guards pages that require an authorized token
+ */
 @Injectable({
   providedIn: 'root'
 })

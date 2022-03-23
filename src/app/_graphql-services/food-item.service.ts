@@ -83,6 +83,7 @@ export class FoodItemService {
           filename: foodItem.filename
         },
         update: (store, {data: payload}) => {
+          //If we have a fooditem to update
           if (payload && payload.addFoodItemToStorage.foodItems) {
             const storageId = foodItem.storage?.id;
             //Get the current storage from cache
@@ -115,6 +116,10 @@ export class FoodItemService {
     ).pipe(map((result) => result.data));
   }
 
+  /**
+   * Edit the foodItem
+   * @param foodItem FoodItem to edit
+   */
   editFoodItem(foodItem: FoodItem): Observable<any> {
     return this.apollo.mutate<UpdateFoodItem_Mutation>(
       {
@@ -144,6 +149,10 @@ export class FoodItemService {
     ).pipe(map((result) => result.data));
   }
 
+  /**
+   * Remove a FoodItem
+   * @param foodItem FoodItem to remove
+   */
   removeFoodItem(foodItem: FoodItem): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveFoodItem_Mutation>(
       {
@@ -181,6 +190,7 @@ export class FoodItemService {
         }
       }
     ).pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         let payload: RemovalPayload = {error: result.errors.join(","), success: 0, id: -1};
         return payload;
@@ -193,6 +203,10 @@ export class FoodItemService {
     }));
   }
 
+  /**
+   * Get AI suggestions and the UUID filename for a given Base64 encoded image
+   * @param image Base64 Encoded image
+   */
   getSuggestions(image: string | undefined): Observable<SuggestionPayload> {
     return this.apollo.mutate<GetSuggestions_Mutation>(
       {
@@ -203,6 +217,7 @@ export class FoodItemService {
           }
       }
     ).pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         let payload: SuggestionPayload = {error: result.errors.join(",")};
         return payload;

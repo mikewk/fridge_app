@@ -12,7 +12,9 @@ import {LocalStorageService} from "../_services/local-storage.service";
 import {ItemDialogService} from "../_services/item-dialog.service";
 import {FoodItem, Household, QL_Storage} from "../graphql.types";
 
-
+/**
+ * Implements the bulk of the viewing and editing of items in a household's storages
+ */
 @Component({
   selector: 'app-storage-details',
   templateUrl: './dashboard.component.html',
@@ -35,18 +37,29 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //This is the old methodology for access, but it might be handy in the future
     if (this.route.snapshot.paramMap.get("id")) {
       this.getHousehold(Number(this.route.snapshot.paramMap.get("id")));
     } else {
-      //This is safe because SelectedGuard won't let us in without a selectedHousehold
+      //This is the new safe way because DefaultGuard won't let us in without a selected Household
       this.getHousehold(this.localStorageService.getHousehold()!.id!)
     }
   }
 
+  /**
+   * Helper function for Angular to maintain the item list smoothly
+   * @param index
+   * @param item
+   */
   trackFoodItem(index: number, item: FoodItem) {
     return "FoodItem:" + item.id;
   }
 
+  /**
+   * Helper function for angular to maintain the storage selected list
+   * @param index
+   * @param item
+   */
   trackStorage(index: number, item: QL_Storage) {
     return "Storage:" + item.id;
   }
@@ -73,7 +86,8 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Get household identified by id
+   * Get ALL the household data identified by id
+   * (getHousehold) is a watchQuery that sends multiple returns as the query changes
    */
   getHousehold(id: number): void {
     this.householdService.getHousehold(id).subscribe(

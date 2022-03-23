@@ -96,6 +96,8 @@ export class HouseholdService {
 
   /**
    * Get the household identified by id
+   * Returns an observable as this is the object the vast majority of our changes act upon
+   * This observable is updated via RefetchQueries and Cache Updates
    */
   getHousehold(id: number): Observable<HouseholdsPayload> {
     return this.apollo.watchQuery<GetHousehold_Query>(
@@ -107,6 +109,7 @@ export class HouseholdService {
           }
       }
     ).valueChanges.pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(",")};
       } else if (!result.data?.getHousehold) {
@@ -117,6 +120,10 @@ export class HouseholdService {
     }));
   }
 
+  /**
+   * Add a household owned by the current user
+   * @param household
+   */
   addHousehold(household: Household): Observable<HouseholdsPayload> {
     return this.apollo.mutate<AddHousehold_Mutation>(
       {
@@ -124,6 +131,7 @@ export class HouseholdService {
         variables: household
       }
     ).pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(",")};
       } else if (!result.data?.createHousehold) {

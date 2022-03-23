@@ -8,6 +8,9 @@ import {FoodItem, Household} from "../graphql.types";
 import {FoodItemService} from "../_graphql-services/food-item.service";
 import {DialogHelperService} from "../_helpers/dialog-helper.service";
 
+/**
+ * This provide item dialogs to multiple components
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -19,12 +22,20 @@ export class ItemDialogService {
   }
 
 
+  /**
+   * Display the edit food item dialog for foodItem
+   * @param foodItem
+   */
   editItem(foodItem: FoodItem): Observable<any> {
     return this.dialogHelper.launchDialog(FoodItemAddComponent,
       (x: any) => this.foodItemService.editFoodItem(x),
       {foodItem: foodItem});
   }
 
+  /**
+   * Display an add food item dialog for the household defined in household.
+   * @param household
+   */
   addItem(household: Household): Observable<any> {
     return from(this.imageCompress.uploadFile().then(
       ({image, orientation}) => {

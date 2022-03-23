@@ -27,8 +27,9 @@ export class AppComponent {
     this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
 
     if (this.isLoggedIn) {
-      //If we're logged in, keep trade of email, name, and user id to be used in other places
+      //If we're logged in, get our user from localstorage
       this.user = this.localStorageService.getUser()!;
+      //And our selected household
       this.selectedHousehold = this.localStorageService.getHousehold();
     }
   }
@@ -41,6 +42,10 @@ export class AppComponent {
     window.location.reload();
   }
 
+  /**
+   * Show the add item dialog if the Add Item icon is clicked in the toolbar
+   * Can be called from anywhere as long as there is a selected household
+   */
   addItemToSelected() {
     if (this.selectedHousehold) {
       this.addFoodItemHandler.addItem(this.selectedHousehold).subscribe(
@@ -61,6 +66,10 @@ export class AppComponent {
     }
   }
 
+  /**
+   * Change the selected household to the household picked in the menu
+   * @param household
+   */
   changeSelected(household: Household) {
     this.localStorageService.saveHousehold(household);
     this.selectedHousehold = household;

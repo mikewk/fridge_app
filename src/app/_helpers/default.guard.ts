@@ -3,6 +3,9 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTre
 import {Observable} from 'rxjs';
 import {LocalStorageService} from "../_services/local-storage.service";
 
+/**
+ * This guard checks to see if we have a household selected to view
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -14,10 +17,14 @@ export class DefaultGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+
+    //Get household from local storage
     const household = this.localStorageService.getHousehold();
+    //If it exists, return true
     if (household) {
       return true;
     } else {
+      //Otherwise, go to the welcome page
       this.router.navigate(["welcome"]);
       return false;
     }

@@ -34,6 +34,7 @@ export class FoodItemAddComponent implements OnInit {
               private foodItemService: FoodItemService,
               private snackBar: MatSnackBar,
               private matDialogRef: MatDialogRef<FoodItemAddComponent>) {
+    //Set the household
     this.household = data.household;
     if (data.foodItem) {
       //Make a copy of the food item
@@ -140,6 +141,9 @@ export class FoodItemAddComponent implements OnInit {
     }
   }
 
+  /**
+   * Try to add the item, making sure we have the image
+   */
   tryToAddItem() {
     if (this.suggestion) {
       this.foodItem.filename = this.suggestion.filename;

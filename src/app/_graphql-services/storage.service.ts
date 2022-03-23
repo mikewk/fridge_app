@@ -77,6 +77,7 @@ export class StorageService {
           type: storage.type
         }
     }).pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(",")};
       } else if (!result.data?.addStorageToHousehold) {
@@ -100,6 +101,7 @@ export class StorageService {
           }
       }
     ).valueChanges.pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(",")};
       } else if (!result.data?.getStorage) {
@@ -123,6 +125,7 @@ export class StorageService {
           }
       }
     ).pipe(map((result) => {
+      //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), success:0, id:-1};
       } else if (!result.data?.removeStorage) {

@@ -7,6 +7,10 @@ import {ItemDialogService} from "../../_services/item-dialog.service";
 import {FoodItemService} from "../../_graphql-services/food-item.service";
 import {FoodItem} from "../../graphql.types";
 
+/**
+ * Displays all the information about a food item
+ * Also contains the sidebar for exposing edit and delete buttons
+ */
 @Component({
   selector: 'food-item-card',
   templateUrl: './food-item-card.component.html',
@@ -24,6 +28,10 @@ export class FoodItemCardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Open the edit dialog for foodItem using the ItemDialogService
+   * @param foodItem
+   */
   openEditDialog(foodItem: FoodItem) {
     this.itemDialogService.editItem(foodItem).subscribe({
       next: data => {
@@ -42,6 +50,10 @@ export class FoodItemCardComponent implements OnInit {
     });
   }
 
+  /**
+   * Use the default confirmation dialog on delete
+   * @param foodItem
+   */
   openDeleteDialog(foodItem: FoodItem) {
     if (confirm("Are you sure?")) {
       this.foodItemService.removeFoodItem(foodItem).subscribe(
@@ -59,6 +71,4 @@ export class FoodItemCardComponent implements OnInit {
       );
     }
   }
-
-
 }

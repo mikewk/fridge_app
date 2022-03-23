@@ -9,6 +9,9 @@ import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdService} from "../../_graphql-services/household.service";
 import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add-household.component";
 
+/**
+ * Landing page for profile management
+ */
 @Component({
   selector: 'app-profile-landing',
   templateUrl: './profile-landing.component.html',
@@ -27,6 +30,9 @@ export class ProfileLandingComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Show the change default dialog and handle the result
+   */
   changeDefault() {
     this.dialogHelper.launchDialog(ProfileChangeDefaultComponent,
       (x: any) => this.userService.changeDefault(x)).subscribe({
@@ -50,6 +56,9 @@ export class ProfileLandingComponent implements OnInit {
     });
   }
 
+  /**
+   * Add a new household with the current user as the owner
+   */
   addHousehold() {
     this.dialogHelper.launchDialog(ProfileAddHouseholdComponent,
                                   (x: any) => this.householdService.addHousehold(x)).subscribe({
