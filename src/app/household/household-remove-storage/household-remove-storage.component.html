@@ -1,0 +1,17 @@
+<form #myForm="ngForm">
+  <h1 mat-dialog-title>
+    Remove Storage from {{household.name}}
+  </h1>
+  <div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Storage</mat-label>
+    <mat-select [(ngModel)]="selectedStorage" name="selectedStorage">
+      <mat-option *ngFor="let storage of household.storages" [value]="storage">{{storage.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [disabled]=myForm.invalid [mat-dialog-close]="selectedStorage" mat-button>Remove Storage</button>
+  </div>
+</form>
