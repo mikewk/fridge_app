@@ -17,7 +17,8 @@ const LoginGQL = gql`
         defaultHousehold {
           id,
           name,
-          location
+          location,
+          owner {id, name},
           storages {
             id, name, foodItems {id}
           }

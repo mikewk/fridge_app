@@ -132,4 +132,7 @@ export type ChangeDefaultHousehold_Mutation = {
   changeDefaultHousehold: UsersPayload
 }
 
+export type RemoveStorage_Mutation = {
+  removeStorage: RemovalPayload
+}
 

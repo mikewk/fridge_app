@@ -1,0 +1,19 @@
+<form #myForm="ngForm">
+  <h1 mat-dialog-title>
+    Add Storage to {{household.name}}
+  </h1>
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input [(ngModel)]="storage.name" matInput name="name" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Type</mat-label>
+      <input [(ngModel)]="storage.type" matInput name="location" required>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [disabled]=myForm.invalid [mat-dialog-close]="storage" mat-button>Add Storage</button>
+  </div>
+</form>

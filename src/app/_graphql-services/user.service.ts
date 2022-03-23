@@ -10,13 +10,25 @@ const ChangeDefaultHousehold_GQL = gql`
       error,
       users {
         id,
+        name,
         defaultHousehold {
           id,
           name,
-          location
+          location,
+          owner {id, name},
           storages {
             id, name, foodItems {id}
           }
+        },
+        memberHouseholds {
+          id,
+          name,
+          location
+        },
+        ownedHouseholds {
+          id,
+          name,
+          location
         }
       }
     }

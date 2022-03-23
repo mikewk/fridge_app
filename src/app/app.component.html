@@ -32,7 +32,7 @@
           <button *ngIf="this.user!.memberHouseholds!.length>1" [matMenuTriggerFor]="householdMenu" mat-menu-item>
             Change Household
           </button>
-          <button mat-menu-item routerLink="manage">Manage Households</button>
+          <button *ngIf="userType=='owner'" mat-menu-item routerLink="manage">Manage Households</button>
           <button (click)="logout()" mat-menu-item>Log Out</button>
         </mat-menu>
 

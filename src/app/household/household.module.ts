@@ -11,6 +11,9 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {HouseholdDetailsComponent} from "./household-details/household-details.component";
 import {HouseholdListComponent} from "./household-list/household-list.component";
 import {HouseholdManagementComponent} from './household-management/household-management.component';
+import {HouseholdAddStorageComponent} from "./household-add-storage/household-add-storage.component";
+import {MatButtonModule} from "@angular/material/button";
+import { HouseholdRemoveStorageComponent } from './household-remove-storage/household-remove-storage.component';
 
 export {HouseholdManagementComponent}
 export {HouseholdDetailsComponent}
@@ -22,6 +25,8 @@ export {HouseholdListComponent}
     HouseholdDetailsComponent,
     HouseholdListComponent,
     HouseholdManagementComponent,
+    HouseholdAddStorageComponent,
+    HouseholdRemoveStorageComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +35,8 @@ export {HouseholdListComponent}
     FormsModule,
     MatDialogModule,
     MatListModule,
-    MatSelectModule
+    MatSelectModule,
+    MatButtonModule
   ],
   exports:
     [

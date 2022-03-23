@@ -15,6 +15,7 @@ export class AppComponent {
   showModeratorBoard = false;
   user?: User;
   selectedHousehold?: Household;
+  userType: string =  "";
 
   constructor(private localStorageService: LocalStorageService,
               private addFoodItemHandler: ItemDialogService,
@@ -23,6 +24,7 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.localStorageService.getToken();
+    this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
 
     if (this.isLoggedIn) {
       //If we're logged in, keep trade of email, name, and user id to be used in other places

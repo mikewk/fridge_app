@@ -17,8 +17,8 @@ export const GetHousehold = gql`
       households
       {
         id, name, location,
-        owner {name},
-        users {name},
+        owner {name, id},
+        users {name, id},
         storages
         {id, name, type, foodItems {
           id, name, filename, tags, storage {
@@ -37,10 +37,10 @@ export const GetMemberHousehold = gql`
     {
       error, households {
       id, name, location, owner {
-        name
+        id, name
       },
       users {
-        name
+        id, name
       },
       storages {
         name, type, foodItems {

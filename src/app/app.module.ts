@@ -27,7 +27,6 @@ import {RegisterComponent} from './register/register.component';
 import {HomeComponent} from './home/home.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {WelcomeComponent} from './welcome/welcome.component';
-import {StorageModule} from "./storage/storage.module";
 import {HouseholdModule} from "./household/household.module";
 
 
@@ -47,7 +46,6 @@ import {HouseholdModule} from "./household/household.module";
     FormsModule,
     HttpClientModule,
     GraphQLModule,
-    StorageModule,
     HouseholdModule,
     FoodItemModule,
     BrowserAnimationsModule,

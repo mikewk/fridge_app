@@ -1,19 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {StorageAddComponent} from './storage-add.component';
+import {HouseholdAddStorageComponent} from './household-add-storage.component';
 
 describe('StorageAddComponent', () => {
-  let component: StorageAddComponent;
-  let fixture: ComponentFixture<StorageAddComponent>;
+  let component: HouseholdAddStorageComponent;
+  let fixture: ComponentFixture<HouseholdAddStorageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [StorageAddComponent]
+      declarations: [HouseholdAddStorageComponent]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StorageAddComponent);
+    fixture = TestBed.createComponent(HouseholdAddStorageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
