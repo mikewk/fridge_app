@@ -45,6 +45,20 @@ export type Suggestion = {
   tags: string[]
 }
 
+export type Invite = {
+  id: string
+  householdName: string
+  message: string
+  status: number
+  inviteeName: string
+  inviterName: string
+}
+
+export type InvitesPayload = {
+  invites?: [Invite]
+  error: string
+}
+
 export type AuthPayload = {
   token: string
   error: string
@@ -82,12 +96,20 @@ export type SuggestionPayload = {
   error: string
 }
 
+export type GetInvites_Query = {
+  getInvites: InvitesPayload
+}
+
 export type GetStorage_Query = {
   getStorage: StoragesPayload
 }
 
 export type GetHousehold_Query = {
   getHousehold: HouseholdsPayload
+}
+
+export type GetInvite_Query = {
+  getInvite: InvitesPayload
 }
 
 export type GetMemberHouseholds_Query =
@@ -134,5 +156,21 @@ export type ChangeDefaultHousehold_Mutation = {
 
 export type RemoveStorage_Mutation = {
   removeStorage: RemovalPayload
+}
+
+export type InviteUserToHousehold_Mutation = {
+  inviteUserToHousehold: InvitesPayload
+}
+
+export type DeleteInvite_Mutation = {
+  deleteInvite: RemovalPayload
+}
+
+export type RejectHouseholdInvite_Mutation = {
+  rejectHouseholdInvite: RemovalPayload
+}
+
+export type AcceptHouseholdInvite_Mutation = {
+  acceptHouseholdInvite: HouseholdsPayload
 }
 

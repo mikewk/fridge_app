@@ -33,6 +33,7 @@ export class DialogHelperService {
     //Return the Observable of the dialog closing and the result going through the callback
     return dialogRef.afterClosed().pipe(mergeMap(
       (result) => {
+        console.log(result);
         //If we have a result, make the add food item call
         if (result) {
           return modelCallback(result);

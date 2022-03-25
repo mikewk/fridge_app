@@ -1,0 +1,34 @@
+<button mat-raised-button (click)="createInvite()">Create Invite</button>
+<table *ngIf="invites?.length" mat-table [dataSource]="invites!" >
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let invite">{{status[invite.status]}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="invitee">
+    <th mat-header-cell *matHeaderCellDef>Invitee Name</th>
+    <td mat-cell *matCellDef="let invite">{{invite.inviteeName}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="get_link">
+    <th mat-header-cell *matHeaderCellDef>Invite Link</th>
+    <td mat-cell *matCellDef="let invite"><button *ngIf="invite.status==0" (click)="onCopy(invite)" mat-flat-button>Get Link</button></td>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef>Delete/Rescind</th>
+    <td mat-cell *matCellDef="let invite"><button (click)="confirmDelete(invite)" mat-flat-button><span *ngIf="invite.status!=0">Delete</span><span *ngIf="invite.status==0" >Rescind</span></button></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+
+<mat-card>
+<p class="mat-body1">Here you can create invitation links to your household.  Some details on how links work: </p>
+<mat-list dense>
+  <mat-list-item *ngFor="let info of information">{{info}}</mat-list-item>
+</mat-list>
+</mat-card>
+

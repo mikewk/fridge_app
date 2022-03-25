@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  image_base_url: "https://d33stfk6gvmz1c.cloudfront.net/"
+  image_base_url: "https://d33stfk6gvmz1c.cloudfront.net/",
+  invite_base_url: "http://localhost:4200/"
 };
 
 /*

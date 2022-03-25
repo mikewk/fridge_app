@@ -1,0 +1,89 @@
+<div *ngIf="invite&&!accepted&&!rejected">
+  <mat-card *ngIf="invite.status==0">
+    <mat-card-title>
+      Invite to {{invite.householdName}}
+    </mat-card-title>
+    <mat-card-content>
+      <p>You have been invited to join the household "{{invite.householdName}}" by {{invite.inviterName}}.</p>
+      <p>If you reject the invite, the household owner will be notified that it has been rejected, but not by whom.</p>
+      <p>If you accept the invite, the other members of the household
+      <span class="bold">will be able to see.</span>
+      <mat-list>
+        <mat-list-item *ngFor="let item of canSee">{{item}}</mat-list-item>
+      </mat-list>
+      </p>
+      <p>Other members of this household <span class="bold"> will NOT be able to see.</span>
+      <mat-list>
+        <mat-list-item *ngFor="let item of canNotSee">{{item}}</mat-list-item>
+      </mat-list>
+      </p>
+      <p>Use the buttons below to Accept or Reject this invitation.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" (click)="accept()">Accept</button>
+      <button mat-raised-button color="warn" (click)="reject()">Reject</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card *ngIf="invite.status==1||invite.status==2">
+    <mat-card-title>
+      Invite to {{invite.householdName}}
+    </mat-card-title>
+    <mat-card-content>
+      We're sorry, but this invitation link has already been used.
+      Please ask the household owner to send you another invite link.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="invite.status==3">
+    <mat-card-title>
+      Invite to {{invite.householdName}}
+    </mat-card-title>
+    <mat-card-content>
+      We're sorry, but this invitation link has been cancelled by the owner.
+      Please ask the household owner to send you another invite link.
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="error">
+  <mat-card>
+    <mat-card-title color="warn">
+      Invitation Error
+    </mat-card-title>
+    <mat-card-content>
+      We're sorry, but we couldn't retrieve the invite from our systems.
+      Please ask the household owner to send you another invite link.
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="rejected">
+  <mat-card>
+    <mat-card-title color="warn">
+      Invitation Rejected
+    </mat-card-title>
+    <mat-card-content>
+      <p>
+      The invite has been rejected.  If you change your mind, you will need to contact
+      the household owner for a new invite link.
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="accepted">
+    <mat-card>
+    <mat-card-title color="warn">
+      Invitation Accepted
+    </mat-card-title>
+    <mat-card-content>
+      <p>
+      The invite has been successfully accepted.  You can now access the household:
+        <span class="bold">{{invite!.householdName}}.</span>
+      </p>
+      <p>To switch to that household now, <button class="btn btn-link p-0" (click)="changeHousehold()">click here.</button>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

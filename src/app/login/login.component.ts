@@ -61,16 +61,17 @@ export class LoginComponent implements OnInit {
 
     //If there was a returnURL go there
     if (this.returnUrl) {
-      this.router.navigate([this.returnUrl]);
+      this.router.navigate([this.returnUrl]).then(this.reloadPage);
     } else {
       //Otherwise,check if we have a default household, go there if so
       if (this.localStorage.getHousehold()) {
-        this.router.navigate(["/dashboard"]);
+        this.router.navigate(["/dashboard"]).then(this.reloadPage);
       } else {
         //Otherwise go to the welcome page
-        this.router.navigate(["/welcome"]);
+        this.router.navigate(["/welcome"]).then(this.reloadPage);
       }
     }
+
   }
 
   /**
@@ -94,7 +95,6 @@ export class LoginComponent implements OnInit {
           this.isLoginFailed = false;
           this.isLoggedIn = true;
           this.determineRoute();
-          this.reloadPage();
         }
       },
       //This will only happen if there's a much deeper error with the API call

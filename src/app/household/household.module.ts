@@ -14,11 +14,16 @@ import {HouseholdManagementComponent} from './household-management/household-man
 import {HouseholdAddStorageComponent} from "./household-add-storage/household-add-storage.component";
 import {MatButtonModule} from "@angular/material/button";
 import { HouseholdRemoveStorageComponent } from './household-remove-storage/household-remove-storage.component';
+import { HouseholdInviteManagerComponent } from './household-invite-manager/household-invite-manager.component';
+import {MatTableModule} from "@angular/material/table";
+import { HouseholdAddInviteComponent } from './household-add-invite/household-add-invite.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatCardModule} from "@angular/material/card";
 
 export {HouseholdManagementComponent}
 export {HouseholdDetailsComponent}
 export {HouseholdListComponent}
-
+export {HouseholdInviteManagerComponent}
 
 @NgModule({
   declarations: [
@@ -26,7 +31,9 @@ export {HouseholdListComponent}
     HouseholdListComponent,
     HouseholdManagementComponent,
     HouseholdAddStorageComponent,
-    HouseholdRemoveStorageComponent
+    HouseholdRemoveStorageComponent,
+    HouseholdInviteManagerComponent,
+    HouseholdAddInviteComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +43,10 @@ export {HouseholdListComponent}
     MatDialogModule,
     MatListModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatCardModule
   ],
   exports:
     [

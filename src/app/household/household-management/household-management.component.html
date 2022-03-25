@@ -1,6 +1,5 @@
 <mat-action-list>
-  <button (click)="inviteUser()" mat-list-item>Invite user to household</button>
-  <button (click)="removeUser()" mat-list-item>Remove user from household</button>
+  <button mat-list-item routerLink="invite">Manage Invitations</button>
   <button (click)="addStorage()" mat-list-item>Add Storage</button>
   <button *ngIf="household?.storages?.length != 0" (click)="editStorage()" mat-list-item>Edit Storage</button>
   <button *ngIf="household?.storages?.length != 0" (click)="removeStorage()" mat-list-item>Remove Storage</button>

@@ -9,9 +9,12 @@ import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {WelcomeComponent} from "./welcome/welcome.component";
-import {HouseholdManagementComponent} from "./household/household.module";
+import {HouseholdInviteManagerComponent, HouseholdManagementComponent} from "./household/household.module";
 import {ProfileLandingComponent} from "./profile/profile.module";
+import {InviteComponent} from "./invite/invite.component";
 import {OwnerGuard} from "./_helpers/owner.guard";
+
+
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
@@ -21,7 +24,9 @@ const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard, DefaultGuard]},
   {path: 'welcome', component: WelcomeComponent, canActivate: [AuthGuard]},
   {path: 'manage', component: HouseholdManagementComponent, canActivate: [AuthGuard, OwnerGuard]},
+  {path: 'manage/invite', component: HouseholdInviteManagerComponent, canActivate: [AuthGuard, OwnerGuard]},
   {path: 'profile', component: ProfileLandingComponent, canActivate: [AuthGuard]},
+  {path: 'invite/:id', component: InviteComponent, canActivate: [AuthGuard]},
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'}
 ];
 

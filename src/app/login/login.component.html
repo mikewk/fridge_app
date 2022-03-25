@@ -6,12 +6,12 @@
           *ngIf="!isLoggedIn" name="form" novalidate>
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
-        <input [(ngModel)]="form.username" [formControl]="emailForm" matInput name="username" required type="text"/>
-        <mat-error *ngIf="emailForm.hasError('email')">Must be a valid email</mat-error>
+        <input [(ngModel)]="form.username"  #email="ngModel" matInput name="username" required email type="text"/>
+        <mat-error *ngIf="email.invalid">Must be a valid email</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
-        <input [(ngModel)]="form.password" [formControl]="passwordForm" matInput name="password" required
+        <input [(ngModel)]="form.password" matInput name="password" required
                type="password"/>
       </mat-form-field>
 

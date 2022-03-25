@@ -1,0 +1,43 @@
+table{
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+th.mat-header-cell
+{
+  text-align: center;
+}
+
+.mat-column-status
+{
+  width: 10%;
+}
+
+.mat-column-invitee
+{
+  width: 40%;
+}
+.mat-column-get_link
+{
+  width: 20%;
+}
+.mat-column-delete
+{
+  width: 30%;
+}
+
+mat-card
+{
+  width: 80%;
+  margin-left:10%;
+  margin-right:10%;
+}
+
+button
+{
+  margin-top:10px;
+  margin-left:5%;
+}

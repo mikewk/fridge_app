@@ -28,6 +28,8 @@ import {HomeComponent} from './home/home.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {WelcomeComponent} from './welcome/welcome.component';
 import {HouseholdModule} from "./household/household.module";
+import { InviteComponent } from './invite/invite.component';
+import {MatListModule} from "@angular/material/list";
 
 
 @NgModule({
@@ -38,30 +40,32 @@ import {HouseholdModule} from "./household/household.module";
     HomeComponent,
     MustMatchDirective,
     WelcomeComponent,
-    DashboardComponent
+    DashboardComponent,
+    InviteComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    GraphQLModule,
-    HouseholdModule,
-    FoodItemModule,
-    BrowserAnimationsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: () => localStorage.getItem('access_token')
-      }
-    }),
-    MatToolbarModule,
-    MatSnackBarModule,
-    MatMenuModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule,
+        GraphQLModule,
+        HouseholdModule,
+        FoodItemModule,
+        BrowserAnimationsModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: () => localStorage.getItem('access_token')
+            }
+        }),
+        MatToolbarModule,
+        MatSnackBarModule,
+        MatMenuModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatListModule
+    ],
   providers: [authInterceptorProviders,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}],
   exports: [

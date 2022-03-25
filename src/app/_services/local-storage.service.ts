@@ -23,7 +23,7 @@ export class LocalStorageService {
 
 
   signOut(): void {
-    window.sessionStorage.clear();
+    window.localStorage.clear();
   }
 
   /**
@@ -52,7 +52,7 @@ export class LocalStorageService {
    * Get the stored 'selected' household
    */
   public getHousehold(): Household | undefined {
-    const household = window.sessionStorage.getItem(HOUSEHOLD_KEY);
+    const household = window.localStorage.getItem(HOUSEHOLD_KEY);
     if (household) {
       return JSON.parse(household);
     }
@@ -63,8 +63,8 @@ export class LocalStorageService {
    * Save a household as selected
    */
   public saveHousehold(household: Household) {
-    window.sessionStorage.removeItem(HOUSEHOLD_KEY);
-    window.sessionStorage.setItem(HOUSEHOLD_KEY, JSON.stringify(household));
+    window.localStorage.removeItem(HOUSEHOLD_KEY);
+    window.localStorage.setItem(HOUSEHOLD_KEY, JSON.stringify(household));
 
     //update usertype
     this.userType.next(this.getUserType());
@@ -76,15 +76,15 @@ export class LocalStorageService {
    * @param token
    */
   public saveToken(token: string): void {
-    window.sessionStorage.removeItem(TOKEN_KEY);
-    window.sessionStorage.setItem(TOKEN_KEY, token);
+    window.localStorage.removeItem(TOKEN_KEY);
+    window.localStorage.setItem(TOKEN_KEY, token);
   }
 
   /**
    * Get the JWT token
    */
   public getToken(): string | null {
-    return window.sessionStorage.getItem(TOKEN_KEY);
+    return window.localStorage.getItem(TOKEN_KEY);
   }
 
   /**
@@ -92,8 +92,8 @@ export class LocalStorageService {
    * @param user
    */
   public saveUser(user: User): void {
-    window.sessionStorage.removeItem(USER_KEY);
-    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    window.localStorage.removeItem(USER_KEY);
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
     //update usertype
     this.userType.next(this.getUserType());
   }
@@ -102,7 +102,7 @@ export class LocalStorageService {
    * Get the current user
    */
   public getUser(): User | null {
-    const userString = window.sessionStorage.getItem(USER_KEY);
+    const userString = window.localStorage.getItem(USER_KEY);
     if (userString) {
       return JSON.parse(userString);
     } else {

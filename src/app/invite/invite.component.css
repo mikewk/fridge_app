@@ -1,0 +1,33 @@
+mat-card
+{
+  width: 60%;
+  margin-left:20%;
+  margin-right:20%;
+  margin-top: 10px;
+}
+mat-card-title
+{
+  text-align: center;
+}
+
+mat-card-content
+{
+  margin-top: 20px;
+  font-size: 12pt;
+}
+
+mat-list-item
+{
+  height: 20px !important;
+  font-size: 10pt !important;
+}
+
+.bold
+{
+  font-weight: bold;
+}
+
+.btn.focus, .btn:focus {
+    box-shadow: unset;
+}
+

@@ -3,6 +3,7 @@ import {LocalStorageService} from './_services/local-storage.service';
 import {Household, User} from "./graphql.types";
 import {ItemDialogService} from "./_services/item-dialog.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {ActivatedRoute, Route, Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,9 @@ export class AppComponent {
 
   constructor(private localStorageService: LocalStorageService,
               private addFoodItemHandler: ItemDialogService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -74,5 +77,15 @@ export class AppComponent {
     this.localStorageService.saveHousehold(household);
     this.selectedHousehold = household;
     window.location.reload();
+  }
+
+  signup() {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    this.router.navigate(["/register"], {queryParams: {returnUrl: returnUrl}});
+  }
+
+  login() {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    this.router.navigate(["/login"], {queryParams: {returnUrl: returnUrl}});
   }
 }
