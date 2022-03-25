@@ -8,7 +8,7 @@ By default will connect to localhost:5000.
 
 The "official" API will be hosted at https://fridge.michealkok.com/api/graphql.
 
-API code can be found at https://github.com/mikewk/fridge_app
+API code can be found at https://github.com/mikewk/fridge_api
 
 ## Angular Info
 
