@@ -19,6 +19,7 @@ import {MatTableModule} from "@angular/material/table";
 import { HouseholdAddInviteComponent } from './household-add-invite/household-add-invite.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatCardModule} from "@angular/material/card";
+import {HouseholdRoutingModule} from "./household-routing.module";
 
 export {HouseholdManagementComponent}
 export {HouseholdDetailsComponent}
@@ -37,7 +38,7 @@ export {HouseholdInviteManagerComponent}
   ],
   imports: [
     CommonModule,
-    RouterModule,
+    HouseholdRoutingModule,
     MatInputModule,
     FormsModule,
     MatDialogModule,

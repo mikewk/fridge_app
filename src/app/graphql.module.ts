@@ -4,10 +4,11 @@ import {HttpClientModule} from '@angular/common/http';
 import {APOLLO_OPTIONS, ApolloModule} from 'apollo-angular';
 import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
 import {HttpLink} from 'apollo-angular/http';
+import {environment} from "../environments/environment";
 
 //Replace this URI with your own endpoint if you want to run your own API server somewhere else
 //const uri = 'https://fridge.michealkok.com/api/graphql';
-const uri = 'http://192.168.50.130:5000/graphql';
+const uri = environment.graphql_uri;
 
 function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   return {
