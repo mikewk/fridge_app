@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../_graphql-services/auth.service';
 import {LocalStorageService} from "../_services/local-storage.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 
 /**
@@ -21,11 +22,14 @@ export class RegisterComponent implements OnInit {
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
+  returnUrl?: string;
 
-  constructor(private authService: AuthService, private tokenStorage: LocalStorageService) {
+  constructor(private authService: AuthService, private tokenStorage: LocalStorageService,
+              private router: Router, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
   }
 
   onSubmit(): void {
@@ -42,11 +46,18 @@ export class RegisterComponent implements OnInit {
         } else {
           //If successful, save our token to keep us logged in
           this.tokenStorage.saveToken(data.token)
+          this.tokenStorage.saveUser(data.user!);
           this.isSuccessful = true;
           this.isSignUpFailed = false;
-        }
-
-      },
+           //If there was a returnURL go there
+          if (this.returnUrl) {
+            this.router.navigate([this.returnUrl]).then(window.location.reload);
+          } else {
+              //Otherwise, go to the welcome page
+              this.router.navigate(["/welcome"]).then(window.location.reload);
+            }
+          }
+        },
       //This is a much deeper error in the API call
       error: err => {
         console.log(err);

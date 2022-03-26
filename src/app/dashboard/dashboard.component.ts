@@ -11,6 +11,7 @@ import {HouseholdService} from "../_graphql-services/household.service";
 import {LocalStorageService} from "../_services/local-storage.service";
 import {ItemDialogService} from "../_services/item-dialog.service";
 import {FoodItem, Household, QL_Storage} from "../graphql.types";
+import {NEVER, switchMap} from "rxjs";
 
 /**
  * Implements the bulk of the viewing and editing of items in a household's storages
@@ -37,14 +38,48 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //This is the old methodology for access, but it might be handy in the future
+    /*This is the old methodology for access, but it might be handy in the future
     if (this.route.snapshot.paramMap.get("id")) {
       this.getHousehold(Number(this.route.snapshot.paramMap.get("id")));
-    } else {
-      //This is the new safe way because DefaultGuard won't let us in without a selected Household
-      this.getHousehold(this.localStorageService.getHousehold()!.id!)
+    } else {*/
+
+    //This is the new safe way because DefaultGuard won't let us in without a selected Household
+    this.localStorageService.household.pipe(switchMap(household=>{
+          if( household )
+          {
+            return this.householdService.getHousehold(household.id!);
+          }
+          else
+          {
+            return NEVER;
+          }
+        })
+      ).subscribe({
+        next: data => {
+          if (data.households) {
+            this.household = data.households[0];
+            let selectedStorages = this.localStorageService.getSelectedStorages();
+            if (!selectedStorages) {
+              this.selectedStorages = [...this.household.storages!];
+            } else {
+              this.selectedStorages = this.household.storages!.filter(
+                (x: QL_Storage) => {
+                  return selectedStorages!.reduce(
+                    (a: boolean, b: QL_Storage) => {
+                      return a || b.id == x.id
+                    }, false);
+                });
+              }
+            } else {
+              console.log(data);
+            }
+          },
+          error: err => {
+            console.log(err);
+          }
+        }
+      );
     }
-  }
 
   /**
    * Helper function for Angular to maintain the item list smoothly
@@ -90,30 +125,10 @@ export class DashboardComponent implements OnInit {
    * (getHousehold) is a watchQuery that sends multiple returns as the query changes
    */
   getHousehold(id: number): void {
-    this.householdService.getHousehold(id).subscribe(
-      {
-        next: data => {
-          if (data.households) {
-            this.household = data.households[0];
-            if (!this.selectedStorages) {
-              this.selectedStorages = [...this.household.storages!];
-            } else {
-              this.selectedStorages = this.household.storages!.filter(
-                (x: QL_Storage) => {
-                  return this.selectedStorages!.reduce(
-                    (a: boolean, b: QL_Storage) => {
-                      return a || b.id == x.id
-                    }, false);
-                });
-            }
-          } else {
-            console.log(data);
-          }
-        },
-        error: err => {
-          console.log(err);
-        }
-      }
-    );
+
+  }
+
+  updateSelectedStorages() {
+    this.localStorageService.setSelectedStorages(this.selectedStorages);
   }
 }

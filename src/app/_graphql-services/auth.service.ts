@@ -27,6 +27,9 @@ const LoginGQL = gql`
           id,
           name,
           location
+          storages {
+            id, name, type
+          }
         },
         ownedHouseholds {
           id,
@@ -44,6 +47,33 @@ const RegisterGQL = gql`
     {
       error,
       token
+      user
+      {
+        id,
+        name,
+        defaultHousehold {
+          id,
+          name,
+          location,
+          owner {id, name},
+          storages {
+            id, name, foodItems {id}
+          }
+        },
+        memberHouseholds {
+          id,
+          name,
+          location
+          storages {
+            id, name, type
+          }
+        },
+        ownedHouseholds {
+          id,
+          name,
+          location
+        }
+      }
     }
   }
 `;

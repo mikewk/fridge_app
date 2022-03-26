@@ -1,0 +1,18 @@
+.error{
+  background-color: darkred;
+  color: white;
+  margin-top: 10px;
+  width: 80%;
+  margin-lefT: 10%;
+}
+
+mat-card{
+  margin-top: 10px;
+  width: 80%;
+  margin-lefT: 10%;
+}
+
+.hname
+{
+  font-weight: bold;
+}

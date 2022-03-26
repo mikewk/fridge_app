@@ -28,12 +28,18 @@ export class AppComponent {
   ngOnInit(): void {
     this.isLoggedIn = !!this.localStorageService.getToken();
     this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
-
+    this.localStorageService.household.subscribe(x=>this.selectedHousehold=x);
     if (this.isLoggedIn) {
       //If we're logged in, get our user from localstorage
-      this.user = this.localStorageService.getUser()!;
-      //And our selected household
-      this.selectedHousehold = this.localStorageService.getHousehold();
+      this.user = this.localStorageService.getUser();
+      //If we don't have a user, this is very very bad...
+      if( !this.user )
+      {
+        //TODO: If have a token, we can probably get the user from GraphQL eventually
+        //For now, unscrew this by logging out
+        this.logout();
+      }
+
     }
   }
 
@@ -75,8 +81,6 @@ export class AppComponent {
    */
   changeSelected(household: Household) {
     this.localStorageService.saveHousehold(household);
-    this.selectedHousehold = household;
-    window.location.reload();
   }
 
   signup() {

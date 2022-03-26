@@ -43,7 +43,7 @@ export const GetMemberHousehold = gql`
         id, name
       },
       storages {
-        name, type, foodItems {
+        id, name, type, foodItems {
           name
         }
       }

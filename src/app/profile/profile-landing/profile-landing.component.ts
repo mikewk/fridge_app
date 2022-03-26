@@ -64,7 +64,7 @@ export class ProfileLandingComponent implements OnInit {
                                   (x: any) => this.householdService.addHousehold(x)).subscribe({
       next: data => {
         //If the API call was successful
-        if (data.household) {
+        if (data.households) {
           this.snackBar.open("Household Added Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {

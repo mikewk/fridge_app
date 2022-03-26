@@ -1,7 +1,7 @@
 <div id="app">
   <mat-toolbar class="navbar-expand" color="primary"><span>Fridge Tracker</span>
     <ul *ngIf="isLoggedIn" class="navbar-nav mr-auto">
-      <li *ngIf="this.selectedHousehold">
+      <li *ngIf="this.selectedHousehold&&this.selectedHousehold.storages?.length">
         <button (click)="addItemToSelected()" mat-icon-button>
           <mat-icon>add_a_photo</mat-icon>
         </button>

@@ -1,18 +1,30 @@
 <div *ngIf="household">
   <h1>{{household.name}} in {{household.location}}</h1>
+    <div *ngIf="household.storages?.length; else message">
   <mat-form-field appearance="fill">
     <mat-label>Show/Hide Storages</mat-label>
-    <mat-select [(ngModel)]="selectedStorages" multiple>
+    <mat-select [(ngModel)]="selectedStorages" multiple (selectionChange)="updateSelectedStorages()">
       <mat-option *ngFor="let storage of household.storages" [value]="storage">{{storage.name}}</mat-option>
     </mat-select>
   </mat-form-field>
 
-  <div *ngFor="let storage of selectedStorages trackBy: trackStorage">
-    <h3>{{storage.name}}</h3>
-    <food-item-card *ngFor="let foodItem of storage.foodItems trackBy: trackFoodItem"
-                    [foodItem]="foodItem"></food-item-card>
+
+    <div *ngFor="let storage of selectedStorages trackBy: trackStorage" >
+      <h3>{{storage.name}}</h3>
+      <food-item-card *ngFor="let foodItem of storage.foodItems trackBy: trackFoodItem"
+                      [foodItem]="foodItem"></food-item-card>
+    </div>
+    <p>
+      <button (click)="openAddDialog()">Add Item</button>
+    </p>
   </div>
-  <p>
-    <button (click)="openAddDialog()">Add Item</button>
-  </p>
+  <ng-template #message>
+    <mat-card>
+      <mat-card-content>
+        <p>This household currently has no storages, so items can not be added</p>
+        <p>If you are the owner of the household, you can add them using
+        the <b>Manage Household</b> menu.</p>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
 </div>

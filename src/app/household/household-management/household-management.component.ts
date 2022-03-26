@@ -9,6 +9,7 @@ import {DialogHelperService} from "../../_helpers/dialog-helper.service";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdRemoveStorageComponent} from "../household-remove-storage/household-remove-storage.component";
 import {Household} from "../../graphql.types";
+import {EMPTY, NEVER, Observable, switchMap} from "rxjs";
 
 /**
  * Displays household management menu and handles the callbacks from GraphQL API calls
@@ -21,6 +22,7 @@ import {Household} from "../../graphql.types";
 export class HouseholdManagementComponent implements OnInit {
 
   household?: Household;
+  notOwned: boolean = false;
 
   constructor(private dialog: MatDialog,
               private householdService: HouseholdService,
@@ -33,12 +35,25 @@ export class HouseholdManagementComponent implements OnInit {
   ngOnInit(): void {
     //Load in our household data
     //TODO: Figure out a way to ensure the household in localstorage IS our household and is updated by watchQuery
-    this.householdService.getHousehold(this.localStorage.getHousehold()!.id!).subscribe(
+    this.localStorage.household.pipe(switchMap(household=>
       {
-        next: data => {
+        if( household )
+          return this.householdService.getHousehold(household.id!);
+        else
+          return NEVER;
+      }
+    )).subscribe({
+      next: data => {
           //If the API call was successful
           if (data.households) {
-            this.household = data.households[0];
+            if( this.localStorage.getUserType() != "owner" ) {
+              this.notOwned = true;
+            }
+            else
+            {
+              this.notOwned = false;
+              this.household = data.households[0];
+            }
           } else {
             console.log(data);
           }
@@ -46,8 +61,7 @@ export class HouseholdManagementComponent implements OnInit {
         error: err => {
           console.log(err);
         }
-      }
-    );
+      });
   }
 
   /**
@@ -88,6 +102,10 @@ export class HouseholdManagementComponent implements OnInit {
       next: data => {
         //If the API call was successful
         if (data.storages) {
+          //update selected household storages
+          let selectedHousehold = this.localStorage.getHousehold()!;
+          selectedHousehold.storages?.push(data.storages[0]);
+          this.localStorage.saveHousehold(selectedHousehold);
           this.snackBar.open("Storage Added Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {
