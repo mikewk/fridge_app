@@ -27,6 +27,9 @@ const LoginGQL = gql`
           id,
           name,
           location
+          owner{
+            id, name
+          }
           storages {
             id, name, type
           }
@@ -63,7 +66,10 @@ const RegisterGQL = gql`
         memberHouseholds {
           id,
           name,
-          location
+          location,
+          owner {
+            id, name
+          },
           storages {
             id, name, type
           }
