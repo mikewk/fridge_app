@@ -14,6 +14,19 @@ function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   return {
     link: httpLink.create({uri}),
     cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+          fetchPolicy: 'cache-and-network',
+          errorPolicy: 'ignore',
+      },
+      query: {
+          fetchPolicy: 'network-only',
+          errorPolicy: 'all',
+      },
+      mutate: {
+          errorPolicy: 'all'
+      }
+    }
   };
 }
 

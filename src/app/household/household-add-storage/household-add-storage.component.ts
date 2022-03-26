@@ -15,13 +15,10 @@ import {Household, QL_Storage} from "../../graphql.types";
 export class HouseholdAddStorageComponent implements OnInit {
   name: string = "";
   type: string = "";
-  household: Household;
   storage: QL_Storage;
   submitted = false;
 
-  constructor(private route: ActivatedRoute,
-              private localStorage: LocalStorageService) {
-    this.household = this.localStorage.getHousehold()!;
+  constructor() {
     this.storage = {name: "", type: ""}
   }
 

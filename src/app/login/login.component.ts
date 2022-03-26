@@ -24,10 +24,6 @@ export class LoginComponent implements OnInit {
   email: string = '';
   returnUrl: string = '';
 
-  //Create the validators for email and password
-  emailForm = new FormControl('', [Validators.required, Validators.email])
-  passwordForm = new FormControl('', [Validators.required]);
-
   constructor(private authService: AuthService,
               private localStorage: LocalStorageService,
               private route: ActivatedRoute,
@@ -51,25 +47,13 @@ export class LoginComponent implements OnInit {
   }
 
   determineRoute(): void {
-    //Determine where to go once we're logged in (or if we're logged in already)
-    const user = this.localStorage.getUser();
-
-    //If the user has a default household, save it
-    if (!this.localStorage.getHousehold() && user?.defaultHousehold) {
-      this.localStorage.saveHousehold(user.defaultHousehold);
-    }
 
     //If there was a returnURL go there
     if (this.returnUrl) {
       this.router.navigate([this.returnUrl]).then(this.reloadPage);
     } else {
-      //Otherwise,check if we have a default household, go there if so
-      if (this.localStorage.getHousehold()) {
-        this.router.navigate(["/dashboard"]).then(this.reloadPage);
-      } else {
-        //Otherwise go to the welcome page
-        this.router.navigate(["/welcome"]).then(this.reloadPage);
-      }
+      //Otherwise, just go to the dashboard.  If there's no household to go to, then they'll bounce to welcome
+      this.router.navigate(["/dashboard"]).then(this.reloadPage);
     }
 
   }
@@ -92,6 +76,12 @@ export class LoginComponent implements OnInit {
           //If there's no error, then save the token, and get the user's email to show them they logged in successfully
           this.localStorage.saveToken(data.token);
           this.localStorage.saveUser(data.user!);
+          if( data.user?.defaultHousehold ) {
+            let userType = "member";
+            if( data.user.defaultHousehold.id == data.user.id)
+              userType = "owner";
+            this.localStorage.switchHousehold(data.user.defaultHousehold.id, userType)
+          }
           this.isLoginFailed = false;
           this.isLoggedIn = true;
           this.determineRoute();

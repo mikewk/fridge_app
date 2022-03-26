@@ -3,7 +3,9 @@ import {LocalStorageService} from './_services/local-storage.service';
 import {Household, User} from "./graphql.types";
 import {ItemDialogService} from "./_services/item-dialog.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {ActivatedRoute, Route, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {NEVER, switchMap} from "rxjs";
+import {HouseholdService} from "./_graphql-services/household.service";
 
 @Component({
   selector: 'app-root',
@@ -22,13 +24,26 @@ export class AppComponent {
               private addFoodItemHandler: ItemDialogService,
               private snackBar: MatSnackBar,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private householdService: HouseholdService) {
   }
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.localStorageService.getToken();
     this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
-    this.localStorageService.household.subscribe(x=>this.selectedHousehold=x);
+    this.localStorageService.selectedHouseholdId.pipe(switchMap(
+        (householdId:number | undefined)=>{
+          if( householdId )
+            return this.householdService.getHousehold(householdId);
+          else
+            return NEVER;
+        })).subscribe((data)=>
+            {
+              if( data.households )
+                this.selectedHousehold=data.households[0];
+              else
+                console.log(data);
+            });
     if (this.isLoggedIn) {
       //If we're logged in, get our user from localstorage
       this.user = this.localStorageService.getUser();
@@ -80,7 +95,10 @@ export class AppComponent {
    * @param household
    */
   changeSelected(household: Household) {
-    this.localStorageService.saveHousehold(household);
+    let userType = "member";
+    if( household.owner!.id == this.user!.id)
+      userType = "owner";
+    this.localStorageService.switchHousehold(household.id, userType);
   }
 
   signup() {

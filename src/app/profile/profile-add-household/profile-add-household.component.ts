@@ -11,7 +11,7 @@ import {Household} from "../../graphql.types";
   styleUrls: ['./profile-add-household.component.css']
 })
 export class ProfileAddHouseholdComponent implements OnInit {
-  household: Household = {name: "", location: ""};
+  household: Household = {name: "", location: "", id:-1};
 
   constructor() {
   }

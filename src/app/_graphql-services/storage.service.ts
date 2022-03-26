@@ -3,12 +3,11 @@ import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
 import {
   AddStorageToHousehold_Mutation,
-  GetStorage_Query,
+  GetStorage_Query, Household,
   QL_Storage,
   RemovalPayload, RemoveStorage_Mutation,
   StoragesPayload
 } from "../graphql.types";
-import {GetHousehold} from "./household.service"
 import {LocalStorageService} from "../_services/local-storage.service";
 
 //GraphQL Queries
@@ -60,22 +59,52 @@ export class StorageService {
   /**
    * Add a storage to the household identified by id
    */
-  addStorage(storage: QL_Storage): Observable<StoragesPayload> {
-    const id = this.localStorage.getHousehold()!.id;
+  addStorage(storage: QL_Storage, householdId: number): Observable<StoragesPayload> {
     return this.apollo.mutate<AddStorageToHousehold_Mutation>({
       mutation: AddStorageGQL,
-      refetchQueries: [
-        {
-          query: GetHousehold,
-          variables: {householdId: id}
-        }
-      ],
       variables:
         {
-          id: id,
+          id: householdId,
           name: storage.name,
           type: storage.type
+        },
+      update: (store, {data: payload}) => {
+        if (payload && payload.addStorageToHousehold.storages) {
+          //Write our change back to the cache
+          //Get our new storage
+          let newStorage = payload.addStorageToHousehold.storages[0];
+
+          //Get the current household
+          const data = store.readFragment<any>({
+            id: "Household:" + householdId,
+            fragment: gql`
+              fragment MyHousehold on Household
+              {
+                storages {
+                    id, name, type, foodItems {
+                        id, name, filename, tags, storage {
+                            id, name, type
+                        }
+                    }
+                }
+              }
+            `
+          })
+          //If we have a storages array, which we should even if it's empty
+          if (data.storages) {
+            //Make a new array of storages
+            const newStorages = [...data.storages, newStorage]
+            //Write our change back to the cache
+            store.writeFragment({
+              id: "Household:" + householdId, fragment: gql`
+                # noinspection GraphQLSchemaValidation
+                fragment MyHousehold on Household {
+                  storages
+                }`, data: {storages: newStorages}
+            });
+          }
         }
+      }
     }).pipe(map((result) => {
       //Standardizes error and payload return
       if (result.errors) {
@@ -114,15 +143,48 @@ export class StorageService {
    /**
    * Remove Storage
    */
-  removeStorage(storage: QL_Storage): Observable<RemovalPayload> {
+  removeStorage(storage: QL_Storage, household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveStorage_Mutation>(
       {
         mutation: RemoveStorageGQL,
-        refetchQueries: [GetHousehold],
-        variables:
-          {
-            storageId: storage.id
-          }
+        variables: {
+          storageId: storage.id
+        },
+         update: (store, {data: payload}) => {
+           if (payload && payload.removeStorage.success) {
+             //Write the removal back to the cache
+             //Get the current household
+             const data = store.readFragment<any>({
+               id: "Household:" + household.id,
+               fragment: gql`
+                 fragment MyHousehold on Household
+                 {
+                   storages {
+                     id, name, type, foodItems {
+                       id, name, filename, tags, storage {
+                         id, name, type
+                       }
+                     }
+                   }
+                 }
+               `
+             })
+             //If we have a storages array, which we should even if it's empty
+             if (data.storages) {
+               //Find the storage in the household
+               let index = data.storages.findIndex((item: { id: number | undefined; }) => item.id == storage.id);
+               let newStorages = [...data.storages];
+               newStorages.splice(index, 1);
+               store.writeFragment({
+                 id: "Household:" + household.id, fragment: gql`
+                   # noinspection GraphQLSchemaValidation
+                   fragment MyHousehold on Household {
+                     storages
+                   }`, data: {storages: newStorages}
+               });
+             }
+           }
+         }
       }
     ).pipe(map((result) => {
       //Standardizes error and payload return

@@ -5,7 +5,8 @@ import {BehaviorSubject} from "rxjs";
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'user-object';
-const HOUSEHOLD_KEY = 'selected-household'
+const USER_TYPE_KEY = 'user-type';
+const HOUSEHOLD_KEY = 'selected-household';
 const SELECTED_STORAGES_KEY = 'selected-storages';
 
 /**
@@ -17,8 +18,14 @@ const SELECTED_STORAGES_KEY = 'selected-storages';
 export class LocalStorageService {
 
   //This helps track the usertype and update it when the selected household changes.
-  public userType: BehaviorSubject<string> = new BehaviorSubject<string>(this.getUserType());
-  public household: BehaviorSubject<Household | undefined> = new BehaviorSubject<Household | undefined>(this.getHousehold());
+  public userType: BehaviorSubject<string> =
+    new BehaviorSubject<string>(this.getUserType());
+
+  public selectedHouseholdId: BehaviorSubject<number | undefined> =
+    new BehaviorSubject<number | undefined>(this.getHouseholdId());
+
+  public selectedStorages: BehaviorSubject<QL_Storage[] | undefined> =
+    new BehaviorSubject<QL_Storage[] | undefined>(this.getSelectedStorages());
 
   constructor(private jwtHelper: JwtHelperService) {
   }
@@ -32,60 +39,45 @@ export class LocalStorageService {
   /**
    * Returns the current usertype
    */
-  public getUserType(): string
+  private getUserType(): string
   {
-    //Get our user and household
-    const user = this.getUser();
-    const household = this.getHousehold();
-    //If the selected household ID is in OwnedHouseholds return owner
-    if(user?.ownedHouseholds.filter(x=>x.id==household?.id).length == 1) {
-      return "owner";
-      //Otherwise, if it's in member households, they're a member
-    } else if(user?.memberHouseholds.filter(x=>x.id==household?.id).length == 1) {
-      return "member";
-    }
-    else {
-      //This should never happen unless they have no households at all
-      return "";
-    }
+    return window.sessionStorage.getItem(USER_TYPE_KEY)??"";
   }
 
   /**
    * Get the stored 'selected' household
    */
-  public getHousehold(): Household | undefined {
-    const household = window.sessionStorage.getItem(HOUSEHOLD_KEY);
-    if (household) {
-      return JSON.parse(household);
+  public getHouseholdId(): number | undefined {
+    const householdId = window.sessionStorage.getItem(HOUSEHOLD_KEY);
+    if( householdId ) {
+      return Number(householdId);
     }
-    else
-    {
-      //if we don't have a selected, check localstorage for a default
-      const defaultHousehold = this.getUser()?.defaultHousehold;
-      if( defaultHousehold )
+    else {
+      //If we don't have a householdId, check to see if we have a user and default
+      const user = this.getUser();
+      if( user && user.defaultHousehold?.id)
       {
-        //When we're bootstrapping from a fresh tab, this causes a little minor recursion
-        this.saveHousehold(defaultHousehold);
-        return defaultHousehold;
+        let userType = "member";
+        if( user.id == user.defaultHousehold.owner!.id)
+          userType = "owner";
+        this.switchHousehold(user.defaultHousehold.id, userType);
+        return user.defaultHousehold.id;
       }
-      else
-        return;
+      return;
     }
   }
 
   /**
-   * Save a household as selected
+   * Change selected household Id
    */
-  public saveHousehold(household: Household) {
-    window.sessionStorage.setItem(HOUSEHOLD_KEY, JSON.stringify(household));
+  public switchHousehold(householdId: number, userType: string) {
+    window.sessionStorage.setItem(HOUSEHOLD_KEY, String(householdId));
+    window.sessionStorage.setItem(USER_TYPE_KEY, userType);
     //clear out the selected storages
     window.sessionStorage.removeItem(SELECTED_STORAGES_KEY);
-
-    //update usertype but only if it's not null
-    if( this.userType )
-      this.userType.next(this.getUserType());
-    this.household.next(household);
-
+    //update our behavior subjects
+    this.userType?.next(this.getUserType());
+    this.selectedHouseholdId?.next(householdId);
   }
 
   /**
@@ -109,8 +101,6 @@ export class LocalStorageService {
    */
   public saveUser(user: User): void {
     window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-    //update usertype
-    this.userType.next(this.getUserType());
   }
 
   /**
@@ -142,6 +132,7 @@ export class LocalStorageService {
    */
   public setSelectedStorages(storages: QL_Storage[] | undefined) {
     window.sessionStorage.setItem(SELECTED_STORAGES_KEY, JSON.stringify(storages));
+    this.selectedStorages.next(storages);
   }
 
 }

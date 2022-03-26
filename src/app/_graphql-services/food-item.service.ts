@@ -4,7 +4,7 @@ import {
   AddFoodItem_Mutation,
   FoodItem,
   GetStorage_Query,
-  GetSuggestions_Mutation,
+  GetSuggestions_Mutation, QL_Storage,
   RemovalPayload,
   RemoveFoodItem_Mutation,
   SuggestionPayload,
@@ -75,7 +75,6 @@ export class FoodItemService {
     return this.apollo.mutate<AddFoodItem_Mutation>(
       {
         mutation: AddFoodItem,
-        refetchQueries: [GetHousehold],
         variables: {
           storageId: foodItem.storage!.id,
           name: foodItem.name,
@@ -87,15 +86,26 @@ export class FoodItemService {
           if (payload && payload.addFoodItemToStorage.foodItems) {
             const storageId = foodItem.storage?.id;
             //Get the current storage from cache
-            const data = store.readQuery<GetStorage_Query>({query: GetStorage, variables: {storageId: storageId}});
-
+            const data = store.readFragment<any>({
+              id: "Storage:"+storageId,
+              fragment: gql`
+                fragment MyStorage on Storage
+                {
+                  foodItems {
+                    id, name, filename, tags, storage {
+                        id, name, type
+                      }
+                  }
+                }
+              `
+            })
             //Make sure we have data in the cache (we bloody should)
-            if (data?.getStorage?.storages) {
+            if (data) {
               console.log("Updating cache");
               let foodItems;
               //If we have a food items array, spread it and add our new one to the end
-              if (data.getStorage.storages[0].foodItems)
-                foodItems = [...data.getStorage.storages[0].foodItems, payload.addFoodItemToStorage.foodItems[0]];
+              if (data.foodItems)
+                foodItems = [...data.foodItems, payload.addFoodItemToStorage.foodItems[0]];
               //Otherwise, let's just use our array from the return payload
               else
                 foodItems = payload.addFoodItemToStorage.foodItems;
@@ -124,7 +134,7 @@ export class FoodItemService {
     return this.apollo.mutate<UpdateFoodItem_Mutation>(
       {
         mutation: UpdateFoodItem,
-        refetchQueries: [GetHousehold],
+        //refetchQueries: [GetHousehold],
         variables: {
           foodItemId: foodItem.id,
           name: foodItem.name,
@@ -157,7 +167,7 @@ export class FoodItemService {
     return this.apollo.mutate<RemoveFoodItem_Mutation>(
       {
         mutation: RemoveFoodItem,
-        refetchQueries: [GetHousehold],
+       // refetchQueries: [GetHousehold],
         variables: {
           foodItemId: foodItem.id
         },
@@ -165,26 +175,37 @@ export class FoodItemService {
           if (payload && payload.removeFoodItem.success) {
             //Write our change back to the cache
             //First we need to remove the item from the storage
-            let storageId = foodItem.storage?.id;
-            let data = store.readQuery<GetStorage_Query>({query: GetStorage, variables: {storageId: storageId}});
-            let foodItems: FoodItem[];
+            const storageId = foodItem.storage?.id;
+            //Get the current storage from cache
+            const data = store.readFragment<any>({
+              id: "Storage:"+storageId,
+              fragment: gql`
+                fragment MyStorage on Storage
+                {
+                  foodItems {
+                    id, name, filename, tags, storage {
+                        id, name, type
+                      }
+                  }
+                }
+              `
+            })
             //If we have a food items array, get it and remove our food item
             //If we don't have a food item array anymore... something something race condition we'll just do nothing
-            if (data?.getStorage?.storages) {
-              if (data.getStorage.storages[0].foodItems) {
-                //Find our foodItem
-                let index = data.getStorage.storages[0].foodItems.findIndex(food => food.id == foodItem.id);
-                foodItems = [...data.getStorage.storages[0].foodItems];
-                foodItems.splice(index, 1);
-                //Write our change back to the cache
-                store.writeFragment({
-                  id: "Storage:" + storageId, fragment: gql`
-                    # noinspection GraphQLSchemaValidation
-                    fragment myStorage on Storage {
-                      foodItems
-                    }`, data: {foodItems}
-                });
-              }
+            if (data.foodItems) {
+
+              //Find our foodItem
+              let index = data.foodItems.findIndex((food: { id: number | undefined; })=> food.id == foodItem.id);
+              let foodItems = [...data.foodItems];
+              foodItems.splice(index, 1);
+              //Write our change back to the cache
+              store.writeFragment({
+                id: "Storage:" + storageId, fragment: gql`
+                  # noinspection GraphQLSchemaValidation
+                  fragment myStorage on Storage {
+                    foodItems
+                  }`, data: {foodItems}
+              });
             }
           }
         }

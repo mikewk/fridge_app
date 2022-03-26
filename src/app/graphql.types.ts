@@ -19,7 +19,7 @@ export type QL_Storage = {
 }
 
 export type Household = {
-  id?: number
+  id: number
   name: string
   location: string
   folder?: string
@@ -147,7 +147,7 @@ export type AddFoodItem_Mutation = {
 }
 
 export type AddStorageToHousehold_Mutation = {
-  addStorageToHousehold: HouseholdsPayload;
+  addStorageToHousehold: StoragesPayload;
 }
 
 export type ChangeDefaultHousehold_Mutation = {

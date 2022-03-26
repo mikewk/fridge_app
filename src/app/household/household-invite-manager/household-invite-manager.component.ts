@@ -7,6 +7,7 @@ import {DialogHelperService} from "../../_helpers/dialog-helper.service";
 import {HouseholdAddInviteComponent} from "../household-add-invite/household-add-invite.component";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {LocalStorageService} from "../../_services/local-storage.service";
+import {NEVER, switchMap} from "rxjs";
 
 const InformationList = [
   "All links are one-time use.",
@@ -27,19 +28,28 @@ export class HouseholdInviteManagerComponent implements OnInit {
   displayedColumns = ['status', 'invitee', 'get_link', 'delete'];
   status: string[] = ["Waiting", "Accepted", "Rejected", "Rescinded", "Expired"];
   information: string[] = InformationList;
-  household: Household;
+  householdId?: number;
 
   constructor(private clipboard: Clipboard,
               private snackBar: MatSnackBar,
               private dialogHelper: DialogHelperService,
               private inviteService: InviteService,
               private localStorage: LocalStorageService) {
-      this.household = this.localStorage.getHousehold()!;
+
   }
 
   ngOnInit(): void {
-
-    this.inviteService.getInvites(this.household).subscribe({
+     this.localStorage.selectedHouseholdId.pipe(switchMap(householdId=>
+     {
+       if( householdId )
+       {
+         this.householdId = householdId;
+         return this.inviteService.getInvites(householdId);
+       }
+       else {
+         return NEVER;
+       }
+     })).subscribe({
         next: data=> {
           if( data.invites ) {
             this.invites = data.invites;
@@ -62,7 +72,7 @@ export class HouseholdInviteManagerComponent implements OnInit {
    */
   confirmDelete(invite: Invite) {
     if (confirm("Are you sure?")) {
-      this.inviteService.deleteInvite(invite, this.household).subscribe(
+      this.inviteService.deleteInvite(invite, this.householdId!).subscribe(
         {
           next: data => {
             if (!data.error) {

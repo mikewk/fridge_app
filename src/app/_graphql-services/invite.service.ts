@@ -105,12 +105,12 @@ export class InviteService {
 
   constructor(private apollo: Apollo) { }
 
-  getInvites(household: Household):Observable<InvitesPayload>
+  getInvites(householdId: number):Observable<InvitesPayload>
   {
     return this.apollo.watchQuery<GetInvites_Query>({
       query: GetInvites_GQL,
       variables: {
-        householdId: household.id
+        householdId: householdId
       }
     }).valueChanges.pipe(map((result) => {
       if (result.errors) {
@@ -167,14 +167,14 @@ export class InviteService {
     }));
   }
 
-  deleteInvite(invite: Invite, household: Household): Observable<RemovalPayload>
+  deleteInvite(invite: Invite, householdId: number): Observable<RemovalPayload>
   {
     return this.apollo.mutate<DeleteInvite_Mutation>({
       mutation: DeleteInvite_GQL,
         refetchQueries: [
           {
             query: GetInvites_GQL,
-            variables: {householdId: household.id}
+            variables: {householdId: householdId}
           }
         ],
         variables:

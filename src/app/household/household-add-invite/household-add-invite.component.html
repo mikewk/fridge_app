@@ -1,4 +1,4 @@
-<form #myForm="ngForm">
+<form #myForm="ngForm" *ngIf="household">
   <h1 mat-dialog-title>
     Create Invite to {{household.name}}
   </h1>
@@ -17,3 +17,12 @@
     <button [disabled]=myForm.invalid [mat-dialog-close]="{copy:copy, household:household, invite:invite}" mat-button>Create Invite</button>
   </div>
 </form>
+
+<mat-card *ngIf="error" class="error">
+  <mat-card-title>
+    Error Retrieving Household
+  </mat-card-title>
+  <mat-card-content>
+    An error occurred while retrieving the household.  Please try again.
+  </mat-card-content>
+</mat-card>

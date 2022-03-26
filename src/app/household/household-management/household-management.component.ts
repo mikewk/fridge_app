@@ -33,12 +33,10 @@ export class HouseholdManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //Load in our household data
-    //TODO: Figure out a way to ensure the household in localstorage IS our household and is updated by watchQuery
-    this.localStorage.household.pipe(switchMap(household=>
+    this.localStorage.selectedHouseholdId.pipe(switchMap(householdId=>
       {
-        if( household )
-          return this.householdService.getHousehold(household.id!);
+        if( householdId )
+          return this.householdService.getHousehold(householdId!);
         else
           return NEVER;
       }
@@ -46,7 +44,7 @@ export class HouseholdManagementComponent implements OnInit {
       next: data => {
           //If the API call was successful
           if (data.households) {
-            if( this.localStorage.getUserType() != "owner" ) {
+            if( this.localStorage.userType.getValue() != "owner" ) {
               this.notOwned = true;
             }
             else
@@ -98,14 +96,10 @@ export class HouseholdManagementComponent implements OnInit {
   addStorage() {
 
     this.dialogHelper.launchDialog(HouseholdAddStorageComponent,
-                                  (x: any) => this.storageService.addStorage(x)).subscribe({
+                                  (x: any) => this.storageService.addStorage(x, this.household!.id)).subscribe({
       next: data => {
         //If the API call was successful
         if (data.storages) {
-          //update selected household storages
-          let selectedHousehold = this.localStorage.getHousehold()!;
-          selectedHousehold.storages?.push(data.storages[0]);
-          this.localStorage.saveHousehold(selectedHousehold);
           this.snackBar.open("Storage Added Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {
@@ -133,7 +127,7 @@ export class HouseholdManagementComponent implements OnInit {
     if(this.household?.storages?.length != 0)
     {
       this.dialogHelper.launchDialog(HouseholdRemoveStorageComponent,
-                                     (x: any) => this.storageService.removeStorage(x),
+                                     (x: any) => this.storageService.removeStorage(x, this.household!),
                                      {household:this.household}).subscribe({
       next: data => {
         //If the API call was successful
