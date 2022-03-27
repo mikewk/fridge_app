@@ -24,9 +24,6 @@ export class LoginComponent implements OnInit {
   email: string = '';
   returnUrl: string = '';
 
-  //Create the validators for email and password
-  emailForm = new FormControl('', [Validators.required, Validators.email])
-  passwordForm = new FormControl('', [Validators.required]);
 
   constructor(private authService: AuthService,
               private localStorage: LocalStorageService,
