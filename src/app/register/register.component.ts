@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AuthService} from '../_graphql-services/auth.service';
 import {LocalStorageService} from "../_services/local-storage.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  @Output() loggedIn: EventEmitter<any> = new EventEmitter();
   form: any = {
     name: null,
     email: null,
@@ -46,15 +47,18 @@ export class RegisterComponent implements OnInit {
         } else {
           //If successful, save our token to keep us logged in
           this.tokenStorage.saveToken(data.token)
-          this.tokenStorage.saveUser(data.user!.id);
           this.isSuccessful = true;
           this.isSignUpFailed = false;
+
+          //Tell app container that we've logged in
+          this.loggedIn.emit();
+
            //If there was a returnURL go there
           if (this.returnUrl) {
-            this.router.navigate([this.returnUrl]).then(window.location.reload);
+            this.router.navigate([this.returnUrl]).then(this.reloadPage);
           } else {
               //Otherwise, go to the welcome page
-              this.router.navigate(["/welcome"]).then(window.location.reload);
+              this.router.navigate(["/welcome"]).then(this.reloadPage);
             }
           }
         },
@@ -65,5 +69,8 @@ export class RegisterComponent implements OnInit {
         this.isSignUpFailed = true;
       }
     });
+  }
+  reloadPage(): void {
+    window.location.reload();
   }
 }

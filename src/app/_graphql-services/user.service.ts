@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {
-  AuthPayload,
   ChangeDefaultHousehold_Mutation, GetUser_Query,
   Household,
-  HouseholdsPayload, Login_Mutation,
+  HouseholdsPayload,
   UsersPayload
 } from "../graphql.types";
-import {EMPTY, map, Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {HOUSEHOLD_CORE, USER_FIELDS} from "../graphql.fragments";
+import {HouseholdService} from "./household.service";
 
 const ChangeDefaultHousehold_GQL = gql`
   mutation changeDefaultHousehold($householdId: Int!) {
@@ -45,7 +45,7 @@ export class UserService {
   }
 
   /**
-   * Gets the user object for the currently logged in user
+   * Gets the user object for the currently logged-in user
    */
   getUser(): Observable<UsersPayload>
   {
@@ -64,8 +64,8 @@ export class UserService {
   }
 
   /**
-   * Chance the default household for a user to the given household
-   * The default household is the one a user will see when relogging in
+   * Change the default household for a user to the given household
+   * The default household is the one a user will see when logging in
    * @param household
    * @param userId
    */
@@ -82,12 +82,16 @@ export class UserService {
             let defaultHousehold = payload.changeDefaultHousehold.households[0];
             store.writeFragment({
               id: "User:" + userId, fragment: gql`
-                fragment MyUser on User {
+                fragment MyUserDefaultHousehold on User {
                   defaultHousehold
                   {
-                    ${HOUSEHOLD_CORE}
+                    ...HouseholdCore
                   }
-                }`, data: {defaultHousehold}
+                }
+                ${HOUSEHOLD_CORE}
+              `,
+              data: {defaultHousehold},
+              fragmentName:"MyUserDefaultHousehold"
             });
           }
         }

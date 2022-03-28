@@ -34,7 +34,7 @@ export class AppComponent {
 
   onActivate(componentRef: any)
   {
-    if( componentRef instanceof LoginComponent)
+    if( componentRef.loggedIn )
     {
       componentRef.loggedIn.subscribe(()=>
       {
