@@ -59,7 +59,15 @@ export const AddHousehold = gql`
     {
       households
       {
-        id, name, location
+         id,
+          name,
+          location
+          owner{
+            id, name
+          }
+          storages {
+            id, name, type
+          }
       },
       error
     }
@@ -128,7 +136,63 @@ export class HouseholdService {
     return this.apollo.mutate<AddHousehold_Mutation>(
       {
         mutation: AddHousehold,
-        variables: household
+        variables: household,
+        update: (store, {data: payload}) => {
+          //If we have a fooditem to update
+          if (payload && payload.createHousehold.households) {
+            //Add a household needs to be added to member and owned households
+            //So we need a user ID
+            const userId = payload.createHousehold.households[0].owner!.id;
+            const household = payload.createHousehold.households[0];
+            //Get the current user from cache
+            const data = store.readFragment<any>({
+              id: "User:" + userId,
+              fragment: gql`
+                fragment ReadMyUser on User
+                {
+                  id,
+                  memberHouseholds {
+                    id, name, location, owner{
+                      id, name
+                    }
+                    storages {
+                      id, name, type
+                    }
+                  },
+                  ownedHouseholds {
+                    id, name, location
+                  }
+                }
+              `
+            });
+            //Make sure we have data in the cache (we bloody should)
+            if (data) {
+              console.log("Updating cache");
+              let memberHouseholds = [...data.memberHouseholds, household];
+              let ownedHouseholds = [...data.ownedHouseholds, household];
+
+              //Write our change back to the cache
+              store.writeFragment({
+                id: "User:" + userId, fragment: gql`
+                  # noinspection GraphQLSchemaValidation
+                  fragment MyUserUpdate on User {
+                     memberHouseholds {
+                        id, name, location, owner{
+                          id, name
+                        }
+                        storages {
+                          id, name, type
+                        }
+                      },
+                      ownedHouseholds {
+                        id, name, location
+                      }
+                  }`, data: {memberHouseholds, ownedHouseholds}
+              });
+
+            }
+          }
+        }
       }
     ).pipe(map((result) => {
       //Standardizes error and payload return

@@ -53,9 +53,9 @@ export class InviteComponent implements OnInit {
 
   changeHousehold() {
     if( this.household ) {
-      const user = this.localStorage.getUser()!;
+      const userId = this.localStorage.getUser()!;
       let userType = "member";
-      if( user.id == this.household.id)
+      if( userId == this.household.id)
         userType = "owner";
       this.localStorage.switchHousehold(this.household.id, userType);
       this.router.navigate(["dashboard"]);

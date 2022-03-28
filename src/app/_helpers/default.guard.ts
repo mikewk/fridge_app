@@ -19,7 +19,7 @@ export class DefaultGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     //Get household from local storage
-    const household = this.localStorageService.getHouseholdId();
+    const household = this.localStorageService.getSelectedHouseholdId();
     //If it exists, return true
     if (household) {
       return true;

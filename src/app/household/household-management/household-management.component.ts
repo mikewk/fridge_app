@@ -44,7 +44,7 @@ export class HouseholdManagementComponent implements OnInit {
       next: data => {
           //If the API call was successful
           if (data.households) {
-            if( this.localStorage.userType.getValue() != "owner" ) {
+            if( this.localStorage.getUserType() != "owner" ) {
               this.notOwned = true;
             }
             else

@@ -1,12 +1,14 @@
-<h1 mat-dialog-title>
-  Select Default Household
-</h1>
-<div mat-dialog-content>
-  <mat-select [(ngModel)]="defaultHousehold" [compareWith]="compareHouseholds">
-    <mat-option *ngFor="let household of households" [value]="household">{{household.name}}</mat-option>
-  </mat-select>
-</div>
-<div mat-dialog-actions>
-  <button mat-button mat-dialog-close=>Cancel</button>
-  <button [mat-dialog-close]="defaultHousehold" mat-button>Update Default</button>
+<div *ngIf="user">
+  <h1 mat-dialog-title>
+    Select Default Household
+  </h1>
+  <div mat-dialog-content>
+    <mat-select [(ngModel)]="defaultHousehold" [compareWith]="compareHouseholds">
+      <mat-option *ngFor="let household of households" [value]="household">{{household.name}}</mat-option>
+    </mat-select>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [mat-dialog-close]="defaultHousehold" mat-button>Update Default</button>
+  </div>
 </div>

@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit {
         } else {
           //If successful, save our token to keep us logged in
           this.tokenStorage.saveToken(data.token)
-          this.tokenStorage.saveUser(data.user!);
+          this.tokenStorage.saveUser(data.user!.id);
           this.isSuccessful = true;
           this.isSignUpFailed = false;
            //If there was a returnURL go there

@@ -29,7 +29,7 @@
         </button>
         <mat-menu #profileMenu="matMenu" xPosition="before">
           <button mat-menu-item routerLink="profile">Profile</button>
-          <button *ngIf="this.user!.memberHouseholds!.length>1" [matMenuTriggerFor]="householdMenu" mat-menu-item>
+          <button *ngIf="this.user?.memberHouseholds?.length" [matMenuTriggerFor]="householdMenu" mat-menu-item>
             Change Household
           </button>
           <button *ngIf="userType=='owner'" mat-menu-item routerLink="manage">Manage Households</button>
@@ -37,14 +37,19 @@
         </mat-menu>
 
         <mat-menu #householdMenu="matMenu" xPosition="before">
-          <button (click)="changeSelected(household)" *ngFor="let household of this.user!.memberHouseholds"
+          <button (click)="changeSelected(household)" *ngFor="let household of this.user?.memberHouseholds"
                   mat-menu-item>{{household.name}}: {{household.location}}</button>
         </mat-menu>
       </li>
     </ul>
   </mat-toolbar>
 
-  <div class="container">
-    <router-outlet></router-outlet>
+  <div *ngIf="!loading" class="container">
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
   </div>
+
+  <div *ngIf="loading">
+    <p>Loading...</p>
+  </div>
+
 </div>

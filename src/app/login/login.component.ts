@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, Validators} from "@angular/forms";
 
@@ -14,6 +14,7 @@ import {LocalStorageService} from '../_services/local-storage.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  @Output() loggedIn: EventEmitter<any> = new EventEmitter();
   form: any = {
     username: null,
     password: null
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   email: string = '';
   returnUrl: string = '';
+
 
   constructor(private authService: AuthService,
               private localStorage: LocalStorageService,
@@ -73,17 +75,17 @@ export class LoginComponent implements OnInit {
           this.errorMessage = data.error;
           this.isLoginFailed = true;
         } else {
-          //If there's no error, then save the token, and get the user's email to show them they logged in successfully
+          //If there's no error, then save the token and route them
           this.localStorage.saveToken(data.token);
-          this.localStorage.saveUser(data.user!);
-          if( data.user?.defaultHousehold ) {
+          /*if( data.user?.defaultHousehold ) {
             let userType = "member";
             if( data.user.defaultHousehold.id == data.user.id)
               userType = "owner";
             this.localStorage.switchHousehold(data.user.defaultHousehold.id, userType)
-          }
+          }*/
           this.isLoginFailed = false;
           this.isLoggedIn = true;
+          this.loggedIn.emit();
           this.determineRoute();
         }
       },

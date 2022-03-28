@@ -6,6 +6,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NEVER, switchMap} from "rxjs";
 import {HouseholdService} from "./_graphql-services/household.service";
+import {UserService} from "./_graphql-services/user.service";
+import {LoginComponent} from "./login/login.component";
 
 @Component({
   selector: 'app-root',
@@ -19,19 +21,35 @@ export class AppComponent {
   user?: User;
   selectedHousehold?: Household;
   userType: string =  "";
+  loading: boolean = true;
 
   constructor(private localStorageService: LocalStorageService,
               private addFoodItemHandler: ItemDialogService,
               private snackBar: MatSnackBar,
               private route: ActivatedRoute,
               private router: Router,
-              private householdService: HouseholdService) {
+              private householdService: HouseholdService,
+              private userService: UserService) {
+  }
+
+  onActivate(componentRef: any)
+  {
+    if( componentRef instanceof LoginComponent)
+    {
+      componentRef.loggedIn.subscribe(()=>
+      {
+        this.loading = true;
+      });
+    }
   }
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.localStorageService.getToken();
-    this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
-    this.localStorageService.selectedHouseholdId.pipe(switchMap(
+    //this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
+    this.localStorageService.subscribeUsertype((x:any)=>{this.userType=x; console.log("Usertype Changed to "+x);})
+
+
+    this.localStorageService.getSelectedHouseholdObservable().pipe(switchMap(
         (householdId:number | undefined)=>{
           if( householdId )
             return this.householdService.getHousehold(householdId);
@@ -44,17 +62,39 @@ export class AppComponent {
               else
                 console.log(data);
             });
+
     if (this.isLoggedIn) {
       //If we're logged in, get our user from localstorage
-      this.user = this.localStorageService.getUser();
-      //If we don't have a user, this is very very bad...
-      if( !this.user )
+      this.userService.getUser().subscribe(data=>
       {
-        //TODO: If have a token, we can probably get the user from GraphQL eventually
-        //For now, unscrew this by logging out
-        this.logout();
-      }
-
+        if( data.users )
+        {
+          this.user = data.users[0];
+          if( !this.selectedHousehold )
+          {
+            //check for default household
+            if( this.user.defaultHousehold )
+            {
+              //Set selected household then delay the loading to prevent default welcome message from popping
+              let userType = "member";
+              if(this.user.id == this.user.defaultHousehold.owner!.id)
+                userType="owner";
+              this.localStorageService.switchHousehold(this.user.defaultHousehold.id, userType)
+              setTimeout(()=>this.loading=false, 500);
+            }
+            else {
+              this.loading=false;
+            }
+          }
+          else {
+            this.loading = false;
+          }
+        }
+      });
+    }
+    else
+    {
+      this.loading = false;
     }
   }
 

@@ -10,36 +10,6 @@ const LoginGQL = gql`
     login(email:$email, password:$password)
     {
       error,
-      user
-      {
-        id,
-        name,
-        defaultHousehold {
-          id,
-          name,
-          location,
-          owner {id, name},
-          storages {
-            id, name, foodItems {id}
-          }
-        },
-        memberHouseholds {
-          id,
-          name,
-          location
-          owner{
-            id, name
-          }
-          storages {
-            id, name, type
-          }
-        },
-        ownedHouseholds {
-          id,
-          name,
-          location
-        }
-      }
       token
     }
   }
@@ -50,36 +20,6 @@ const RegisterGQL = gql`
     {
       error,
       token
-      user
-      {
-        id,
-        name,
-        defaultHousehold {
-          id,
-          name,
-          location,
-          owner {id, name},
-          storages {
-            id, name, foodItems {id}
-          }
-        },
-        memberHouseholds {
-          id,
-          name,
-          location,
-          owner {
-            id, name
-          },
-          storages {
-            id, name, type
-          }
-        },
-        ownedHouseholds {
-          id,
-          name,
-          location
-        }
-      }
     }
   }
 `;

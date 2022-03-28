@@ -24,7 +24,7 @@ export class OwnerGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     //The work for this guard has been moved to the LocalStorageService
-    if( this.localStorage.userType.getValue() == 'owner') {
+    if( this.localStorage.getUserType() == 'owner') {
       return true;
     }
     else {

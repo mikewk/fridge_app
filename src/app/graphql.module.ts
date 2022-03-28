@@ -3,6 +3,7 @@ import {HttpClientModule} from '@angular/common/http';
 // Apollo
 import {APOLLO_OPTIONS, ApolloModule} from 'apollo-angular';
 import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
+import { persistCacheSync, SessionStorageWrapper} from "apollo3-cache-persist";
 import {HttpLink} from 'apollo-angular/http';
 import {environment} from "../environments/environment";
 
@@ -10,10 +11,15 @@ import {environment} from "../environments/environment";
 //const uri = 'https://fridge.michealkok.com/api/graphql';
 const uri = environment.graphql_uri;
 
+const cache = new InMemoryCache();
+persistCacheSync({cache,
+  storage: new SessionStorageWrapper(window.sessionStorage)});
+
+
 function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   return {
     link: httpLink.create({uri}),
-    cache: new InMemoryCache(),
+    cache: cache,
     defaultOptions: {
       watchQuery: {
           fetchPolicy: 'cache-and-network',

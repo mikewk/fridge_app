@@ -8,6 +8,7 @@ import {UserService} from "../../_graphql-services/user.service";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdService} from "../../_graphql-services/household.service";
 import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add-household.component";
+import {User} from "../../graphql.types";
 
 /**
  * Landing page for profile management
@@ -18,7 +19,7 @@ import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add
   styleUrls: ['./profile-landing.component.css']
 })
 export class ProfileLandingComponent implements OnInit {
-
+  user? :User;
   constructor(private householdService: HouseholdService,
               private userService: UserService,
               private snackBar: MatSnackBar,
@@ -28,24 +29,27 @@ export class ProfileLandingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userService.getUser().subscribe((data)=> {
+        if (data.users) {
+          this.user = data.users[0];
+        } else {
+          console.log(data.error);
+        }
+      }
+    );
   }
+
 
   /**
    * Show the change default dialog and handle the result
    */
   changeDefault() {
     this.dialogHelper.launchDialog(ProfileChangeDefaultComponent,
-      (x: any) => this.userService.changeDefault(x)).subscribe({
+      (x: any) => this.userService.changeDefault(x, this.user!.id)).subscribe({
       next: data => {
-        if (data.users[0]) {
+        if (data.households[0]) {
           this.snackBar.open("Default Household Changed Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
-          let user = this.localStorage.getUser();
-          if (user) {
-            user.defaultHousehold = data.users[0].defaultHousehold;
-            this.localStorage.saveUser(user);
-          }
-
         } else {
           console.log(data);
         }

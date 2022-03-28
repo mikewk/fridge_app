@@ -1,6 +1,7 @@
 /**
  * A set of types based off the GraphQL API schema to help facilitate parsing objects in and out of the API
  */
+import {UserService} from "./_graphql-services/user.service";
 
 export type User = {
   id: number
@@ -117,6 +118,10 @@ export type GetMemberHouseholds_Query =
     getMemberHouseholds: HouseholdsPayload;
   }
 
+export type GetUser_Query = {
+  getUser: UsersPayload;
+}
+
 export type AddHousehold_Mutation =
   {
     createHousehold: HouseholdsPayload;
@@ -151,7 +156,7 @@ export type AddStorageToHousehold_Mutation = {
 }
 
 export type ChangeDefaultHousehold_Mutation = {
-  changeDefaultHousehold: UsersPayload
+  changeDefaultHousehold: HouseholdsPayload
 }
 
 export type RemoveStorage_Mutation = {

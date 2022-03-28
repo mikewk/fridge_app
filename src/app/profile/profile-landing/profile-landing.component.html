@@ -1,4 +1,4 @@
-<mat-action-list>
+<mat-action-list *ngIf="user">
   <button (click)="changeDefault()" mat-list-item>Change Default Household</button>
   <button (click)="addHousehold()" mat-list-item>Add New Household</button>
   <button (click)="changeName()" mat-list-item>Change Name</button>
