@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {map, Observable} from 'rxjs';
 import {Apollo, gql} from "apollo-angular";
 
-import {AuthPayload, Login_Mutation, Signup_Mutation} from '../graphql.types'
+import {AuthPayload, Login_Mutation, RefreshToken_Mutation, Signup_Mutation} from '../graphql.types'
 
 //GraphQL Constants
 const LoginGQL = gql`
@@ -23,6 +23,17 @@ const RegisterGQL = gql`
     }
   }
 `;
+const RefreshToken_GQL = gql`
+  mutation refreshToken
+  {
+    refreshToken
+    {
+      error,
+      token
+    }
+  }
+`
+
 
 /**
  * This class implements an authorization service.
@@ -84,4 +95,22 @@ export class AuthService {
       }
     }));
   }
+
+  refreshToken(): Observable<AuthPayload>
+  {
+    return this.apollo.mutate<RefreshToken_Mutation>({
+      mutation: RefreshToken_GQL
+    }).pipe(map((result) => {
+      if (result.errors) {
+        let payload: AuthPayload = {error: result.errors.join(","), token: ""};
+        return payload;
+      } else if (!result.data?.refreshToken) {
+        let payload: AuthPayload = {"error": "No data returned", token: ""};
+        return payload;
+      } else {
+        return result.data.refreshToken;
+      }
+    }));
+  }
+
 }

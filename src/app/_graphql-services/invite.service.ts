@@ -11,6 +11,7 @@ import {
   InviteUserToHousehold_Mutation, RejectHouseholdInvite_Mutation,
   RemovalPayload
 } from "../graphql.types";
+import {HOUSEHOLD_CORE, INVITE_FIELDS} from "../graphql.fragments";
 
 const GetInvites_GQL = gql`
   query getInvites($householdId: Int!)
@@ -19,83 +20,65 @@ const GetInvites_GQL = gql`
     {
       error,
       invites {
-        id, householdName, inviteeName, message, status
+        ...InviteFields
+      }
+    }
+  }
+  ${INVITE_FIELDS}
+`
+
+const GetInvite_GQL = gql`
+  query getInvite($id: String!) {
+    getInvite(inviteId: $id) {
+      error,
+      invites {
+        ...InviteFields
+      }
+    }
+  }
+  ${INVITE_FIELDS}
+`
+
+const InviteUserToHousehold_GQL = gql`
+  mutation inviteUserToHousehold($householdId: Int!, $message: String!) {
+    inviteUserToHousehold(householdId: $householdId, message: $message) {
+      error,
+      invites {
+        id, message, status
       }
     }
   }
 `
 
-const GetInvite_GQL = gql`
-    query getInvite($id: String!)
-    {
-      getInvite(inviteId: $id)
-      {
-        error,
-        invites {
-          id, householdName, message, status, inviterName
-        }
-      }
-    }
-`
-
-const InviteUserToHousehold_GQL = gql`
-    mutation inviteUserToHousehold($householdId: Int!, $message: String!)
-    {
-      inviteUserToHousehold(householdId: $householdId, message: $message)
-      {
-        error,
-        invites
-        {
-          id, message, status
-        }
-      }
-    }
-`
-
 const DeleteInvite_GQL = gql`
-    mutation deleteInvite($inviteId: String!)
-    {
-      deleteInvite(inviteId: $inviteId)
-      {
-        error,
-        success
-      }
+  mutation deleteInvite($inviteId: String!) {
+    deleteInvite(inviteId: $inviteId) {
+      error,
+      success
     }
+  }
 `
 
 const RejectHouseholdInvite_GQL = gql`
-    mutation rejectHouseholdInvite($inviteId: String!)
-    {
-      rejectHouseholdInvite(inviteId: $inviteId)
-      {
-        error,
-        success,
-        id
-      }
+  mutation rejectHouseholdInvite($inviteId: String!) {
+    rejectHouseholdInvite(inviteId: $inviteId) {
+      error,
+      success,
+      id
     }
+  }
 `
 
 const AcceptHouseholdInvite_GQL = gql`
-    mutation acceptHouseholdInvite($inviteId: String!)
-    {
-      acceptHouseholdInvite(inviteId: $inviteId)
-      {
-        error,
-        households {
-          id, name, location, owner {
-            id, name
-          },
-          users {
-            id, name
-          },
-          storages {
-            name, type, foodItems {
-              name
-            }
-          }
-        }
+  mutation acceptHouseholdInvite($inviteId: String!) {
+    acceptHouseholdInvite(inviteId: $inviteId) {
+      error,
+      households {
+        ...HouseholdCore
       }
     }
+  },
+  ${HOUSEHOLD_CORE}
 `
 
 @Injectable({

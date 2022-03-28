@@ -2,8 +2,7 @@ import {gql} from "apollo-angular";
 
 
 export const HOUSEHOLD_CORE = gql`
-  fragment HouseholdCore on Household
-  {
+  fragment HouseholdCore on Household {
     id,
     name,
     location,
@@ -15,8 +14,7 @@ export const HOUSEHOLD_CORE = gql`
 `
 
 export const USER_FIELDS = gql`
-fragment UserFields on User
-  {
+fragment UserFields on User {
     id,
     name,
     defaultHousehold {
@@ -30,5 +28,10 @@ fragment UserFields on User
     }
   },
   ${HOUSEHOLD_CORE}
+`
 
+export const INVITE_FIELDS = gql`
+  fragment InviteFields on Invite{
+    id, householdName, inviteeName, message, status
+  }
 `
