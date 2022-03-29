@@ -25,7 +25,7 @@ export class HouseholdInviteManagerComponent implements OnInit {
   baseUrl: string = environment.invite_base_url;
   invites?: Invite[];
   copy: boolean = false;
-  displayedColumns = ['status', 'invitee', 'get_link', 'delete'];
+  displayedColumns = ['status', 'invitee', 'message', 'get_link', 'delete'];
   status: string[] = ["Waiting", "Accepted", "Rejected", "Rescinded", "Expired"];
   information: string[] = InformationList;
   householdId?: number;

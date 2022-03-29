@@ -9,6 +9,7 @@ import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdService} from "../../_graphql-services/household.service";
 import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add-household.component";
 import {User} from "../../graphql.types";
+import {ProfileLeaveDialogComponent} from "../profile-leave-dialog/profile-leave-dialog.component";
 
 /**
  * Landing page for profile management
@@ -20,6 +21,7 @@ import {User} from "../../graphql.types";
 })
 export class ProfileLandingComponent implements OnInit {
   user? :User;
+  moreThanOneHousehold: boolean = false;
   constructor(private householdService: HouseholdService,
               private userService: UserService,
               private snackBar: MatSnackBar,
@@ -32,6 +34,8 @@ export class ProfileLandingComponent implements OnInit {
     this.userService.getUser().subscribe((data)=> {
         if (data.users) {
           this.user = data.users[0];
+          if( this.user.memberHouseholds.length > 1 )
+            this.moreThanOneHousehold = true;
         } else {
           console.log(data.error);
         }
@@ -69,6 +73,7 @@ export class ProfileLandingComponent implements OnInit {
       next: data => {
         //If the API call was successful
         if (data.households) {
+          this.localStorage.refreshToken().subscribe();
           this.snackBar.open("Household Added Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {
@@ -80,6 +85,26 @@ export class ProfileLandingComponent implements OnInit {
       }
     });
 
+  }
+
+  leaveHousehold()
+  {
+    this.dialogHelper.launchDialog(ProfileLeaveDialogComponent,
+                                  (x: any) => this.userService.leaveHousehold(x, this.user!.id)).subscribe({
+      next: data => {
+        //If the API call was successful
+        if (data.success) {
+          this.localStorage.refreshToken().subscribe();
+          this.snackBar.open("Left Household Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+        } else {
+          console.log(data);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   changeName() {

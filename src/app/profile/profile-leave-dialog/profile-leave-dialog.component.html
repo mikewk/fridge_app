@@ -1,0 +1,14 @@
+<div *ngIf="user">
+  <h1 mat-dialog-title>
+    Select a household to leave
+  </h1>
+  <div mat-dialog-content>
+    <mat-select [(ngModel)]="householdToLeave" >
+      <mat-option *ngFor="let household of households" [value]="household">{{household.name}}</mat-option>
+    </mat-select>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [mat-dialog-close]="householdToLeave" mat-button>Leave Household</button>
+  </div>
+</div>

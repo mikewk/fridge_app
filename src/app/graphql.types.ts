@@ -181,3 +181,7 @@ export type AcceptHouseholdInvite_Mutation = {
 export type RefreshToken_Mutation = {
   refreshToken: AuthPayload
 }
+
+export type LeaveHousehold_Mutation = {
+  leaveHousehold: RemovalPayload
+}

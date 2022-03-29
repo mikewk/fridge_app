@@ -35,3 +35,16 @@ export const INVITE_FIELDS = gql`
     id, householdName, inviteeName, message, status
   }
 `
+
+export const READ_MY_USER = gql`
+  fragment ReadMyUser on User {
+    id,
+    memberHouseholds {
+      ...HouseholdCore
+    },
+    ownedHouseholds {
+      id, name, location
+    }
+  },
+  ${HOUSEHOLD_CORE}
+`

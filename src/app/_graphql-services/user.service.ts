@@ -3,12 +3,12 @@ import {Apollo, gql} from "apollo-angular";
 import {
   ChangeDefaultHousehold_Mutation, GetUser_Query,
   Household,
-  HouseholdsPayload,
+  HouseholdsPayload, LeaveHousehold_Mutation, RemovalPayload,
   UsersPayload
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
-import {HOUSEHOLD_CORE, USER_FIELDS} from "../graphql.fragments";
-import {HouseholdService} from "./household.service";
+import {HOUSEHOLD_CORE, READ_MY_USER, USER_FIELDS} from "../graphql.fragments";
+import {AddHousehold, HouseholdService} from "./household.service";
 
 const ChangeDefaultHousehold_GQL = gql`
   mutation changeDefaultHousehold($householdId: Int!) {
@@ -33,6 +33,15 @@ export const GetUser_GQL = gql`
   }
   ${USER_FIELDS}
 
+`
+
+export const LeaveHousehold_GQL = gql`
+  mutation leaveHousehold($householdId: Int!) {
+    leaveHousehold(householdId: $householdId) {
+      error,
+      success
+    }
+  }
 `
 
 
@@ -106,5 +115,52 @@ export class UserService {
       }
     }));
   }
+
+   leaveHousehold(household: Household, userId:number): Observable<RemovalPayload> {
+    return this.apollo.mutate<LeaveHousehold_Mutation>(
+      {
+        mutation: LeaveHousehold_GQL,
+        variables: {householdId: household.id},
+        update: (store, {data: payload}) => {
+          //Make sure we have a payload
+          if (payload && payload.leaveHousehold.success) {
+            //If we were successful, remove this household from memberHouseholds
+            //Get the current user from cache
+            const data = store.readFragment<any>({
+              id: "User:" + userId,
+              fragment: READ_MY_USER,
+              fragmentName: "ReadMyUser"
+            });
+            //Make sure we have data in the cache (we bloody should)
+            if (data) {
+              console.log("Updating cache");
+              let memberHouseholds = [...data.memberHouseholds];
+              let index = memberHouseholds.indexOf(household);
+              memberHouseholds.splice(index, 1);
+
+              //Write our change back to the cache
+              store.writeFragment({
+                id: "User:" + userId, fragment: gql`
+                  # noinspection GraphQLSchemaValidation
+                  fragment MyUserUpdateMemberHouseholds on User {
+                     memberHouseholds
+                  }`, data: {memberHouseholds}
+              });
+            }
+          }
+        }
+      }
+    ).pipe(map((result) => {
+      //Standardizes error and payload return
+      if (result.errors) {
+        return {error: result.errors.join(","), success:0, id:-1};
+      } else if (!result.data?.leaveHousehold) {
+        return {error: "An unknown error occurred", success:0, id:-1};
+      } else {
+        return result.data.leaveHousehold;
+      }
+    }));
+  }
+
 
 }

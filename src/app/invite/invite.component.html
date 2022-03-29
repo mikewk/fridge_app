@@ -4,7 +4,8 @@
       Invite to {{invite.householdName}}
     </mat-card-title>
     <mat-card-content>
-      <p>You have been invited to join the household "{{invite.householdName}}" by {{invite.inviterName}}.</p>
+      <p>You have been invited to join the household "{{invite.householdName}}" by {{invite.inviterName}}. Their message is:</p>
+      <p class="message">{{invite.message}}</p>
       <p>If you reject the invite, the household owner will be notified that it has been rejected, but not by whom.</p>
       <p>If you accept the invite, the other members of the household
       <span class="bold">will be able to see.</span>

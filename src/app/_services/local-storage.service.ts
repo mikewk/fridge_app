@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {GetUser_Query, QL_Storage, User} from "../graphql.types";
-import {BehaviorSubject, Observer} from "rxjs";
+import {BehaviorSubject, map, Observable, Observer} from "rxjs";
 import {Apollo} from "apollo-angular";
 import {GetUser_GQL} from "../_graphql-services/user.service";
+import {AuthService} from "../_graphql-services/auth.service";
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'user-object';
@@ -30,7 +31,8 @@ export class LocalStorageService {
     new BehaviorSubject<QL_Storage[] | undefined>(this.getSelectedStorages());
 
   constructor(private jwtHelper: JwtHelperService,
-              private apollo: Apollo) {
+              private apollo: Apollo,
+              private authService: AuthService) {
   }
 
   getSelectedHouseholdObservable()
@@ -81,41 +83,31 @@ export class LocalStorageService {
     return this.selectedHouseholdId.getValue();
   }
 
+
+  public refreshToken(): Observable<boolean> {
+    return this.authService.refreshToken().pipe(map(data=>{
+      if (data.token) {
+        this.saveToken(data.token);
+        return true;
+      } else {
+        console.log(data);
+        return false;
+      }
+    }));
+  }
+
+
+
   /**
    * Initialize the selected household, if possible
    */
   private initSelectedHousehold(): number | undefined {
     const householdId = window.sessionStorage.getItem(HOUSEHOLD_KEY);
-    if( householdId ) {
+    if (householdId) {
       return Number(householdId);
-    }
-    else {
+    } else {
       return;
     }
-    //TODO:  Determine if we need this, AppComponent should be handling this bootstrap now
-    /*
-    if( householdId ) {
-      return Number(householdId);
-    }
-    else {
-      //If we don't have a householdId, check to see if we have a user and default
-      const userQuery = this.apollo.client.readQuery<GetUser_Query>({query: GetUser_GQL});
-
-      //If we have a user (we should)
-      if( userQuery?.getUser.users?.length == 1 )
-      {
-        const user = userQuery.getUser.users[0]!;
-        //If they have a default household
-        if( user.defaultHousehold ) {
-          let userType = "member";
-          if (user.id == user.defaultHousehold.owner?.id)
-            userType = "owner";
-          this.switchHousehold(user.defaultHousehold.id, userType);
-          return user.defaultHousehold.id;
-        }
-      }
-      return;
-    }*/
   }
 
   /**

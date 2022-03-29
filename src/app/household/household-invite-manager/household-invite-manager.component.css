@@ -18,8 +18,15 @@ th.mat-header-cell
 
 .mat-column-invitee
 {
-  width: 40%;
+  width: 20%;
 }
+
+.mat-column-message
+{
+  width: 20%;
+  font-size: smaller;
+}
+
 .mat-column-get_link
 {
   width: 20%;

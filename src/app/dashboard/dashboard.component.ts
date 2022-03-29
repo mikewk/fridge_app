@@ -24,6 +24,7 @@ import {NEVER, switchMap} from "rxjs";
 export class DashboardComponent implements OnInit {
   household?: Household;
   selectedStorages?: QL_Storage[];
+  loading: boolean = true;
 
 
   constructor(private storageService: StorageService,
@@ -51,6 +52,7 @@ export class DashboardComponent implements OnInit {
           }
           else
           {
+            this.loading=false;
             return NEVER;
           }
         })
@@ -70,6 +72,7 @@ export class DashboardComponent implements OnInit {
                     }, false);
                 });
               }
+            this.loading=false;
             } else {
               console.log(data);
             }

@@ -6,7 +6,7 @@ import {
   GetHousehold_Query,
   GetMemberHouseholds_Query,
   Household,
-  HouseholdsPayload
+  HouseholdsPayload, RemovalPayload
 } from "../graphql.types";
 
 //GraphQL Queries

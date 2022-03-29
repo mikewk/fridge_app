@@ -12,6 +12,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {ProfileChangeDefaultComponent} from "./change-default/profile-change-default.component";
 import {ProfileAddHouseholdComponent} from "./profile-add-household/profile-add-household.component";
 import {ProfileLandingComponent} from './profile-landing/profile-landing.component';
+import { ProfileLeaveDialogComponent } from './profile-leave-dialog/profile-leave-dialog.component';
 
 export {ProfileLandingComponent}
 
@@ -19,7 +20,8 @@ export {ProfileLandingComponent}
   declarations: [
     ProfileLandingComponent,
     ProfileAddHouseholdComponent,
-    ProfileChangeDefaultComponent
+    ProfileChangeDefaultComponent,
+    ProfileLeaveDialogComponent
   ],
   imports: [
     CommonModule,

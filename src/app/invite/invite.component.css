@@ -19,7 +19,13 @@ mat-card-content
 mat-list-item
 {
   height: 20px !important;
-  font-size: 10pt !important;
+  font-size: smaller !important;
+}
+
+.message
+{
+  padding:10px;
+  font-size:smaller;
 }
 
 .bold

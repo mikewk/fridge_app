@@ -3,7 +3,6 @@ import {Household, Invite} from "../graphql.types";
 import {ActivatedRoute, Router} from "@angular/router";
 import {InviteService} from "../_graphql-services/invite.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {HouseholdService} from "../_graphql-services/household.service";
 import {LocalStorageService} from "../_services/local-storage.service";
 import {AuthService} from "../_graphql-services/auth.service";
 
@@ -93,15 +92,8 @@ export class InviteComponent implements OnInit {
         else
         {
           //If an invite is accepted, we need to get a new token ASAP
-          this.authService.refreshToken().subscribe(data=>{
-            if( data.token )
-            {
-              this.localStorage.saveToken(data.token);
-              this.tokenRefresh = true;
-            }
-            else {
-              this.tokenRefresh = false;
-            }
+          this.localStorage.refreshToken().subscribe(success=>{
+              this.tokenRefresh = success;
           });
           this.snackBar.open("Accept successful.", undefined, {panelClass:"simple-snack-bar", duration:2000});
           this.household = data.households[0];

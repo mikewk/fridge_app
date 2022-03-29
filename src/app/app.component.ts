@@ -7,7 +7,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NEVER, switchMap} from "rxjs";
 import {HouseholdService} from "./_graphql-services/household.service";
 import {UserService} from "./_graphql-services/user.service";
-import {LoginComponent} from "./login/login.component";
 
 @Component({
   selector: 'app-root',
@@ -45,9 +44,16 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.localStorageService.getToken();
-    //this.localStorageService.userType.subscribe(x=>{this.userType=x; console.log("Usertype Changed to "+x);});
+
     this.localStorageService.subscribeUsertype((x:any)=>{this.userType=x; console.log("Usertype Changed to "+x);})
 
+    //Watch window storage to see if we've been logged out
+    window.onstorage = () => {
+      if( this.localStorageService.getToken() == null ) {
+        //oh snap we've been logged out
+        this.logout();
+      }
+    }
 
     this.localStorageService.getSelectedHouseholdObservable().pipe(switchMap(
         (householdId:number | undefined)=>{
@@ -75,12 +81,12 @@ export class AppComponent {
             //check for default household
             if( this.user.defaultHousehold )
             {
-              //Set selected household then delay the loading to prevent default welcome message from popping
+              //Set selected household
               let userType = "member";
               if(this.user.id == this.user.defaultHousehold.owner!.id)
                 userType="owner";
               this.localStorageService.switchHousehold(this.user.defaultHousehold.id, userType)
-              setTimeout(()=>this.loading=false, 500);
+              this.loading=false;
             }
             else {
               this.loading=false;
