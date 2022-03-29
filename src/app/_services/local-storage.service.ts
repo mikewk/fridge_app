@@ -158,12 +158,11 @@ export class LocalStorageService {
    * Get the current user id
    */
   public getUser(): number | undefined {
-    const userString = window.localStorage.getItem(USER_KEY);
-    if (userString) {
-      return Number(userString);
-    } else {
-      return undefined;
+    const data = this.apollo.client.readQuery<GetUser_Query>({query:GetUser_GQL});
+    if( data?.getUser?.users) {
+      return data.getUser.users[0].id;
     }
+    return;
   }
 
   /**

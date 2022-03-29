@@ -112,7 +112,8 @@ export class InviteService {
       query: GetInvite_GQL,
       variables: {
         id: id
-      }
+      },
+      fetchPolicy: "network-only"
     }).valueChanges.pipe(map((result) => {
       if (result.errors) {
         return {error: result.errors.join(",")};
@@ -194,11 +195,59 @@ export class InviteService {
     }));
   }
 
-  acceptInvite(invite: Invite): Observable<HouseholdsPayload>{
+  acceptInvite(invite: Invite, userId: number): Observable<HouseholdsPayload>{
     return this.apollo.mutate<AcceptHouseholdInvite_Mutation>( {
       mutation: AcceptHouseholdInvite_GQL,
       variables: {
         inviteId: invite.id
+      },
+      update: (store, {data: payload}) => {
+        //If we got a household back, we have been invite
+        if( payload?.acceptHouseholdInvite.households )
+        {
+          const newHousehold = payload.acceptHouseholdInvite.households[0];
+          const data = store.readFragment<any>({
+              id: "User:" + userId,
+              fragment: gql`
+                fragment MemberAndDefault on User
+                {
+                  memberHouseholds {
+                    ...HouseholdCore
+                  },
+                  defaultHousehold{
+                    ...HouseholdCore
+                  }
+                },
+                ${HOUSEHOLD_CORE}
+              `,
+              fragmentName: "MemberAndDefault"
+            });
+          let newHouseholds = [...data.memberHouseholds, newHousehold];
+          if( !data.defaultHousehold )
+          {
+            // noinspection GraphQLSchemaValidation
+            store.writeFragment({
+              id: "User:" + userId, fragment: gql`
+                fragment MyUserDefaultHousehold on User {
+                  defaultHousehold
+                }
+              `,
+              data: {defaultHousehold:newHousehold},
+            });
+          }
+          store.writeFragment({
+            id: "User:"+userId, fragment: gql`
+              fragment MyUserMemberHouseholds on User {
+                memberHouseholds {
+                  ...HouseholdCore
+                }
+              }
+              ${HOUSEHOLD_CORE}
+            `,
+            data: {memberHouseholds:newHouseholds},
+            fragmentName:"MyUserMemberHouseholds"
+          });
+        }
       }
     }).pipe(map((result) => {
       //Standardizes error and payload return

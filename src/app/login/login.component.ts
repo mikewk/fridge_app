@@ -30,12 +30,7 @@ export class LoginComponent implements OnInit {
               private localStorage: LocalStorageService,
               private route: ActivatedRoute,
               private router: Router) {
-    //Just double check to make sure we're not logged in already
-    let token = this.localStorage.getToken()
-    if (token) {
-      this.isLoggedIn = true;
-      this.determineRoute();
-    }
+
   }
 
   ngOnInit(): void {

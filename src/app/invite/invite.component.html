@@ -84,6 +84,9 @@
       </p>
       <p>To switch to that household now, <button class="btn btn-link p-0" (click)="changeHousehold()">click here.</button>
       </p>
+      <p *ngIf="tokenRefresh===false" class="warning">
+        An error occurred, you may need to log out and back in to view this household's images.
+      </p>
     </mat-card-content>
   </mat-card>
 </div>

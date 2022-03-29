@@ -63,7 +63,6 @@ export type InvitesPayload = {
 export type AuthPayload = {
   token: string
   error: string
-  user?: User
 }
 
 export type HouseholdsPayload = {

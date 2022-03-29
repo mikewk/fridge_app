@@ -5,6 +5,7 @@ import {InviteService} from "../_graphql-services/invite.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {HouseholdService} from "../_graphql-services/household.service";
 import {LocalStorageService} from "../_services/local-storage.service";
+import {AuthService} from "../_graphql-services/auth.service";
 
 /**
  * Some strings that should be moved into some global area to be easily changed out / i18n
@@ -25,9 +26,11 @@ export class InviteComponent implements OnInit {
   canNotSee: String[] = CanNotSee;
   rejected: boolean = false;
   accepted: boolean = false;
+  tokenRefresh?: boolean
   household?: Household;
   constructor(private route: ActivatedRoute,
               private inviteService: InviteService,
+              private authService: AuthService,
               private snackBar: MatSnackBar,
               private localStorage: LocalStorageService,
               private router: Router) { }
@@ -55,7 +58,7 @@ export class InviteComponent implements OnInit {
     if( this.household ) {
       const userId = this.localStorage.getUser()!;
       let userType = "member";
-      if( userId == this.household.id)
+      if( userId == this.household.owner!.id)
         userType = "owner";
       this.localStorage.switchHousehold(this.household.id, userType);
       this.router.navigate(["dashboard"]);
@@ -80,7 +83,8 @@ export class InviteComponent implements OnInit {
   }
 
   accept() {
-    this.inviteService.acceptInvite(this.invite!).subscribe({
+    const userId = this.localStorage.getUser()!;
+    this.inviteService.acceptInvite(this.invite!, userId).subscribe({
       next: data => {
         if( data.error || !data.households)
         {
@@ -88,6 +92,17 @@ export class InviteComponent implements OnInit {
         }
         else
         {
+          //If an invite is accepted, we need to get a new token ASAP
+          this.authService.refreshToken().subscribe(data=>{
+            if( data.token )
+            {
+              this.localStorage.saveToken(data.token);
+              this.tokenRefresh = true;
+            }
+            else {
+              this.tokenRefresh = false;
+            }
+          });
           this.snackBar.open("Accept successful.", undefined, {panelClass:"simple-snack-bar", duration:2000});
           this.household = data.households[0];
           this.accepted = true;
