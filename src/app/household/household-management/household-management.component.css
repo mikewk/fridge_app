@@ -13,7 +13,19 @@ mat-card{
   margin-left: 10%;
 }
 
+mat-card-title
+{
+
+}
+
 .hname
 {
   font-weight: bold;
+  font-size: large;
+}
+
+.location
+{
+  font-style: italic;
+  font-size: medium;
 }

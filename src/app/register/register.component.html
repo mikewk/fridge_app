@@ -1,10 +1,4 @@
-<div class="col-md-12">
-  <div class="card card-container">
-    <img
-      class="profile-img-card"
-      id="profile-img"
-      src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-    />
+<mat-card>
     <form
       #f="ngForm"
       (ngSubmit)="f.form.valid && onSubmit()"
@@ -13,23 +7,22 @@
       name="form"
       novalidate
     >
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput
           #name="ngModel"
           [(ngModel)]="form.name"
           class="form-control"
-          name="username"
+          name="fullName"
           required
           type="text"
         />
-        <div *ngIf="name.errors && f.submitted" class="alert-danger">
-          <div *ngIf="name.errors['required']">Username is required</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
+        <mat-error *ngIf="name.invalid">Name is required</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Email</mat-label>
         <input
+          matInput
           #email="ngModel"
           [(ngModel)]="form.email"
           class="form-control"
@@ -38,16 +31,17 @@
           required
           type="email"
         />
-        <div *ngIf="email.errors && f.submitted" class="alert-danger">
+        <mat-error *ngIf="email.errors">
           <div *ngIf="email.errors['required']">Email is required</div>
           <div *ngIf="email.errors['email']">
             Email must be a valid email address
           </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
         <input
+          matInput
           #password="ngModel"
           [(ngModel)]="form.password"
           class="form-control"
@@ -56,16 +50,17 @@
           required
           type="password"
         />
-        <div *ngIf="password.errors && f.submitted" class="alert-danger">
+        <mat-error *ngIf="password.errors">
           <div *ngIf="password.errors['required']">Password is required</div>
           <div *ngIf="password.errors['minlength']">
             Password must be at least 6 characters
           </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="password2">Re-enter Password</label>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Re-enter Password</mat-label>
         <input
+          matInput
           #password2="ngModel"
           ComparePassword.mustMatch
           [(ngModel)]="form.password2"
@@ -75,17 +70,17 @@
           required
           type="password"
         />
-        <div *ngIf="password2.errors && f.submitted" class="alert-danger">
+        <mat-error *ngIf="password2.errors">
           <div *ngIf="password2.errors['required']">Password is required</div>
           <div *ngIf="password2.errors['minlength']">
             Password must be at least 6 characters
           </div>
           <div *ngIf="password2.errors['mustMatch']">Passwords must match</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <button class="btn btn-primary btn-block">Sign Up</button>
-      </div>
+        </mat-error>
+      </mat-form-field>
+      <mat-card-actions>
+        <button mat-raised-button>Sign Up</button>
+      </mat-card-actions>
 
       <div *ngIf="f.submitted && isSignUpFailed" class="alert alert-warning">
         Signup failed!<br/>{{ errorMessage }}
@@ -95,5 +90,4 @@
     <div *ngIf="isSuccessful" class="alert alert-success">
       Your registration is successful!
     </div>
-  </div>
-</div>
+</mat-card>

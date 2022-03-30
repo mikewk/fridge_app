@@ -22,7 +22,7 @@ export const GetHousehold = gql`
         users {name, id},
         storages
         {id, name, type, foodItems {
-          id, name, filename, tags, storage {
+          id, name, filename, tags, entered, expiration, storage {
             id, name, type
           }
         }}

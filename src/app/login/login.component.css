@@ -1,5 +1,19 @@
+@media only screen and (max-width: 415px) {
+  .login-card{
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 415px) {
+  .login-card{
+    width: 400px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
+
+
 .login-card {
-  width: 400px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 40px;

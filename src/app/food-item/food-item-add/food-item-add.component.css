@@ -2,6 +2,24 @@
   width: 100%;
 }
 
-img {
+.image-container
+{
   width: 100%;
+  height: 30vh;
+  margin-bottom:10px;
+}
+
+.name-form-field {
+  width: 100%;
+  display: block;
+}
+
+.item_dialog_top
+{
+  font-size: larger;
+}
+
+img
+{
+  width: 100%; height:100%; object-fit: contain;
 }

@@ -11,7 +11,7 @@ import {environment} from "../../environments/environment";
  */
 @Component({
   selector: 'secured-image',
-  styles: ['img { width: 100%; }'],
+  styles: ['img { width: 100%; height:100%; object-fit: contain; }'],
   template: `
     <img [src]="dataUrl$|async"/>
   `

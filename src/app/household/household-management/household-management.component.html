@@ -1,7 +1,8 @@
 <mat-card *ngIf="!notOwned && household">
   <mat-card-title>
-    Managing <span class="hname">{{household?.name}}</span> in {{household?.location}}
+    <span class="hname">{{household?.name}}</span> <span class="location">({{household?.location}})</span>
   </mat-card-title>
+  <mat-divider></mat-divider>
   <mat-action-list>
     <button mat-list-item routerLink="invite">Manage Invitations</button>
     <button *ngIf="household?.users && household.users!.length > 1" mat-list-item (click)="removeUser()">Remove User</button>

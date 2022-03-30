@@ -21,7 +21,7 @@
   </ng-container>
 
   <ng-container matColumnDef="delete">
-    <th mat-header-cell *matHeaderCellDef>Delete/Rescind</th>
+    <th mat-header-cell *matHeaderCellDef>Action</th>
     <td mat-cell *matCellDef="let invite"><button (click)="confirmDelete(invite)" mat-flat-button><span *ngIf="invite.status!=0">Delete</span><span *ngIf="invite.status==0" >Rescind</span></button></td>
   </ng-container>
 

@@ -1,7 +1,7 @@
 table{
-  width: 90%;
-  margin-left: 5%;
-  margin-right: 5%;
+  width: 100%;
+  margin-left: 0%;
+  margin-right: 0%;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -23,17 +23,17 @@ th.mat-header-cell
 
 .mat-column-message
 {
-  width: 20%;
+  width: 50%;
   font-size: smaller;
 }
 
 .mat-column-get_link
 {
-  width: 20%;
+  width: 15%;
 }
 .mat-column-delete
 {
-  width: 30%;
+  width: 10%;
 }
 
 mat-card
@@ -47,4 +47,18 @@ button
 {
   margin-top:10px;
   margin-left:5%;
+}
+
+@media only screen and (max-width: 415px) {
+  td, th {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+
+  mat-card{
+    width: 100%;
+    margin-left: 0%;
+    margin-right: 0%;
+  }
+
 }

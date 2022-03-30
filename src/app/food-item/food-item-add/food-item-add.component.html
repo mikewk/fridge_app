@@ -1,7 +1,7 @@
 <form #myForm="ngForm">
-  <div *ngIf="!editing" class="item_dialog_top">
+  <div *ngIf="!editing">
 
-    <h1 *ngIf="!editing" mat-dialog-title>
+    <div class="item_dialog_top" *ngIf="!editing">
       Add Item To
       <mat-form-field appearance="fill">
         <mat-label>Storage</mat-label>
@@ -11,18 +11,22 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-    </h1>
-    <img [src]="image">
+    </div>
+    <div class="image-container">
+      <img [src]="image">
+    </div>
   </div>
-  <div *ngIf="editing" class="item_dialog_top">
-    <h1 *ngIf="editing">
+  <div *ngIf="editing">
+    <div class="item_dialog_top" *ngIf="editing">
       Edit {{foodItem.name}}
-    </h1>
-    <secured-image [src]="image"></secured-image>
+    </div>
+    <div class="image-container">
+      <secured-image [src]="image"></secured-image>
+    </div>
   </div>
 
   <div mat-dialog-content>
-    <mat-form-field appearance="fill">
+    <mat-form-field class="name-form-field" appearance="fill" >
       <mat-label>Name</mat-label>
       <input [(ngModel)]="foodItem.name" matInput name="name" required>
     </mat-form-field>
