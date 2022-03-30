@@ -1,5 +1,5 @@
 <div *ngIf="household">
-  <h1>{{household.name}} in {{household.location}}</h1>
+  <h1 style="margin-top:10px;">{{household.name}} in {{household.location}}</h1>
     <div *ngIf="household.storages?.length; else message">
   <mat-form-field appearance="fill">
     <mat-label>Show/Hide Storages</mat-label>
