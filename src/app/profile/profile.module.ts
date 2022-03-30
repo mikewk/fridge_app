@@ -13,6 +13,7 @@ import {ProfileChangeDefaultComponent} from "./change-default/profile-change-def
 import {ProfileAddHouseholdComponent} from "./profile-add-household/profile-add-household.component";
 import {ProfileLandingComponent} from './profile-landing/profile-landing.component';
 import { ProfileLeaveDialogComponent } from './profile-leave-dialog/profile-leave-dialog.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 export {ProfileLandingComponent}
 
@@ -31,7 +32,8 @@ export {ProfileLandingComponent}
     MatDialogModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatCheckboxModule
   ],
   exports:
     [

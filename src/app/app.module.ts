@@ -26,8 +26,6 @@ import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {HomeComponent} from './home/home.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import {WelcomeComponent} from './welcome/welcome.component';
-//import {HouseholdModule} from "./household/household.module";
 import { InviteComponent } from './invite/invite.component';
 import {MatListModule} from "@angular/material/list";
 
@@ -39,7 +37,6 @@ import {MatListModule} from "@angular/material/list";
     RegisterComponent,
     HomeComponent,
     MustMatchDirective,
-    WelcomeComponent,
     DashboardComponent,
     InviteComponent
   ],
@@ -49,7 +46,6 @@ import {MatListModule} from "@angular/material/list";
         FormsModule,
         HttpClientModule,
         GraphQLModule,
- //       HouseholdModule,
         FoodItemModule,
         BrowserAnimationsModule,
         JwtModule.forRoot({

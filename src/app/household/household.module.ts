@@ -20,6 +20,8 @@ import { HouseholdAddInviteComponent } from './household-add-invite/household-ad
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatCardModule} from "@angular/material/card";
 import {HouseholdRoutingModule} from "./household-routing.module";
+import { HouseholdRemoveMemberComponent } from './household-remove-member/household-remove-member.component';
+import { HouseholdRemoveHouseholdDialogComponent } from './household-remove-household/household-remove-household-dialog.component';
 
 export {HouseholdManagementComponent}
 export {HouseholdDetailsComponent}
@@ -34,7 +36,9 @@ export {HouseholdInviteManagerComponent}
     HouseholdAddStorageComponent,
     HouseholdRemoveStorageComponent,
     HouseholdInviteManagerComponent,
-    HouseholdAddInviteComponent
+    HouseholdAddInviteComponent,
+    HouseholdRemoveMemberComponent,
+    HouseholdRemoveHouseholdDialogComponent
   ],
   imports: [
     CommonModule,

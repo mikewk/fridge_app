@@ -55,7 +55,7 @@ export class InviteComponent implements OnInit {
 
   changeHousehold() {
     if( this.household ) {
-      const userId = this.localStorage.getUser()!;
+      const userId = this.localStorage.getUser()!.id;
       let userType = "member";
       if( userId == this.household.owner!.id)
         userType = "owner";
@@ -82,7 +82,7 @@ export class InviteComponent implements OnInit {
   }
 
   accept() {
-    const userId = this.localStorage.getUser()!;
+    const userId = this.localStorage.getUser()!.id;
     this.inviteService.acceptInvite(this.invite!, userId).subscribe({
       next: data => {
         if( data.error || !data.households)

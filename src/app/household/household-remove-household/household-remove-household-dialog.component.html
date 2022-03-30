@@ -1,0 +1,24 @@
+<form #myForm="ngForm">
+  <h1 mat-dialog-title>
+    Permanently Remove Household
+  </h1>
+  <mat-card class="warning">
+    <p>DELETING A HOUSEHOLD IS PERMANENT</p>
+    <p>All images will be deleted.  All information about the household will be lost.  This can not be undone.</p>
+    <p>Be very very sure this is what you want to do.</p>
+  </mat-card>
+  <div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Household</mat-label>
+    <mat-select [(ngModel)]="selectedHousehold" name="selectedHousehold" required>
+      <mat-option *ngFor="let household of ownedHouseholds" [value]="household">
+        {{household.name}} in {{household.location}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [disabled]=myForm.invalid [mat-dialog-close]="selectedHousehold" mat-button>Remove Household</button>
+  </div>
+</form>

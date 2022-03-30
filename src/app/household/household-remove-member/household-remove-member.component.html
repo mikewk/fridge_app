@@ -1,0 +1,18 @@
+<form #myForm="ngForm">
+  <h1 mat-dialog-title>
+    Remove User from {{household.name}}
+  </h1>
+  <div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Users</mat-label>
+    <mat-select [(ngModel)]="selectedUser" name="selectedUser" required>
+      <mat-option></mat-option>
+      <mat-option *ngFor="let user of userList" [value]="user">{{user.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [disabled]=myForm.invalid [mat-dialog-close]="selectedUser" mat-button>Remove User</button>
+  </div>
+</form>

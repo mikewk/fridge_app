@@ -185,3 +185,11 @@ export type RefreshToken_Mutation = {
 export type LeaveHousehold_Mutation = {
   leaveHousehold: RemovalPayload
 }
+
+export type RemoveUserFromHousehold_Mutation = {
+  removeUserFromHousehold: RemovalPayload
+}
+
+export type RemoveHousehold_Mutation = {
+  removeHousehold: RemovalPayload
+}

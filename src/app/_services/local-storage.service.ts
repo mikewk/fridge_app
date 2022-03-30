@@ -113,7 +113,7 @@ export class LocalStorageService {
   /**
    * Change selected household id
    */
-  public switchHousehold(householdId: number, userType: string) {
+  public switchHousehold(householdId: number | undefined, userType: string) {
     window.sessionStorage.setItem(HOUSEHOLD_KEY, String(householdId));
     window.sessionStorage.setItem(USER_TYPE_KEY, userType);
     //clear out the selected storages
@@ -149,10 +149,10 @@ export class LocalStorageService {
   /**
    * Get the current user id
    */
-  public getUser(): number | undefined {
+  public getUser(): User | undefined {
     const data = this.apollo.client.readQuery<GetUser_Query>({query:GetUser_GQL});
     if( data?.getUser?.users) {
-      return data.getUser.users[0].id;
+      return data.getUser.users[0];
     }
     return;
   }

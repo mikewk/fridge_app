@@ -10,6 +10,11 @@ import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdRemoveStorageComponent} from "../household-remove-storage/household-remove-storage.component";
 import {Household} from "../../graphql.types";
 import {EMPTY, NEVER, Observable, switchMap} from "rxjs";
+import {HouseholdRemoveMemberComponent} from "../household-remove-member/household-remove-member.component";
+import {
+  HouseholdRemoveHouseholdDialogComponent
+} from "../household-remove-household/household-remove-household-dialog.component";
+import {Router} from "@angular/router";
 
 /**
  * Displays household management menu and handles the callbacks from GraphQL API calls
@@ -29,7 +34,8 @@ export class HouseholdManagementComponent implements OnInit {
               private storageService: StorageService,
               private dialogHelper: DialogHelperService,
               private localStorage: LocalStorageService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -47,8 +53,7 @@ export class HouseholdManagementComponent implements OnInit {
             if( this.localStorage.getUserType() != "owner" ) {
               this.notOwned = true;
             }
-            else
-            {
+            else {
               this.notOwned = false;
               this.household = data.households[0];
             }
@@ -73,14 +78,60 @@ export class HouseholdManagementComponent implements OnInit {
    * Show a dialog to remove a user from the system and remove them if okayed.
    */
   removeUser() {
-
+     this.dialogHelper.launchDialog(HouseholdRemoveMemberComponent,
+                                     (x: any) => this.householdService.removeMember(x, this.household!),
+                                     {household:this.household}).subscribe({
+      next: data => {
+        //If the API call was successful
+        if (data.success) {
+          this.snackBar.open("User Removed Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+        } else {
+          console.log(data);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   /**
    * Remove the household from the system, LOTS OF WARNINGS THIS IS NOT UNDOABLE WHY ARE WE LETTING THEM DO THIS
    */
   removeHousehold() {
-
+    const user = this.localStorage.getUser()!;
+    this.dialogHelper.launchDialog(HouseholdRemoveHouseholdDialogComponent,
+      (x: Household) => {
+        if (confirm("Are you absolutely sure?"))
+        {
+          return this.householdService.removeHousehold(x, user.id);
+        }
+        else
+        {
+          return EMPTY;
+        }
+      }, {ownedHouseholds: user!.ownedHouseholds}).subscribe({
+      next: data => {
+        //If the API call was successful
+        if (data.success) {
+          this.snackBar.open("Removed Household Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+          //Might need to force a reload to pick a new default household
+          const newUser = this.localStorage.getUser()!;
+          let userType = "member"
+          if( newUser.defaultHousehold && newUser.id == newUser.defaultHousehold.owner!.id )
+            userType="owner";
+          this.localStorage.switchHousehold(newUser.defaultHousehold?.id, userType);
+          this.router.navigate(["/dashboard"]);
+        } else {
+          console.log(data);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   /**
@@ -129,19 +180,19 @@ export class HouseholdManagementComponent implements OnInit {
       this.dialogHelper.launchDialog(HouseholdRemoveStorageComponent,
                                      (x: any) => this.storageService.removeStorage(x, this.household!),
                                      {household:this.household}).subscribe({
-      next: data => {
-        //If the API call was successful
-        if (data.success) {
-          this.snackBar.open("Storage Removed Successfully", undefined,
-            {duration: 2000, panelClass: ['simple-snack-bar']});
-        } else {
-          console.log(data);
+        next: data => {
+          //If the API call was successful
+          if (data.success) {
+            this.snackBar.open("Storage Removed Successfully", undefined,
+              {duration: 2000, panelClass: ['simple-snack-bar']});
+          } else {
+            console.log(data);
+          }
+        },
+        error: err => {
+          console.log(err);
         }
-      },
-      error: err => {
-        console.log(err);
-      }
-    });
+      });
     }
     else
     {

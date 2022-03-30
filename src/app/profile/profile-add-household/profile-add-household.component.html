@@ -11,9 +11,11 @@
       <mat-label>Location</mat-label>
       <input [(ngModel)]="household.location" matInput name="location" required>
     </mat-form-field>
+    <mat-checkbox [(ngModel)]="redirect" name="redirect" color="primary">Go to management page</mat-checkbox>
+
   </div>
   <div mat-dialog-actions>
     <button mat-button mat-dialog-close=>Cancel</button>
-    <button [disabled]=myForm.invalid [mat-dialog-close]="household" mat-button>Add Household</button>
+    <button [disabled]=myForm.invalid [mat-dialog-close]="{household:household, redirect:redirect}" mat-button>Add Household</button>
   </div>
 </form>

@@ -12,7 +12,7 @@ import {Household} from "../../graphql.types";
 })
 export class ProfileAddHouseholdComponent implements OnInit {
   household: Household = {name: "", location: "", id:-1};
-
+  redirect: boolean = true;
   constructor() {
   }
 

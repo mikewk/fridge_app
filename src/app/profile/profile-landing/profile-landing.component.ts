@@ -8,8 +8,9 @@ import {UserService} from "../../_graphql-services/user.service";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdService} from "../../_graphql-services/household.service";
 import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add-household.component";
-import {User} from "../../graphql.types";
+import {Household, User} from "../../graphql.types";
 import {ProfileLeaveDialogComponent} from "../profile-leave-dialog/profile-leave-dialog.component";
+import {Router} from "@angular/router";
 
 /**
  * Landing page for profile management
@@ -22,12 +23,13 @@ import {ProfileLeaveDialogComponent} from "../profile-leave-dialog/profile-leave
 export class ProfileLandingComponent implements OnInit {
   user? :User;
   moreThanOneHousehold: boolean = false;
+  redirectAfterAdd: boolean = false;
   constructor(private householdService: HouseholdService,
               private userService: UserService,
               private snackBar: MatSnackBar,
               private dialogHelper: DialogHelperService,
-              private localStorage: LocalStorageService
-  ) {
+              private localStorage: LocalStorageService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -69,21 +71,30 @@ export class ProfileLandingComponent implements OnInit {
    */
   addHousehold() {
     this.dialogHelper.launchDialog(ProfileAddHouseholdComponent,
-                                  (x: any) => this.householdService.addHousehold(x)).subscribe({
-      next: data => {
-        //If the API call was successful
-        if (data.households) {
-          this.localStorage.refreshToken().subscribe();
-          this.snackBar.open("Household Added Successfully", undefined,
-            {duration: 2000, panelClass: ['simple-snack-bar']});
-        } else {
-          console.log(data);
-        }
-      },
-      error: err => {
-        console.log(err);
-      }
-    });
+      ({household, redirect}: {household:Household, redirect:boolean}) => {
+        this.redirectAfterAdd = redirect;
+        return this.householdService.addHousehold(household);
+      })
+      .subscribe({
+          next: data => {
+            //If the API call was successful
+            if (data.households) {
+              this.localStorage.refreshToken().subscribe();
+              this.snackBar.open("Household Added Successfully", undefined,
+                {duration: 2000, panelClass: ['simple-snack-bar']});
+              if( this.redirectAfterAdd )
+              {
+                this.localStorage.switchHousehold(data.households[0].id, "owner")
+                this.router.navigate(["/manage"]);
+              }
+            } else {
+              console.log(data);
+            }
+          },
+          error: err => {
+            console.log(err);
+          }
+       });
 
   }
 
