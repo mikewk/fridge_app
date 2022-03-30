@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 import {Household, User} from "../../graphql.types";
-import {LocalStorageService} from "../../_services/local-storage.service";
-import {UserService} from "../../_graphql-services/user.service";
+import {AuthService} from "../../_graphql-services/auth.service";
 
 /**
  * Simple dialog to change a user's default household
@@ -20,12 +18,12 @@ export class ProfileChangeDefaultComponent implements OnInit {
   user?: User;
 
   constructor(private snackBar: MatSnackBar,
-              private userService: UserService) {
+              private authService: AuthService) {
     //Set our household data
   }
 
   ngOnInit(): void {
-        this.userService.getUser().subscribe(data=>
+        this.authService.getUser().subscribe(data=>
         {
           if( data.users )
           {

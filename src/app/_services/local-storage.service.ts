@@ -3,8 +3,7 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 import {GetUser_Query, QL_Storage, User} from "../graphql.types";
 import {BehaviorSubject, map, Observable, Observer} from "rxjs";
 import {Apollo} from "apollo-angular";
-import {GetUser_GQL} from "../_graphql-services/user.service";
-import {AuthService} from "../_graphql-services/auth.service";
+import {AuthService, GetUser_GQL} from "../_graphql-services/auth.service";
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'user-object';

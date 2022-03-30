@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Household, User} from "../../graphql.types";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {UserService} from "../../_graphql-services/user.service";
 import {first} from "rxjs";
+import {AuthService} from "../../_graphql-services/auth.service";
 
 @Component({
   selector: 'app-profile-leave-dialog',
@@ -16,12 +16,12 @@ export class ProfileLeaveDialogComponent implements OnInit {
   user?: User;
 
   constructor(private snackBar: MatSnackBar,
-              private userService: UserService) {
+              private authService: AuthService) {
     //Set our household data
   }
 
   ngOnInit(): void {
-    this.userService.getUser().pipe(first()).subscribe(data=>
+    this.authService.getUser().pipe(first()).subscribe(data=>
     {
       if( data.users )
       {

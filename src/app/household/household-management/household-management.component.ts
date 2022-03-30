@@ -2,19 +2,19 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {HouseholdService} from "../../_graphql-services/household.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {ProfileAddHouseholdComponent} from "../../profile/profile-add-household/profile-add-household.component";
 import {HouseholdAddStorageComponent} from "../household-add-storage/household-add-storage.component";
 import {StorageService} from "../../_graphql-services/storage.service";
 import {DialogHelperService} from "../../_helpers/dialog-helper.service";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdRemoveStorageComponent} from "../household-remove-storage/household-remove-storage.component";
 import {Household} from "../../graphql.types";
-import {EMPTY, NEVER, Observable, switchMap} from "rxjs";
+import {EMPTY, NEVER, switchMap} from "rxjs";
 import {HouseholdRemoveMemberComponent} from "../household-remove-member/household-remove-member.component";
 import {
   HouseholdRemoveHouseholdDialogComponent
 } from "../household-remove-household/household-remove-household-dialog.component";
 import {Router} from "@angular/router";
+import {ManagementService} from "../../_graphql-services/management.service";
 
 /**
  * Displays household management menu and handles the callbacks from GraphQL API calls
@@ -30,6 +30,7 @@ export class HouseholdManagementComponent implements OnInit {
   notOwned: boolean = false;
 
   constructor(private dialog: MatDialog,
+              private managementService: ManagementService,
               private householdService: HouseholdService,
               private storageService: StorageService,
               private dialogHelper: DialogHelperService,
@@ -79,7 +80,7 @@ export class HouseholdManagementComponent implements OnInit {
    */
   removeUser() {
      this.dialogHelper.launchDialog(HouseholdRemoveMemberComponent,
-                                     (x: any) => this.householdService.removeMember(x, this.household!),
+                                     (x: any) => this.managementService.removeMember(x, this.household!),
                                      {household:this.household}).subscribe({
       next: data => {
         //If the API call was successful
@@ -105,7 +106,7 @@ export class HouseholdManagementComponent implements OnInit {
       (x: Household) => {
         if (confirm("Are you absolutely sure?"))
         {
-          return this.householdService.removeHousehold(x, user.id);
+          return this.managementService.removeHousehold(x, user.id);
         }
         else
         {

@@ -8,12 +8,13 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 import {ProfileChangeDefaultComponent} from "./change-default/profile-change-default.component";
 import {ProfileAddHouseholdComponent} from "./profile-add-household/profile-add-household.component";
 import {ProfileLandingComponent} from './profile-landing/profile-landing.component';
-import { ProfileLeaveDialogComponent } from './profile-leave-dialog/profile-leave-dialog.component';
-import {MatCheckboxModule} from "@angular/material/checkbox";
+import {ProfileLeaveDialogComponent } from './profile-leave-dialog/profile-leave-dialog.component';
+import {ProfileRoutingModule} from "./profile-routing.module";
 
 export {ProfileLandingComponent}
 
@@ -22,7 +23,7 @@ export {ProfileLandingComponent}
     ProfileLandingComponent,
     ProfileAddHouseholdComponent,
     ProfileChangeDefaultComponent,
-    ProfileLeaveDialogComponent
+    ProfileLeaveDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -33,7 +34,8 @@ export {ProfileLandingComponent}
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ProfileRoutingModule
   ],
   exports:
     [

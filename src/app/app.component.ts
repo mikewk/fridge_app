@@ -6,7 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NEVER, switchMap} from "rxjs";
 import {HouseholdService} from "./_graphql-services/household.service";
-import {UserService} from "./_graphql-services/user.service";
+import {AuthService} from "./_graphql-services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ export class AppComponent {
               private route: ActivatedRoute,
               private router: Router,
               private householdService: HouseholdService,
-              private userService: UserService) {
+              private authService: AuthService) {
   }
 
   onActivate(componentRef: any)
@@ -71,7 +71,7 @@ export class AppComponent {
 
     if (this.isLoggedIn) {
       //If we're logged in, get our user from localstorage
-      this.userService.getUser().subscribe(data=>
+      this.authService.getUser().subscribe(data=>
       {
         if( data.users )
         {

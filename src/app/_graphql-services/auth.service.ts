@@ -2,7 +2,15 @@ import {Injectable} from '@angular/core';
 import {map, Observable} from 'rxjs';
 import {Apollo, gql} from "apollo-angular";
 
-import {AuthPayload, Login_Mutation, RefreshToken_Mutation, Signup_Mutation} from '../graphql.types'
+import {
+  AuthPayload,
+  GetUser_Query,
+  Login_Mutation,
+  RefreshToken_Mutation,
+  Signup_Mutation,
+  UsersPayload
+} from '../graphql.types'
+import {USER_FIELDS} from "../graphql.fragments";
 
 //GraphQL Constants
 const LoginGQL = gql`
@@ -32,6 +40,18 @@ const RefreshToken_GQL = gql`
       token
     }
   }
+`
+export const GetUser_GQL = gql`
+  query getUser {
+    getUser {
+      error,
+      users{
+        ...UserFields
+      }
+    }
+  }
+  ${USER_FIELDS}
+
 `
 
 
@@ -112,5 +132,26 @@ export class AuthService {
       }
     }));
   }
+
+  /**
+  * Gets the user object for the currently logged-in user
+  */
+  getUser(): Observable<UsersPayload>
+  {
+    return this.apollo.watchQuery<GetUser_Query>({
+      query: GetUser_GQL,
+
+    }).valueChanges.pipe(map((result) => {
+      if (result.errors) {
+        return  {error: result.errors.join(","), users: undefined};
+      } else if (!result.data?.getUser) {
+        return {"error": "No data returned", users: undefined};
+      } else {
+        return result.data.getUser;
+      }
+    }));
+  }
+
+
 
 }

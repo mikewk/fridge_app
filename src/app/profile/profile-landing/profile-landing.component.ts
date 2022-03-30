@@ -6,11 +6,11 @@ import {DialogHelperService} from "../../_helpers/dialog-helper.service";
 import {ProfileChangeDefaultComponent} from "../change-default/profile-change-default.component";
 import {UserService} from "../../_graphql-services/user.service";
 import {LocalStorageService} from "../../_services/local-storage.service";
-import {HouseholdService} from "../../_graphql-services/household.service";
 import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add-household.component";
 import {Household, User} from "../../graphql.types";
 import {ProfileLeaveDialogComponent} from "../profile-leave-dialog/profile-leave-dialog.component";
 import {Router} from "@angular/router";
+import {AuthService} from "../../_graphql-services/auth.service";
 
 /**
  * Landing page for profile management
@@ -24,16 +24,16 @@ export class ProfileLandingComponent implements OnInit {
   user? :User;
   moreThanOneHousehold: boolean = false;
   redirectAfterAdd: boolean = false;
-  constructor(private householdService: HouseholdService,
-              private userService: UserService,
+  constructor(private userService: UserService,
               private snackBar: MatSnackBar,
               private dialogHelper: DialogHelperService,
               private localStorage: LocalStorageService,
+              private authService: AuthService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    this.userService.getUser().subscribe((data)=> {
+    this.authService.getUser().subscribe((data)=> {
         if (data.users) {
           this.user = data.users[0];
           if( this.user.memberHouseholds.length > 1 )
@@ -73,7 +73,7 @@ export class ProfileLandingComponent implements OnInit {
     this.dialogHelper.launchDialog(ProfileAddHouseholdComponent,
       ({household, redirect}: {household:Household, redirect:boolean}) => {
         this.redirectAfterAdd = redirect;
-        return this.householdService.addHousehold(household);
+        return this.userService.addHousehold(household);
       })
       .subscribe({
           next: data => {

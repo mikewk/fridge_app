@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
   loading: boolean = true;
 
 
+
   constructor(private storageService: StorageService,
               private householdService: HouseholdService,
               private foodItemService: FoodItemService,
@@ -93,6 +94,19 @@ export class DashboardComponent implements OnInit {
     return "FoodItem:" + item.id;
   }
 
+  compFoodItems(itemA: FoodItem, itemB: FoodItem)
+  {
+    if( !itemA.expiration ) {
+      if( !itemB.expiration )
+        return 0;
+      return 1
+    }
+    if( !itemB.expiration )
+      return 0;
+
+    return (itemA.expiration > itemB.expiration)?1:0
+  }
+
   /**
    * Helper function for angular to maintain the storage selected list
    * @param index
@@ -110,7 +124,7 @@ export class DashboardComponent implements OnInit {
     this.itemDialogService.addItem(this.household!).subscribe({
       next: data => {
         //If the API call was successful
-        if (data.addFoodItemToStorage) {
+        if (data.addFoodItemToStorage.foodItems) {
           this.snackBar.open("Food Item Added Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {

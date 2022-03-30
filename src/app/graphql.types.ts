@@ -1,7 +1,6 @@
 /**
  * A set of types based off the GraphQL API schema to help facilitate parsing objects in and out of the API
  */
-import {UserService} from "./_graphql-services/user.service";
 
 export type User = {
   id: number

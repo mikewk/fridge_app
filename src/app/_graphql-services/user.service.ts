@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {
-  ChangeDefaultHousehold_Mutation, GetUser_Query,
+  AddHousehold_Mutation,
+  ChangeDefaultHousehold_Mutation,
   Household,
-  HouseholdsPayload, LeaveHousehold_Mutation, RemovalPayload,
-  UsersPayload
+  HouseholdsPayload,
+  LeaveHousehold_Mutation,
+  RemovalPayload,
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
-import {HOUSEHOLD_CORE, READ_MY_USER, USER_FIELDS} from "../graphql.fragments";
-import {AddHousehold, HouseholdService} from "./household.service";
+import {HOUSEHOLD_CORE, READ_MY_USER} from "../graphql.fragments";
+import {AddHousehold} from "./household.service";
 
 const ChangeDefaultHousehold_GQL = gql`
   mutation changeDefaultHousehold($householdId: Int!) {
@@ -20,19 +22,6 @@ const ChangeDefaultHousehold_GQL = gql`
     }
   },
   ${HOUSEHOLD_CORE}
-`
-
-export const GetUser_GQL = gql`
-  query getUser {
-    getUser {
-      error,
-      users{
-      ...UserFields
-      }
-    }
-  }
-  ${USER_FIELDS}
-
 `
 
 export const LeaveHousehold_GQL = gql`
@@ -51,25 +40,6 @@ export const LeaveHousehold_GQL = gql`
 export class UserService {
 
   constructor(private apollo: Apollo) {
-  }
-
-  /**
-   * Gets the user object for the currently logged-in user
-   */
-  getUser(): Observable<UsersPayload>
-  {
-    return this.apollo.watchQuery<GetUser_Query>({
-      query: GetUser_GQL,
-
-    }).valueChanges.pipe(map((result) => {
-      if (result.errors) {
-        return  {error: result.errors.join(","), users: undefined};
-      } else if (!result.data?.getUser) {
-        return {"error": "No data returned", users: undefined};
-      } else {
-        return result.data.getUser;
-      }
-    }));
   }
 
   /**
@@ -158,6 +128,84 @@ export class UserService {
         return {error: "An unknown error occurred", success:0, id:-1};
       } else {
         return result.data.leaveHousehold;
+      }
+    }));
+  }
+
+  /**
+   * Add a household owned by the current user
+   * @param household
+   */
+  addHousehold(household: Household): Observable<HouseholdsPayload> {
+    return this.apollo.mutate<AddHousehold_Mutation>(
+      {
+        mutation: AddHousehold,
+        variables: household,
+        update: (store, {data: payload}) => {
+          //If we have a household to add
+          if (payload && payload.createHousehold.households) {
+            //Add a household needs to be added to member and owned households
+            //So we need a user ID
+            const userId = payload.createHousehold.households[0].owner!.id;
+            const household = payload.createHousehold.households[0];
+            //Get the current user from cache
+            const data = store.readFragment<any>({
+              id: "User:" + userId,
+              fragment: gql`
+                fragment ReadMyUser on User
+                {
+                  id,
+                  memberHouseholds {
+                    id, name, location, owner{
+                      id, name
+                    }
+                    storages {
+                      id, name, type
+                    }
+                  },
+                  ownedHouseholds {
+                    id, name, location
+                  }
+                }
+              `
+            });
+            //Make sure we have data in the cache (we bloody should)
+            if (data) {
+              console.log("Updating cache");
+              let memberHouseholds = [...data.memberHouseholds, household];
+              let ownedHouseholds = [...data.ownedHouseholds, household];
+
+              //Write our change back to the cache
+              store.writeFragment({
+                id: "User:" + userId, fragment: gql`
+                  # noinspection GraphQLSchemaValidation
+                  fragment MyUserUpdate on User {
+                     memberHouseholds {
+                        id, name, location, owner{
+                          id, name
+                        }
+                        storages {
+                          id, name, type
+                        }
+                      },
+                      ownedHouseholds {
+                        id, name, location
+                      }
+                  }`, data: {memberHouseholds, ownedHouseholds}
+              });
+
+            }
+          }
+        }
+      }
+    ).pipe(map((result) => {
+      //Standardizes error and payload return
+      if (result.errors) {
+        return {error: result.errors.join(",")};
+      } else if (!result.data?.createHousehold) {
+        return {error: "An unknown error occurred"};
+      } else {
+        return result.data.createHousehold;
       }
     }));
   }

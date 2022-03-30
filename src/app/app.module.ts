@@ -24,9 +24,7 @@ import {MustMatchDirective} from './_helpers/must-match.directive';
 import {FoodItemModule} from "./food-item/food-item.module";
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
-import {HomeComponent} from './home/home.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import { InviteComponent } from './invite/invite.component';
 import {MatListModule} from "@angular/material/list";
 
 
@@ -35,10 +33,8 @@ import {MatListModule} from "@angular/material/list";
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
     MustMatchDirective,
-    DashboardComponent,
-    InviteComponent
+    DashboardComponent
   ],
     imports: [
         BrowserModule,
