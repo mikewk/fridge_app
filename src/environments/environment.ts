@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   image_base_url: "https://d33stfk6gvmz1c.cloudfront.net/",
-  invite_base_url: "http://localhost:4200/",
+  invite_base_url: "http://192.168.50.130:4201/",
   graphql_uri: 'http://192.168.50.130:5000/graphql'
 };
 

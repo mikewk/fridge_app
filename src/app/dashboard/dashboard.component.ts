@@ -104,10 +104,10 @@ export class DashboardComponent implements OnInit {
     if( !itemB.expiration )
       return -1;
 
-    const startA = new Date(itemA.entered!).getTime();
-    const endA = new Date(itemA.expiration).getTime();
-    const startB = new Date(itemB.entered!).getTime();
-    const endB = new Date(itemB.expiration).getTime();
+    const startA = new Date(itemA.entered!.replace(" ", "T")).getTime();
+    const endA = new Date(itemA.expiration.replace(" ", "T")).getTime();
+    const startB = new Date(itemB.entered!.replace(" ", "T")).getTime();
+    const endB = new Date(itemB.expiration.replace(" ", "T")).getTime();
     const now = Date.now();
     const rangeA = endA - startA;
     const rangeB = endB - startB;

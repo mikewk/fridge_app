@@ -79,8 +79,8 @@ export class FoodItemCardComponent implements OnInit {
   {
     if( !entered || !expiration)
       return "#FEFEFE";
-    const start = new Date(entered).getTime();
-    const end = new Date(expiration).getTime();
+    const start = new Date(entered.replace(" ", "T")).getTime();
+    const end = new Date(expiration.replace(" ", "T")).getTime();
     const now = Date.now();
     const range = end - start;
     const timeLeft = end - now;

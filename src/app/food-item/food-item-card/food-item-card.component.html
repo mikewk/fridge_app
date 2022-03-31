@@ -13,8 +13,8 @@
         <mat-chip-list>
           <mat-chip *ngFor="let tag of foodItem.tags" class="food_tag_chip">{{tag}}</mat-chip>
         </mat-chip-list>
-        <span id="foodItemEntered">Entered: {{foodItem.entered+" UTC" | date:"short" }}</span>
-        <span id="foodItemExpiration">Expires: {{foodItem.expiration+" UTC" | date:"short"}}</span>
+        <span id="foodItemEntered">Entered: {{foodItem.entered?.replace(" ", "T")+"Z" | date:"short" }}</span>
+        <span id="foodItemExpiration">Expires: {{foodItem.expiration?.replace(" ", "T")+"Z" | date:"short"}}</span>
 
       </mat-card-content>
     </mat-card>
