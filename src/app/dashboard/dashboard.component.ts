@@ -17,7 +17,7 @@ import {NEVER, switchMap} from "rxjs";
  * Implements the bulk of the viewing and editing of items in a household's storages
  */
 @Component({
-  selector: 'app-storage-details',
+  selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })

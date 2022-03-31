@@ -6,3 +6,52 @@ mat-card
   background-color: coral;
   color:white;
 }
+
+.flex-container
+{
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.flex-card
+{
+  width: 100%;
+}
+
+@media screen and (min-width: 700px) {
+  .flex-card
+  {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .flex-card
+  {
+    width: 33%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .flex-card
+  {
+    width: 25%;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  .flex-card
+  {
+    width: 20%;
+  }
+}
+
+.padding
+{
+  margin-right: 5px;
+  margin-left: 5px;
+  display: block;
+}
+
+

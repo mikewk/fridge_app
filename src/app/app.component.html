@@ -1,29 +1,19 @@
 <div id="app">
-  <mat-toolbar class="navbar-expand" color="primary"><span>Fridge Tracker</span>
-    <ul *ngIf="isLoggedIn" class="navbar-nav mr-auto">
-      <li *ngIf="this.selectedHousehold&&this.selectedHousehold.storages?.length">
-        <button (click)="addItemToSelected()" mat-icon-button>
-          <mat-icon>add_a_photo</mat-icon>
-        </button>
-      </li>
-
-    </ul>
-    <ul *ngIf="!isLoggedIn" class="navbar-nav ml-auto">
-      <li class="nav-item">
+  <mat-toolbar color="primary"><span>Fridge Tracker</span>
+     <button *ngIf="this.selectedHousehold&&this.selectedHousehold.storages?.length"
+             (click)="addItemToSelected()" mat-icon-button>
+       <mat-icon>add_a_photo</mat-icon>
+     </button>
+    <span class="spacer"></span>
+    <span *ngIf="!isLoggedIn">
         <button mat-button (click)="signup()">Sign Up</button>
-      </li>
-      <li class="nav-item">
         <button mat-button (click)="login()">Login</button>
-      </li>
-    </ul>
+    </span>
 
-    <ul *ngIf="isLoggedIn" class="navbar-nav ml-auto">
-      <li *ngIf="this.selectedHousehold" class="nav-item">
-        <a class="nav-link-inner" mat-icon-button routerLink="dashboard">
+    <span *ngIf="isLoggedIn" >
+        <button *ngIf="this.selectedHousehold"  mat-icon-button routerLink="dashboard">
           <mat-icon>home</mat-icon>
-        </a>
-      </li>
-      <li class="nav-item">
+        </button>
         <button [matMenuTriggerFor]="profileMenu" mat-icon-button>
           <mat-icon>more_vert</mat-icon>
         </button>
@@ -40,8 +30,7 @@
           <button (click)="changeSelected(household)" *ngFor="let household of this.user?.memberHouseholds"
                   mat-menu-item>{{household.name}}: {{household.location}}</button>
         </mat-menu>
-      </li>
-    </ul>
+    </span>
   </mat-toolbar>
 
   <div *ngIf="!loading" class="container">

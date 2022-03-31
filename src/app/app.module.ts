@@ -26,6 +26,7 @@ import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MatListModule} from "@angular/material/list";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import {MatListModule} from "@angular/material/list";
         GraphQLModule,
         FoodItemModule,
         BrowserAnimationsModule,
+        FlexLayoutModule,
         JwtModule.forRoot({
             config: {
                 tokenGetter: () => localStorage.getItem('access_token')

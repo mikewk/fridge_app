@@ -11,8 +11,14 @@
 
     <div *ngFor="let storage of selectedStorages trackBy: trackStorage" >
       <h3>{{storage.name}}</h3>
-      <food-item-card *ngFor="let foodItem of storage.foodItems?.slice()?.sort(compFoodItems) trackBy: trackFoodItem "
-                      [foodItem]="foodItem"></food-item-card>
+      <div class="flex-container" >
+        <div class="flex-card"
+                       *ngFor="let foodItem of storage.foodItems?.slice()?.sort(compFoodItems)trackBy: trackFoodItem">
+       <food-item-card class="padding"
+                       [foodItem]="foodItem"></food-item-card>
+        </div>
+      </div>
+
     </div>
     <p>
       <button (click)="openAddDialog()">Add Item</button>
