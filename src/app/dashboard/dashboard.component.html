@@ -10,7 +10,8 @@
 
 
     <div *ngFor="let storage of selectedStorages trackBy: trackStorage" >
-      <h3>{{storage.name}}</h3>
+      <mat-divider></mat-divider>
+      <h3 class="storage-name">{{storage.name}}</h3>
       <div class="flex-container" >
         <div class="flex-card"
                        *ngFor="let foodItem of storage.foodItems?.slice()?.sort(compFoodItems)trackBy: trackFoodItem">

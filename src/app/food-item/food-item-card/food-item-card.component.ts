@@ -71,4 +71,37 @@ export class FoodItemCardComponent implements OnInit {
       );
     }
   }
+
+  /**
+   * Extrapolate between green and yellow if the expiration is 100-50%, and yellow and red if 50%-0%
+   */
+  extrapolateColor(entered?: string, expiration?: string)
+  {
+    if( !entered || !expiration)
+      return "#FEFEFE";
+    const start = new Date(entered).getTime();
+    const end = new Date(expiration).getTime();
+    const now = Date.now();
+    const range = end - start;
+    const timeLeft = end - now;
+    const percent = timeLeft / range;
+
+    let r, g;
+    //Red = 255, 0, 0
+    //Yellow = 255,255, 0
+    //Green = 0 128 0
+    if( percent <= .5)
+    {
+      r = 255
+      g = 255 * percent * 2;
+    }
+    else
+    {
+      r = 255 * (1 - percent) * 2;
+      g = 128 + 127*(1-percent)*2;
+    }
+    r = Math.floor(r);
+    g = Math.floor(g);
+    return "rgb("+r+","+g+",0)";
+  }
 }

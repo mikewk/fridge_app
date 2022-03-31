@@ -54,4 +54,13 @@ mat-card
   display: block;
 }
 
+.storage-name
+{
+  position: sticky;
+  top: 48px;
+  z-index:99;
+  background-color:white;
+
+}
+
 

@@ -16,7 +16,6 @@ import {MatInputModule} from "@angular/material/input";
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 
-
 import {authInterceptorProviders} from './_helpers/auth.interceptor';
 import {GraphQLModule} from './graphql.module';
 import {MustMatchDirective} from './_helpers/must-match.directive';
@@ -26,8 +25,6 @@ import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MatListModule} from "@angular/material/list";
-import {FlexLayoutModule} from "@angular/flex-layout";
-
 
 @NgModule({
   declarations: [
@@ -45,7 +42,6 @@ import {FlexLayoutModule} from "@angular/flex-layout";
         GraphQLModule,
         FoodItemModule,
         BrowserAnimationsModule,
-        FlexLayoutModule,
         JwtModule.forRoot({
             config: {
                 tokenGetter: () => localStorage.getItem('access_token')

@@ -1,6 +1,6 @@
 <mat-drawer-container>
   <mat-drawer-content>
-    <mat-card class="food_item_card">
+    <mat-card class="food_item_card" [style.backgroundColor] = 'extrapolateColor(foodItem.entered, foodItem.expiration)'>
       <secured-image (click)="snav.toggle()" [src]=foodItem.filename></secured-image>
 
       <mat-card-content>
@@ -13,8 +13,8 @@
         <mat-chip-list>
           <mat-chip *ngFor="let tag of foodItem.tags" class="food_tag_chip">{{tag}}</mat-chip>
         </mat-chip-list>
-        <span id="foodItemEntered">Entered: {{foodItem.entered | date:"short" }}</span>
-        <span id="foodItemExpiration">Expires: {{foodItem.expiration | date:"short"}}</span>
+        <span id="foodItemEntered">Entered: {{foodItem.entered+" UTC" | date:"short" }}</span>
+        <span id="foodItemExpiration">Expires: {{foodItem.expiration+" UTC" | date:"short"}}</span>
 
       </mat-card-content>
     </mat-card>
