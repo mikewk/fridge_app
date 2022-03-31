@@ -1,15 +1,21 @@
 @media only screen and (max-width: 415px) {
   .register-card{
-    width: 100%;
+    width: 90%;
+    margin-left:auto;
+    margin-right:auto;
   }
 }
 
 @media only screen and (min-width: 415px) {
   .register-card{
     width: 400px;
-    margin-left:auto;
-    margin-right:auto;
+
   }
+}
+
+mat-card
+{
+  padding: 20px 0px;
 }
 
 .register-card
