@@ -84,7 +84,9 @@ export class LocalStorageService {
 
 
   public refreshToken(): Observable<boolean> {
-    return this.authService.refreshToken().pipe(map(data=>{
+    const observable = this.authService.refreshToken();
+    //Subscribe so we can get the data and save it
+    observable.subscribe(data=>{
       if (data.token) {
         this.saveToken(data.token);
         return true;
@@ -92,7 +94,11 @@ export class LocalStorageService {
         console.log(data);
         return false;
       }
-    }));
+    });
+
+    //Return the observable so callers can know if it succeeded
+    return observable.pipe(map(data=>!!data.token));
+
   }
 
 

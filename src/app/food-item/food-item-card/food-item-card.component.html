@@ -7,7 +7,7 @@
         <table class="food_item_card_header">
           <tr>
             <td id="foodItemName">{{foodItem.name}}</td>
-            <td id="foodItemStorage">{{foodItem.storage!.name}}</td>
+            <td id="foodItemAddedBy"><span class="smaller">Added by: </span>{{foodItem.enteredBy?.name}}</td>
           </tr>
         </table>
         <mat-chip-list>

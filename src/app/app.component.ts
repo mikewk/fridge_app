@@ -14,6 +14,11 @@ import {AuthService} from "./_graphql-services/auth.service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+  isFacebookInAppBrowser = () => /FB_IAB/.test(navigator.userAgent) ||
+  /FBAN/.test(navigator.userAgent) ||
+  /FBAV/.test(navigator.userAgent);
+
   isLoggedIn = false;
   showAdminBoard = false;
   showModeratorBoard = false;
@@ -70,6 +75,9 @@ export class AppComponent {
             });
 
     if (this.isLoggedIn) {
+      //If we're logged in, let's refresh the token
+      this.localStorageService.refreshToken();
+
       //If we're logged in, get our user from localstorage
       this.authService.getUser().subscribe(data=>
       {

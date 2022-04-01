@@ -40,11 +40,14 @@ secured-image {
   font-weight: bold;
 }
 
-#foodItemStorage {
+#foodItemAddedBy {
   text-align: right;
   font-weight: bold;
-  text-decoration: underline;
   width: 50%;
+}
+.smaller
+{
+  font-size: smaller;
 }
 
 #foodItemEntered {

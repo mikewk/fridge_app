@@ -33,6 +33,11 @@
     </span>
   </mat-toolbar>
 
+  <div class="facebook-warning" *ngIf="isFacebookInAppBrowser()">
+    We're sorry, but this app does not work well inside Meta's in-app browsers.
+    Please open this link in a full browser to ensure a smooth experience.
+  </div>
+
   <div *ngIf="!loading" class="container">
     <router-outlet (activate)="onActivate($event)"></router-outlet>
   </div>

@@ -1,10 +1,4 @@
-table{
-  width: 100%;
-  margin-left: 0%;
-  margin-right: 0%;
-  text-align: center;
-  margin-bottom: 20px;
-}
+
 
 th.mat-header-cell
 {
@@ -36,29 +30,62 @@ th.mat-header-cell
   width: 10%;
 }
 
-mat-card
-{
-  width: 80%;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-button
-{
-  margin-top:10px;
-  margin-left:5%;
-}
-
 @media only screen and (max-width: 415px) {
   td, th {
     padding-left: 0px !important;
     padding-right: 0px !important;
   }
+  table{
+  width: 100%;
+  margin-left: 0%;
+  margin-right: 0%;
+  text-align: center;
+  margin-bottom: 20px;
+}
 
   mat-card{
     width: 90%;
+  }
+  .button
+  {
+    width: 90%;
+    margin-top:10px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
+
+@media only screen and (min-width: 415px) {
+  mat-card{
+    width: 400px;
+  }
+
+  table {
+    width: 800px;
     margin-left: auto;
     margin-right: auto;
+      text-align: center;
+  margin-bottom: 20px;
   }
+
+  .button
+  {
+    width: 800px;
+    margin-top:10px;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left: 10px;
+  }
+}
+
+mat-card{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+@media only screen and (max-width: 415px) {
+
 
 }
