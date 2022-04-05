@@ -77,6 +77,7 @@ export class AppComponent {
     if (this.isLoggedIn) {
       //If we're logged in, let's refresh the token
       this.localStorageService.refreshToken();
+      this.localStorageService.initializeSubscription();
 
       //If we're logged in, get our user from localstorage
       this.authService.getUser().subscribe(data=>

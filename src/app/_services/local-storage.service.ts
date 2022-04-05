@@ -4,6 +4,9 @@ import {GetUser_Query, QL_Storage, User} from "../graphql.types";
 import {BehaviorSubject, map, Observable, Observer} from "rxjs";
 import {Apollo} from "apollo-angular";
 import {AuthService, GetUser_GQL} from "../_graphql-services/auth.service";
+import {v4 as uuidv4} from 'uuid';
+import {SubscriptionHandlerService} from "./subscription-handler-service";
+
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'user-object';
@@ -29,9 +32,14 @@ export class LocalStorageService {
   public selectedStorages: BehaviorSubject<QL_Storage[] | undefined> =
     new BehaviorSubject<QL_Storage[] | undefined>(this.getSelectedStorages());
 
+  public uuid: string = ""
+  private subHandler?: any;
+
   constructor(private jwtHelper: JwtHelperService,
               private apollo: Apollo,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private subHandlerService: SubscriptionHandlerService) {
+    this.uuid = uuidv4();
   }
 
   getSelectedHouseholdObservable()
@@ -180,6 +188,14 @@ export class LocalStorageService {
   public setSelectedStorages(storages: QL_Storage[] | undefined) {
     window.sessionStorage.setItem(SELECTED_STORAGES_KEY, JSON.stringify(storages));
     this.selectedStorages.next(storages);
+  }
+
+  public initializeSubscription()
+  {
+    const token = this.getToken();
+    if( token ) {
+      this.subHandlerService.initSubscription(this.uuid, token);
+    }
   }
 
 }

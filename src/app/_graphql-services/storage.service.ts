@@ -9,6 +9,8 @@ import {
   StoragesPayload
 } from "../graphql.types";
 import {LocalStorageService} from "../_services/local-storage.service";
+import {StorageHelperService} from "../cache-helpers/storage-helper.service";
+import {STORAGE_FIELDS} from "../graphql.fragments";
 
 //GraphQL Queries
 export const GetStorage = gql`
@@ -16,10 +18,13 @@ export const GetStorage = gql`
     getStorage(storageId: $storageId)
     {
       storages
-      {id, name, type, foodItems {id, name, tags, storage {id, name, type}, filename}}
+      {
+        ...StorageFields
+      }
       error
     }
   }
+  ${STORAGE_FIELDS}
 `
 export const AddStorageGQL = gql`
   mutation addStorage($id: Int!, $name: String!, $type: String!){
@@ -28,10 +33,11 @@ export const AddStorageGQL = gql`
       error,
       storages
       {
-        id, name, type
+        ...StorageFields
       }
     }
   }
+  ${STORAGE_FIELDS}
 `;
 
 export const RemoveStorageGQL = gql`
@@ -53,7 +59,8 @@ export const RemoveStorageGQL = gql`
 export class StorageService {
 
   constructor(private apollo: Apollo,
-              private localStorage: LocalStorageService) {
+              private localStorage: LocalStorageService,
+              private storageHelper: StorageHelperService) {
   }
 
   /**
@@ -70,39 +77,7 @@ export class StorageService {
         },
       update: (store, {data: payload}) => {
         if (payload && payload.addStorageToHousehold.storages) {
-          //Write our change back to the cache
-          //Get our new storage
-          let newStorage = payload.addStorageToHousehold.storages[0];
-
-          //Get the current household
-          const data = store.readFragment<any>({
-            id: "Household:" + householdId,
-            fragment: gql`
-              fragment MyHousehold on Household
-              {
-                storages {
-                    id, name, type, foodItems {
-                        id, name, filename, tags, storage {
-                            id, name, type
-                        }
-                    }
-                }
-              }
-            `
-          })
-          //If we have a storages array, which we should even if it's empty
-          if (data.storages) {
-            //Make a new array of storages
-            const newStorages = [...data.storages, newStorage]
-            //Write our change back to the cache
-            store.writeFragment({
-              id: "Household:" + householdId, fragment: gql`
-                # noinspection GraphQLSchemaValidation
-                fragment MyHousehold on Household {
-                  storages
-                }`, data: {storages: newStorages}
-            });
-          }
+          this.storageHelper.addStorage(payload.addStorageToHousehold.storages[0]);
         }
       }
     }).pipe(map((result) => {
@@ -154,35 +129,7 @@ export class StorageService {
            if (payload && payload.removeStorage.success) {
              //Write the removal back to the cache
              //Get the current household
-             const data = store.readFragment<any>({
-               id: "Household:" + household.id,
-               fragment: gql`
-                 fragment MyHousehold on Household
-                 {
-                   storages {
-                     id, name, type, foodItems {
-                       id, name, filename, tags, storage {
-                         id, name, type
-                       }
-                     }
-                   }
-                 }
-               `
-             })
-             //If we have a storages array, which we should even if it's empty
-             if (data.storages) {
-               //Find the storage in the household
-               let index = data.storages.findIndex((item: { id: number | undefined; }) => item.id == storage.id);
-               let newStorages = [...data.storages];
-               newStorages.splice(index, 1);
-               store.writeFragment({
-                 id: "Household:" + household.id, fragment: gql`
-                   # noinspection GraphQLSchemaValidation
-                   fragment MyHousehold on Household {
-                     storages
-                   }`, data: {storages: newStorages}
-               });
-             }
+            this.storageHelper.removeStorage(storage);
            }
          }
       }

@@ -3,16 +3,15 @@ import {Apollo, gql} from "apollo-angular";
 import {
   AddFoodItem_Mutation,
   FoodItem,
-  GetStorage_Query,
-  GetSuggestions_Mutation, QL_Storage,
+  GetSuggestions_Mutation,
   RemovalPayload,
   RemoveFoodItem_Mutation,
   SuggestionPayload,
   UpdateFoodItem_Mutation
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
-import {GetStorage} from "./storage.service";
-import {GetHousehold} from "./household.service";
+import {FoodItemHelperService} from "../cache-helpers/food-item-helper.service";
+
 
 //GraphQL Queries
 export const AddFoodItem = gql`
@@ -65,7 +64,8 @@ export const GetSuggestions = gql`
 })
 export class FoodItemService {
 
-  constructor(private apollo: Apollo) {
+  constructor(private apollo: Apollo,
+              private foodItemHelper: FoodItemHelperService) {
   }
 
   /**
@@ -84,42 +84,7 @@ export class FoodItemService {
         update: (store, {data: payload}) => {
           //If we have a fooditem to update
           if (payload && payload.addFoodItemToStorage.foodItems) {
-            const storageId = foodItem.storage?.id;
-            //Get the current storage from cache
-            const data = store.readFragment<any>({
-              id: "Storage:"+storageId,
-              fragment: gql`
-                fragment MyStorage on Storage
-                {
-                  foodItems {
-                    id, name, filename, tags, storage {
-                        id, name, type
-                      }
-                  }
-                }
-              `
-            })
-            //Make sure we have data in the cache (we bloody should)
-            if (data) {
-              console.log("Updating cache");
-              let foodItems;
-              //If we have a food items array, spread it and add our new one to the end
-              if (data.foodItems)
-                foodItems = [...data.foodItems, payload.addFoodItemToStorage.foodItems[0]];
-              //Otherwise, let's just use our array from the return payload
-              else
-                foodItems = payload.addFoodItemToStorage.foodItems;
-
-              //Write our change back to the cache
-              store.writeFragment({
-                id: "Storage:" + storageId, fragment: gql`
-                  # noinspection GraphQLSchemaValidation
-                  fragment myStorage on Storage {
-                    foodItems
-                  }`, data: {foodItems}
-              });
-
-            }
+            this.foodItemHelper.addFoodItem(payload.addFoodItemToStorage.foodItems[0]);
           }
         }
       }
@@ -143,16 +108,7 @@ export class FoodItemService {
         },
         update: (store, {data: payload}) => {
           if (payload && payload.updateFoodItem.foodItems) {
-            //Write our change back to the cache
-            let foodItem = payload.updateFoodItem.foodItems[0];
-            store.writeFragment({
-              id: "FoodItem:" + foodItem.id, fragment: gql`
-                fragment myItem on FoodItem {
-                  name,
-                  tags,
-                  expiration
-                }`, data: {name: foodItem.name, tags: foodItem.tags, expiration: foodItem.expiration}
-            });
+            this.foodItemHelper.editFoodItem(payload.updateFoodItem.foodItems[0])
           }
         }
       }
@@ -173,40 +129,7 @@ export class FoodItemService {
         },
         update: (store, {data: payload}) => {
           if (payload && payload.removeFoodItem.success) {
-            //Write our change back to the cache
-            //First we need to remove the item from the storage
-            const storageId = foodItem.storage?.id;
-            //Get the current storage from cache
-            const data = store.readFragment<any>({
-              id: "Storage:"+storageId,
-              fragment: gql`
-                fragment MyStorage on Storage
-                {
-                  foodItems {
-                    id, name, filename, tags, storage {
-                        id, name, type
-                      }
-                  }
-                }
-              `
-            })
-            //If we have a food items array, get it and remove our food item
-            //If we don't have a food item array anymore... something something race condition we'll just do nothing
-            if (data.foodItems) {
-
-              //Find our foodItem
-              let index = data.foodItems.findIndex((food: { id: number | undefined; })=> food.id == foodItem.id);
-              let foodItems = [...data.foodItems];
-              foodItems.splice(index, 1);
-              //Write our change back to the cache
-              store.writeFragment({
-                id: "Storage:" + storageId, fragment: gql`
-                  # noinspection GraphQLSchemaValidation
-                  fragment myStorage on Storage {
-                    foodItems
-                  }`, data: {foodItems}
-              });
-            }
+            this.foodItemHelper.removeFoodItem(foodItem);
           }
         }
       }

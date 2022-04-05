@@ -20,7 +20,7 @@ export const GetHousehold = gql`
         owner {name, id},
         users {name, id},
         storages
-        {id, name, type, foodItems {
+        {id, name, type, householdId, foodItems {
           id, name, filename, tags, entered, expiration, enteredBy {name}, storage {
             id, name, type
           }
@@ -59,19 +59,12 @@ export const AddHousehold = gql`
     {
       households
       {
-         id,
-          name,
-          location
-          owner{
-            id, name
-          }
-          storages {
-            id, name, type
-          }
+         ...HouseholdCore
       },
       error
     }
   }
+  ${HOUSEHOLD_CORE}
 `;
 
 export const RemoveUserFromHousehold_GQL = gql`

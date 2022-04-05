@@ -15,6 +15,7 @@ export type QL_Storage = {
   id?: number
   name: string
   type: string
+  householdId?: number
   foodItems?: FoodItem[]
 }
 
@@ -93,6 +94,12 @@ export type RemovalPayload = {
 export type SuggestionPayload = {
   suggestion?: Suggestion
   error: string
+}
+
+export type Messages_Payload = {
+  type: String
+  action: String
+  message: AuthPayload | FoodItem | Household | QL_Storage | undefined
 }
 
 export type GetInvites_Query = {
@@ -191,4 +198,8 @@ export type RemoveUserFromHousehold_Mutation = {
 
 export type RemoveHousehold_Mutation = {
   removeHousehold: RemovalPayload
+}
+
+export type Messages_Subscription = {
+  messages: Messages_Payload;
 }
