@@ -32,13 +32,11 @@ export class LocalStorageService {
   public selectedStorages: BehaviorSubject<QL_Storage[] | undefined> =
     new BehaviorSubject<QL_Storage[] | undefined>(this.getSelectedStorages());
 
-  public uuid: string = ""
-  private subHandler?: any;
+  public uuid;
 
   constructor(private jwtHelper: JwtHelperService,
               private apollo: Apollo,
-              private authService: AuthService,
-              private subHandlerService: SubscriptionHandlerService) {
+              private authService: AuthService) {
     this.uuid = uuidv4();
   }
 
@@ -190,12 +188,5 @@ export class LocalStorageService {
     this.selectedStorages.next(storages);
   }
 
-  public initializeSubscription()
-  {
-    const token = this.getToken();
-    if( token ) {
-      this.subHandlerService.initSubscription(this.uuid, token);
-    }
-  }
 
 }

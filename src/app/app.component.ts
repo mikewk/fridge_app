@@ -7,6 +7,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NEVER, switchMap} from "rxjs";
 import {HouseholdService} from "./_graphql-services/household.service";
 import {AuthService} from "./_graphql-services/auth.service";
+import {SubscriptionHandlerService} from "./_services/subscription-handler-service";
+import {v4} from "uuid";
 
 @Component({
   selector: 'app-root',
@@ -33,7 +35,18 @@ export class AppComponent {
               private route: ActivatedRoute,
               private router: Router,
               private householdService: HouseholdService,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private subHandlerService: SubscriptionHandlerService) {
+
+  }
+
+  private initializeSubscription()
+  {
+    const token = this.localStorageService.getToken();
+    const uuid = this.localStorageService.uuid;
+    if( token ) {
+      this.subHandlerService.initSubscription(uuid, token);
+    }
   }
 
   onActivate(componentRef: any)
@@ -77,7 +90,7 @@ export class AppComponent {
     if (this.isLoggedIn) {
       //If we're logged in, let's refresh the token
       this.localStorageService.refreshToken();
-      this.localStorageService.initializeSubscription();
+      this.initializeSubscription();
 
       //If we're logged in, get our user from localstorage
       this.authService.getUser().subscribe(data=>
