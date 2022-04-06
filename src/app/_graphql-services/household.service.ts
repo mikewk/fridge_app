@@ -52,38 +52,8 @@ export const GetMemberHousehold = gql`
   }
 `;
 
-export const AddHousehold = gql`
-  mutation createHousehold($name: String!, $location: String!)
-  {
-    createHousehold(name: $name, location: $location)
-    {
-      households
-      {
-         ...HouseholdCore
-      },
-      error
-    }
-  }
-  ${HOUSEHOLD_CORE}
-`;
 
-export const RemoveUserFromHousehold_GQL = gql`
-  mutation removeUserFromHousehold($householdId: Int!, $userId: Int!) {
-    removeUserFromHousehold(householdId: $householdId, userId: $userId) {
-      error, success, id
-    }
-  }
-`
 
-export const RemoveHousehold_GQL = gql`
-  mutation removeHousehold($householdId: Int!)
-  {
-    removeHousehold(householdId: $householdId)
-    {
-      success, error, id
-    }
-  }
-`
 
 /**
  * This service provides API access to Household related queries and mutations via GraphQL*

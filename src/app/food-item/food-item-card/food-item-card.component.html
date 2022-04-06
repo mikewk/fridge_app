@@ -1,4 +1,4 @@
-<mat-drawer-container>
+<mat-drawer-container class="mat-elevation-z4">
   <mat-drawer-content>
     <mat-card class="food_item_card" [style.backgroundColor] = 'extrapolateColor(foodItem.entered, foodItem.expiration)'>
       <secured-image (click)="snav.toggle()" [src]=foodItem.filename></secured-image>

@@ -10,7 +10,22 @@ import {
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
 import {HOUSEHOLD_CORE, READ_MY_USER} from "../graphql.fragments";
-import {AddHousehold} from "./household.service";
+
+export const AddHousehold = gql`
+  mutation createHousehold($name: String!, $location: String!)
+  {
+    createHousehold(name: $name, location: $location)
+    {
+      households
+      {
+         ...HouseholdCore
+      },
+      error
+    }
+  }
+  ${HOUSEHOLD_CORE}
+`;
+
 
 const ChangeDefaultHousehold_GQL = gql`
   mutation changeDefaultHousehold($householdId: Int!) {

@@ -9,7 +9,24 @@ import {
 import {map, Observable} from "rxjs";
 import {Apollo, gql} from "apollo-angular";
 import {HOUSEHOLD_CORE} from "../graphql.fragments";
-import {RemoveHousehold_GQL, RemoveUserFromHousehold_GQL} from "./household.service";
+
+export const RemoveHousehold_GQL = gql`
+  mutation removeHousehold($householdId: Int!)
+  {
+    removeHousehold(householdId: $householdId)
+    {
+      success, error, id
+    }
+  }
+`
+
+export const RemoveUserFromHousehold_GQL = gql`
+  mutation removeUserFromHousehold($householdId: Int!, $userId: Int!) {
+    removeUserFromHousehold(householdId: $householdId, userId: $userId) {
+      error, success, id
+    }
+  }
+`
 
 @Injectable({
   providedIn: 'root'
