@@ -9,6 +9,7 @@ import {
 import {map, Observable} from "rxjs";
 import {Apollo, gql} from "apollo-angular";
 import {HOUSEHOLD_CORE} from "../graphql.fragments";
+import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
 export const RemoveHousehold_GQL = gql`
   mutation removeHousehold($householdId: Int!)
@@ -33,7 +34,8 @@ export const RemoveUserFromHousehold_GQL = gql`
 })
 export class ManagementService {
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo,
+              private householdHelper: HouseholdHelperService) { }
 
   removeMember(user: User, household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveUserFromHousehold_Mutation>(
@@ -103,69 +105,7 @@ export class ManagementService {
         update: (store, {data: payload}) => {
           //If we have removed the household
           if (payload && payload.removeHousehold.success) {
-            //Removing the user from the household means removing from the users array
-            //So we need a user ID and householdId
-            const householdId = household.id
-            //Get the current user from cache
-            const data = store.readFragment<any>({
-              id: "User:" + userId,
-              fragment: gql`
-                fragment ReadMyUser on User
-                {
-                  id,
-                  memberHouseholds {
-                    ...HouseholdCore
-                  },
-                  ownedHouseholds {
-                    id, name, location
-                  },
-                  defaultHousehold {
-                    ...HouseholdCore
-                  }
-                },
-                ${HOUSEHOLD_CORE}
-              `,
-              fragmentName: "ReadMyUser"
-            });
-            //Make sure we have data in the cache (we bloody should)
-            if (data) {
-              console.log("Updating cache");
-              let memberHouseholds = data.memberHouseholds.filter((x:Household)=>x.id!=householdId)
-              let ownedHouseholds = data.ownedHouseholds.filter((x:Household)=>x.id!=householdId)
-              let defaultHousehold = data.defaultHousehold
-
-              //Try fixing up default household
-              store.evict({id: "User:"+userId, fieldName:"defaultHousehold"});
-
-              if( defaultHousehold.id == householdId )
-              {
-                if( memberHouseholds.length > 0 )
-                  defaultHousehold = memberHouseholds[0];
-                else
-                  defaultHousehold = null;
-              }
-
-              store.writeFragment({
-              id: "User:" + userId, fragment: gql`
-                # noinspection GraphQLSchemaValidation
-                fragment MyHouseholdResetDefault on User {
-                  defaultHousehold
-                }`, data: {defaultHousehold}});
-
-
-              //Write our change back to the cache
-              store.writeFragment({
-                id: "User:" + userId, fragment: gql`
-                  # noinspection GraphQLSchemaValidation
-                  fragment MyUserRemoveHousehold on User {
-                    memberHouseholds,
-                    ownedHouseholds
-
-                  }`, data: {memberHouseholds:memberHouseholds,
-                             ownedHouseholds:ownedHouseholds}
-              });
-              store.gc();
-            }
+            this.householdHelper.removeHousehold(household);
           }
         }
       }
@@ -180,5 +120,4 @@ export class ManagementService {
       }
     }));
   }
-
 }
