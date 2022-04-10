@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
-import {FoodItem, Household, Messages_Payload} from "../graphql.types";
+import {Household, Messages_Payload} from "../graphql.types";
 import {Apollo, gql} from "apollo-angular";
 import {HOUSEHOLD_CORE, READ_MY_USER} from "../graphql.fragments";
 import {LocalStorageService} from "../_services/local-storage.service";
+import {ApolloCache} from "@apollo/client/cache";
 
+/**
+ * A series of functions to help update the cache
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class HouseholdHelperService {
 
+  store: ApolloCache<any>;
   constructor(private apollo: Apollo,
               private localStorage: LocalStorageService) {
-
+    this.store = apollo.client.cache;
   }
 
+  /**
+   * Executes the message payload by selecting an action and sending the payload household to the appropriate function
+   * @param message
+   */
   doMessage(message: Messages_Payload)
   {
     const household: Household = <Household>message.message;
@@ -27,17 +36,29 @@ export class HouseholdHelperService {
       case "remove":
         this.removeHousehold(household);
         break;
-      case "changeDefault":
+      case "change_default":
         this.changeDefault(household);
+        break;
+      case "accept_invite":
+        this.acceptInvite(household);
+        break;
+      case "leave":
+        this.leaveHousehold(household);
+        break;
+      case "remove_from":  //Remove from is effectively the same as leaving
+        this.leaveHousehold(household);
         break;
     }
   }
 
-  changeDefault(defaultHousehold: Household)
+  /**
+   * Change the defaultHousehold
+   * @param defaultHousehold
+   */
+  changeDefault(defaultHousehold: Household | null)
   {
-    const store = this.apollo.client.cache;
     const userId = this.localStorage.getUser()?.id!;
-    store.writeFragment({
+    this.store.writeFragment({
       id: "User:" + userId, fragment: gql`
         fragment MyUserDefaultHousehold on User {
           defaultHousehold
@@ -48,21 +69,43 @@ export class HouseholdHelperService {
         ${HOUSEHOLD_CORE}
       `,
       data: {defaultHousehold},
-      fragmentName:"MyUserDefaultHousehold"
+      fragmentName: "MyUserDefaultHousehold"
     });
   }
 
+  /**
+   * Update memberHouseholds and possibly defaultHousehold for the one we just added
+   * @param household
+   */
+  acceptInvite(household: Household)
+  {
+    const userId = this.localStorage.getUser()?.id!;
+    //Get the current user from cache
+    const data = this.readUserFromCache(userId);
+    //Make sure we have data in the cache (we bloody should)
+    if (data) {
+      console.log("Updating cache");
+      let memberHouseholds = [...data.memberHouseholds, household];
+      //Write our change back to the cache
+      this.updateMemberHouseholds(userId, memberHouseholds);
+      if( !data.defaultHousehold )
+      {
+        this.changeDefault(household);
+      }
+    }
+  }
+
+  /**
+   * Update memberHouseholds and defaultHousehold by removing the household just left
+   * Does not update ownedHouseholds as a user can't leave a household they own, they must remove it instead
+   * @param household
+   */
   leaveHousehold(household: Household)
   {
-    const store = this.apollo.client.cache;
-    const userId = this.localStorage.getUser();
+    const userId = this.localStorage.getUser()?.id!;
     //If we were successful, remove this household from memberHouseholds
     //Get the current user from cache
-    const data = store.readFragment<any>({
-      id: "User:" + userId,
-      fragment: READ_MY_USER,
-      fragmentName: "ReadMyUser"
-    });
+    const data = this.readUserFromCache(userId);
     //Make sure we have data in the cache (we bloody should)
     if (data) {
       console.log("Updating cache");
@@ -70,68 +113,38 @@ export class HouseholdHelperService {
       let index = memberHouseholds.indexOf(household);
       memberHouseholds.splice(index, 1);
 
-      //Write our change back to the cache
-      store.writeFragment({
-        id: "User:" + userId, fragment: gql`
-          # noinspection GraphQLSchemaValidation
-          fragment MyUserUpdateMemberHouseholds on User {
-            memberHouseholds
-          }`, data: {memberHouseholds}
-      });
+      this.updateMemberHouseholds(userId, memberHouseholds);
+      if( data.defaultHousehold.id == household.id)
+      {
+        if( data.memberHouseholds.length > 0) {
+          this.changeDefault(data.memberHouseholds[0]);
+        } else {
+          this.changeDefault(null)
+        }
+      }
     }
   }
 
+  /**
+   * Add the new household to member and owned households.  Update default if necessary
+   * @param household
+   */
   addHousehold(household: Household)
   {
     //Add a household needs to be added to member and owned households
     //So we need a user ID
-    const userId = this.localStorage.getUser()?.id;
-    const store = this.apollo.client.cache;
+    const userId = this.localStorage.getUser()?.id!;
     //Get the current user from cache
-    const data = store.readFragment<any>({
-      id: "User:" + userId,
-      fragment: gql`
-        fragment ReadMyUser on User
-        {
-          id,
-          memberHouseholds {
-            id, name, location, owner{
-              id, name
-            }
-            storages {
-              id, name, type
-            }
-          },
-          ownedHouseholds {
-            id, name, location
-          }
-        }
-      `
-    });
+    const data = this.readUserFromCache(userId);
     //Make sure we have data in the cache (we bloody should)
     if (data) {
       console.log("Updating cache");
       let memberHouseholds = [...data.memberHouseholds, household];
       let ownedHouseholds = [...data.ownedHouseholds, household];
-
-      //Write our change back to the cache
-      store.writeFragment({
-        id: "User:" + userId, fragment: gql`
-          # noinspection GraphQLSchemaValidation
-          fragment MyUserUpdate on User {
-            memberHouseholds {
-              id, name, location, owner{
-                id, name
-              }
-              storages {
-                id, name, type
-              }
-            },
-            ownedHouseholds {
-              id, name, location
-            }
-          }`, data: {memberHouseholds, ownedHouseholds}
-      });
+      this.updateMemberHouseholds(userId, memberHouseholds)
+      this.updateOwnedHouseholds(userId, ownedHouseholds);
+      if( !data.defaultHousehold )
+        this.changeDefault(household);
     }
   }
 
@@ -140,32 +153,16 @@ export class HouseholdHelperService {
     //TODO: Implement edit household end to end
   }
 
+  /**
+   * Remove household from cache by removing from memberHouseholds, ownedHouseholds, and default household
+   * @param household
+   */
   removeHousehold(household: Household)
   {
-    const store = this.apollo.client.cache;
     const userId = this.localStorage.getUser()?.id!
     const householdId = household.id
     //Get the current user from cache
-    const data = store.readFragment<any>({
-      id: "User:" + userId,
-      fragment: gql`
-        fragment ReadMyUser on User
-        {
-          id,
-          memberHouseholds {
-            ...HouseholdCore
-          },
-          ownedHouseholds {
-            id, name, location
-          },
-          defaultHousehold {
-            ...HouseholdCore
-          }
-        },
-        ${HOUSEHOLD_CORE}
-      `,
-      fragmentName: "ReadMyUser"
-    });
+    const data = this.readUserFromCache(userId);
     //Make sure we have data in the cache (we bloody should)
     if (data) {
       console.log("Updating cache");
@@ -176,34 +173,67 @@ export class HouseholdHelperService {
       //Try fixing up default household if we just removed it
       if( defaultHousehold.id == householdId )
       {
-
-        store.evict({id: "User:"+userId, fieldName:"defaultHousehold"});
-        if( memberHouseholds.length > 0 )
-          defaultHousehold = memberHouseholds[0];
-        else
-          defaultHousehold = null;
-
-        store.writeFragment({
-          id: "User:" + userId, fragment: gql`
-            # noinspection GraphQLSchemaValidation
-            fragment MyHouseholdResetDefault on User {
-              defaultHousehold
-            }`, data: {defaultHousehold}});
+        if( data.memberHouseholds.length > 0) {
+          this.changeDefault(data.memberHouseholds[0]);
+        }
+        else {
+          this.changeDefault(null)
+        }
       }
-
-      //Write our other changes back to the cache
-      store.writeFragment({
-        id: "User:" + userId, fragment: gql`
-          # noinspection GraphQLSchemaValidation
-          fragment MyUserRemoveHousehold on User {
-            memberHouseholds,
-            ownedHouseholds
-
-          }`, data: {memberHouseholds:memberHouseholds,
-                     ownedHouseholds:ownedHouseholds}
-      });
+      this.updateMemberHouseholds(userId, memberHouseholds);
+      this.updateOwnedHouseholds(userId, ownedHouseholds);
       //We may have evicted stuff, so GC it all
-      store.gc();
+      this.store.gc();
     }
   }
+
+  /**
+   * Read the user from the cache.
+   * @param userId
+   * @private
+   */
+  private readUserFromCache(userId: number) {
+    return this.store.readFragment<any>({
+      id: "User:" + userId,
+      fragment: READ_MY_USER,
+      fragmentName: "ReadMyUser"
+    });
+  }
+
+  /**
+   * Update cache for userId with the new memberHouseholds array
+   * @param userId
+   * @param memberHouseholds
+   * @private
+   */
+  private updateMemberHouseholds(userId: number, memberHouseholds: any[]) {
+    //Write our change back to the cache
+    this.store.writeFragment({
+      id: "User:" + userId, fragment: gql`
+        # noinspection GraphQLSchemaValidation
+        fragment MyUserUpdateMemberHouseholds on User {
+          memberHouseholds
+        }`, data: {memberHouseholds}
+    });
+  }
+
+  /**
+   * Update cache for userId with new ownedHouseholds array
+   * @param userId
+   * @param ownedHouseholds
+   * @private
+   */
+  private updateOwnedHouseholds(userId: number, ownedHouseholds: any[])
+  {
+    this.store.writeFragment({
+        id: "User:" + userId, fragment: gql`
+          # noinspection GraphQLSchemaValidation
+          fragment MyUserUpdateOwnedHouseholds on User {
+            ownedHouseholds {
+              id, name, location
+            }
+          }`, data: {ownedHouseholds}
+      });
+  }
+
 }

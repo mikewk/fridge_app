@@ -37,13 +37,17 @@ export const INVITE_FIELDS = gql`
 `
 
 export const READ_MY_USER = gql`
-  fragment ReadMyUser on User {
+  fragment ReadMyUser on User
+  {
     id,
     memberHouseholds {
       ...HouseholdCore
     },
     ownedHouseholds {
       id, name, location
+    },
+    defaultHousehold {
+      ...HouseholdCore
     }
   },
   ${HOUSEHOLD_CORE}
@@ -51,7 +55,7 @@ export const READ_MY_USER = gql`
 
 export const FOOD_ITEM_FIELDS = gql `
   fragment FoodItemFields on FoodItem{
-    id, filename, name, expiration, entered,  enteredBy {id, name}, storage { id, name, type }
+    id, filename, name, expiration, entered, enteredBy {id, name}, storage { id, name, type }
   }
 `
 

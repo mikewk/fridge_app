@@ -8,7 +8,6 @@ import {
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
 import {Apollo, gql} from "apollo-angular";
-import {HOUSEHOLD_CORE} from "../graphql.fragments";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
 export const RemoveHousehold_GQL = gql`
