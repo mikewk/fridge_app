@@ -61,6 +61,9 @@ export const FOOD_ITEM_FIELDS = gql `
 
 export const STORAGE_FIELDS = gql `
   fragment StorageFields on Storage {
-    id, name, type, householdId, foodItems {id, name, tags, storage {id, name, type}, filename}
-  }
+    id, name, type, householdId, foodItems {
+      ...FoodItemFields
+    }
+  },
+  ${FOOD_ITEM_FIELDS}
 `

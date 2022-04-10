@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {FoodItem, Household, Invite} from "../../graphql.types";
 import {environment} from "../../../environments/environment";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {InviteService} from "../../_graphql-services/invite.service";
@@ -8,6 +7,7 @@ import {HouseholdAddInviteComponent} from "../household-add-invite/household-add
 import {Clipboard} from "@angular/cdk/clipboard";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {NEVER, switchMap} from "rxjs";
+import {Invite} from "../../graphql.types";
 
 const InformationList = [
   "All links are one-time use.",

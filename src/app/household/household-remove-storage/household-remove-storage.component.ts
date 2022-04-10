@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {Household, QL_Storage} from "../../graphql.types";
-import {LocalStorageService} from "../../_services/local-storage.service";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
@@ -11,8 +10,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 export class HouseholdRemoveStorageComponent implements OnInit {
   household: Household;
   selectedStorage: QL_Storage;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
-              private localStorage: LocalStorageService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.household = data.household;
     this.selectedStorage = this.household.storages![0];
   }

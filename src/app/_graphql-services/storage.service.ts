@@ -3,7 +3,7 @@ import {Apollo, gql} from "apollo-angular";
 import {map, Observable} from "rxjs";
 import {
   AddStorageToHousehold_Mutation,
-  GetStorage_Query, Household,
+  GetStorage_Query,
   QL_Storage,
   RemovalPayload, RemoveStorage_Mutation,
   StoragesPayload
@@ -118,7 +118,7 @@ export class StorageService {
    /**
    * Remove Storage
    */
-  removeStorage(storage: QL_Storage, household: Household): Observable<RemovalPayload> {
+  removeStorage(storage: QL_Storage): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveStorage_Mutation>(
       {
         mutation: RemoveStorageGQL,

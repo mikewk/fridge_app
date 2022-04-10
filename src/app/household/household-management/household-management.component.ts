@@ -106,7 +106,7 @@ export class HouseholdManagementComponent implements OnInit {
       (x: Household) => {
         if (confirm("Are you absolutely sure?"))
         {
-          return this.managementService.removeHousehold(x, user.id);
+          return this.managementService.removeHousehold(x);
         }
         else
         {
@@ -179,7 +179,7 @@ export class HouseholdManagementComponent implements OnInit {
     if(this.household?.storages?.length != 0)
     {
       this.dialogHelper.launchDialog(HouseholdRemoveStorageComponent,
-                                     (x: any) => this.storageService.removeStorage(x, this.household!),
+                                     (x: any) => this.storageService.removeStorage(x),
                                      {household:this.household}).subscribe({
         next: data => {
           //If the API call was successful

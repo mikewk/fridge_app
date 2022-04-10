@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Household, Invite} from "../../graphql.types";
 import {LocalStorageService} from "../../_services/local-storage.service";
-import {MatDialogRef} from "@angular/material/dialog";
 import {HouseholdService} from "../../_graphql-services/household.service";
 
 @Component({

@@ -8,7 +8,6 @@ import {NEVER, switchMap} from "rxjs";
 import {HouseholdService} from "./_graphql-services/household.service";
 import {AuthService} from "./_graphql-services/auth.service";
 import {SubscriptionHandlerService} from "./_services/subscription-handler-service";
-import {v4} from "uuid";
 
 @Component({
   selector: 'app-root',

@@ -94,7 +94,7 @@ export class ManagementService {
   }
 
 
-  removeHousehold(household: Household, userId: number): Observable<RemovalPayload> {
+  removeHousehold(household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveHousehold_Mutation>(
       {
         mutation: RemoveHousehold_GQL,

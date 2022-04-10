@@ -36,6 +36,13 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     const {name, email, password, password2} = this.form;
 
+    //Double check that passwords actually match, don't trust anyone
+    if( password != password2 )
+    {
+      alert("Passwords must match!");
+      return;
+    }
+
     //Call the authentication service registration function
     //This also logs the user in if successful because who like having to log in twice
     this.authService.register(name, email, password).subscribe({

@@ -1,6 +1,6 @@
 import {Apollo, gql} from "apollo-angular";
-import {map, Observable} from "rxjs";
-import {FOOD_ITEM_FIELDS, HOUSEHOLD_CORE, INVITE_FIELDS} from "../graphql.fragments";
+import {map} from "rxjs";
+import {FOOD_ITEM_FIELDS, HOUSEHOLD_CORE} from "../graphql.fragments";
 import {Messages_Subscription} from "../graphql.types";
 import {FoodItemHelperService} from "../cache-helpers/food-item-helper.service";
 import {Injectable} from "@angular/core";

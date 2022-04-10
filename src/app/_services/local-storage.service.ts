@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {GetUser_Query, QL_Storage, User} from "../graphql.types";
-import {BehaviorSubject, map, Observable, Observer} from "rxjs";
+import {BehaviorSubject, map, Observable} from "rxjs";
 import {Apollo} from "apollo-angular";
 import {AuthService, GetUser_GQL} from "../_graphql-services/auth.service";
 import {v4 as uuidv4} from 'uuid';
-import {SubscriptionHandlerService} from "./subscription-handler-service";
+
 
 
 const TOKEN_KEY = 'auth-token';
@@ -24,10 +24,10 @@ export class LocalStorageService {
 
   //This helps track the usertype and update it when the selected household changes.
   private userType: BehaviorSubject<string> =
-    new BehaviorSubject<string>(this.initUserType());
+    new BehaviorSubject<string>(LocalStorageService.initUserType());
 
   public selectedHouseholdId: BehaviorSubject<number | undefined> =
-    new BehaviorSubject<number | undefined>(this.initSelectedHousehold());
+    new BehaviorSubject<number | undefined>(LocalStorageService.initSelectedHousehold());
 
   public selectedStorages: BehaviorSubject<QL_Storage[] | undefined> =
     new BehaviorSubject<QL_Storage[] | undefined>(this.getSelectedStorages());
@@ -51,7 +51,7 @@ export class LocalStorageService {
   }
 
 
-  private initUserType()
+  private static initUserType()
   {
     return window.sessionStorage.getItem(USER_TYPE_KEY)??"";
   }
@@ -112,7 +112,7 @@ export class LocalStorageService {
   /**
    * Initialize the selected household, if possible
    */
-  private initSelectedHousehold(): number | undefined {
+  private static initSelectedHousehold(): number | undefined {
     const householdId = window.sessionStorage.getItem(HOUSEHOLD_KEY);
     if (householdId) {
       return Number(householdId);

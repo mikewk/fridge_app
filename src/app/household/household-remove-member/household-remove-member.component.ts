@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {Household, QL_Storage, User} from "../../graphql.types";
+import {Household, User} from "../../graphql.types";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {LocalStorageService} from "../../_services/local-storage.service";
 

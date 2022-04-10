@@ -9,7 +9,7 @@ import {
   RemovalPayload,
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
-import {HOUSEHOLD_CORE, READ_MY_USER} from "../graphql.fragments";
+import {HOUSEHOLD_CORE} from "../graphql.fragments";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
 export const AddHousehold = gql`
@@ -90,7 +90,7 @@ export class UserService {
     }));
   }
 
-   leaveHousehold(household: Household, userId:number): Observable<RemovalPayload> {
+   leaveHousehold(household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<LeaveHousehold_Mutation>(
       {
         mutation: LeaveHousehold_GQL,

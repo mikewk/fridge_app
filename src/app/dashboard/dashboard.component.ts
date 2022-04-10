@@ -46,7 +46,8 @@ export class DashboardComponent implements OnInit {
     } else {*/
 
     //This is the new safe way because DefaultGuard won't let us in without a selected Household
-    this.localStorageService.selectedHouseholdId.pipe(switchMap(householdId=>{
+    this.localStorageService.selectedHouseholdId.pipe(
+      switchMap(householdId=>{
           if( householdId )
           {
             return this.householdService.getHousehold(householdId!);

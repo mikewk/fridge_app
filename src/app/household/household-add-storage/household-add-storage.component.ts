@@ -1,8 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {StorageService} from "../../_graphql-services/storage.service";
-import {LocalStorageService} from "../../_services/local-storage.service";
-import {Household, QL_Storage} from "../../graphql.types";
+import {QL_Storage} from "../../graphql.types";
 
 /**
  * A simple dialog to add a storage to a household

@@ -23,7 +23,6 @@ import {MustMatchDirective} from './_helpers/must-match.directive';
 import {FoodItemModule} from "./food-item/food-item.module";
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
-import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MatListModule} from "@angular/material/list";
 
 @NgModule({
@@ -32,7 +31,6 @@ import {MatListModule} from "@angular/material/list";
     LoginComponent,
     RegisterComponent,
     MustMatchDirective,
-    DashboardComponent
   ],
     imports: [
         BrowserModule,

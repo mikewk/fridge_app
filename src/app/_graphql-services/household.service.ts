@@ -4,10 +4,9 @@ import {map, Observable} from "rxjs";
 import {
   GetHousehold_Query,
   GetMemberHouseholds_Query,
-  Household,
-  HouseholdsPayload, RemovalPayload, RemoveHousehold_Mutation, RemoveUserFromHousehold_Mutation, User
+  HouseholdsPayload
 } from "../graphql.types";
-import {HOUSEHOLD_CORE} from "../graphql.fragments";
+import { STORAGE_FIELDS} from "../graphql.fragments";
 
 //GraphQL Queries
 export const GetHousehold = gql`
@@ -20,15 +19,14 @@ export const GetHousehold = gql`
         owner {name, id},
         users {name, id},
         storages
-        {id, name, type, householdId, foodItems {
-          id, name, filename, tags, entered, expiration, enteredBy {name}, storage {
-            id, name, type
-          }
-        }}
+        {
+          ...StorageFields
+        }
       },
       error
     }
-  }
+  },
+  ${STORAGE_FIELDS}
 `;
 
 export const GetMemberHousehold = gql`

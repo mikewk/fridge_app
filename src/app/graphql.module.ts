@@ -8,7 +8,6 @@ import {HttpLink} from 'apollo-angular/http';
 import {environment} from "../environments/environment";
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from '@apollo/client/utilities';
-import {LocalStorageService} from "./_services/local-storage.service";
 
 
 

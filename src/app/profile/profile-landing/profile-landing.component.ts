@@ -101,7 +101,7 @@ export class ProfileLandingComponent implements OnInit {
   leaveHousehold()
   {
     this.dialogHelper.launchDialog(ProfileLeaveDialogComponent,
-                                  (x: any) => this.userService.leaveHousehold(x, this.user!.id)).subscribe({
+                                  (x: any) => this.userService.leaveHousehold(x)).subscribe({
       next: data => {
         //If the API call was successful
         if (data.success) {
