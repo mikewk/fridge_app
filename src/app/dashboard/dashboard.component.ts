@@ -1,17 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {NgxImageCompressService} from "ngx-image-compress"
-
-import {MatDialog} from "@angular/material/dialog";
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
-import {StorageService} from "../_graphql-services/storage.service";
-import {FoodItemService} from "../_graphql-services/food-item.service";
 import {HouseholdService} from "../_graphql-services/household.service";
 import {LocalStorageService} from "../_services/local-storage.service";
 import {ItemDialogService} from "../_services/item-dialog.service";
 import {FoodItem, Household, QL_Storage} from "../graphql.types";
-import {NEVER, switchMap} from "rxjs";
+import {NEVER, Subject, switchMap, takeUntil} from "rxjs";
 
 /**
  * Implements the bulk of the viewing and editing of items in a household's storages
@@ -21,22 +15,24 @@ import {NEVER, switchMap} from "rxjs";
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   household?: Household;
   selectedStorages?: QL_Storage[];
   loading: boolean = true;
+  stop$: Subject<boolean>;
 
 
-
-  constructor(private storageService: StorageService,
-              private householdService: HouseholdService,
-              private foodItemService: FoodItemService,
-              private route: ActivatedRoute,
-              private dialog: MatDialog,
+  constructor(private householdService: HouseholdService,
               private snackBar: MatSnackBar,
-              private imageCompress: NgxImageCompressService,
               private localStorageService: LocalStorageService,
               private itemDialogService: ItemDialogService) {
+       this.stop$ = new Subject();
+  }
+
+  ngOnDestroy(): void {
+    //Clean up subscription
+    this.stop$.next(true);
+    this.stop$.complete();
   }
 
   ngOnInit(): void {
@@ -44,7 +40,6 @@ export class DashboardComponent implements OnInit {
     if (this.route.snapshot.paramMap.get("id")) {
       this.getHousehold(Number(this.route.snapshot.paramMap.get("id")));
     } else {*/
-
     //This is the new safe way because DefaultGuard won't let us in without a selected Household
     this.localStorageService.selectedHouseholdId.pipe(
       switchMap(householdId=>{
@@ -55,11 +50,15 @@ export class DashboardComponent implements OnInit {
           else
           {
             this.loading=false;
+            this.household = undefined;
             return NEVER;
           }
-        })
+        }),
+        takeUntil(this.stop$)
       ).subscribe({
         next: data => {
+          console.log("Checking out a household");
+          console.log(data);
           if (data.households) {
             this.household = data.households[0];
             let selectedStorages = this.localStorageService.getSelectedStorages();

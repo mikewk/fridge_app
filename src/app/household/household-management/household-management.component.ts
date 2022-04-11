@@ -42,10 +42,13 @@ export class HouseholdManagementComponent implements OnInit {
   ngOnInit(): void {
     this.localStorage.selectedHouseholdId.pipe(switchMap(householdId=>
       {
-        if( householdId )
+        if( householdId ) {
           return this.householdService.getHousehold(householdId!);
-        else
+        }
+        else {
+          this.router.navigate(["/dashboard"]);
           return NEVER;
+        }
       }
     )).subscribe({
       next: data => {
@@ -118,13 +121,7 @@ export class HouseholdManagementComponent implements OnInit {
         if (data.success) {
           this.snackBar.open("Removed Household Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
-          //Might need to force a reload to pick a new default household
-          const newUser = this.localStorage.getUser()!;
-          let userType = "member"
-          if( newUser.defaultHousehold && newUser.id == newUser.defaultHousehold.owner!.id )
-            userType="owner";
-          this.localStorage.switchHousehold(newUser.defaultHousehold?.id, userType);
-          this.router.navigate(["/dashboard"]);
+
         } else {
           console.log(data);
         }

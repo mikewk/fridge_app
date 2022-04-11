@@ -12,6 +12,7 @@ import {
   RemovalPayload
 } from "../graphql.types";
 import {HOUSEHOLD_CORE, INVITE_FIELDS} from "../graphql.fragments";
+import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
 const GetInvites_GQL = gql`
   query getInvites($householdId: Int!)
@@ -86,7 +87,8 @@ const AcceptHouseholdInvite_GQL = gql`
 })
 export class InviteService {
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo,
+              private householdHelper: HouseholdHelperService) { }
 
   getInvites(householdId: number):Observable<InvitesPayload>
   {
@@ -205,48 +207,7 @@ export class InviteService {
         //If we got a household back, we have been invite
         if( payload?.acceptHouseholdInvite.households )
         {
-          const newHousehold = payload.acceptHouseholdInvite.households[0];
-          const data = store.readFragment<any>({
-              id: "User:" + userId,
-              fragment: gql`
-                fragment MemberAndDefault on User
-                {
-                  memberHouseholds {
-                    ...HouseholdCore
-                  },
-                  defaultHousehold{
-                    ...HouseholdCore
-                  }
-                },
-                ${HOUSEHOLD_CORE}
-              `,
-              fragmentName: "MemberAndDefault"
-            });
-          let newHouseholds = [...data.memberHouseholds, newHousehold];
-          if( !data.defaultHousehold )
-          {
-            // noinspection GraphQLSchemaValidation
-            store.writeFragment({
-              id: "User:" + userId, fragment: gql`
-                fragment MyUserDefaultHousehold on User {
-                  defaultHousehold
-                }
-              `,
-              data: {defaultHousehold:newHousehold},
-            });
-          }
-          store.writeFragment({
-            id: "User:"+userId, fragment: gql`
-              fragment MyUserMemberHouseholds on User {
-                memberHouseholds {
-                  ...HouseholdCore
-                }
-              }
-              ${HOUSEHOLD_CORE}
-            `,
-            data: {memberHouseholds:newHouseholds},
-            fragmentName:"MyUserMemberHouseholds"
-          });
+          this.householdHelper.acceptInvite(payload.acceptHouseholdInvite.households[0]);
         }
       }
     }).pipe(map((result) => {

@@ -46,6 +46,12 @@ function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
       watchQuery: {
           fetchPolicy: 'cache-and-network',
           errorPolicy: 'ignore',
+          nextFetchPolicy(lastFetchPolicy) {
+            if (lastFetchPolicy === "cache-and-network") {
+              return "cache-first";
+            }
+            return lastFetchPolicy;
+          }
       },
       query: {
           fetchPolicy: 'network-only',

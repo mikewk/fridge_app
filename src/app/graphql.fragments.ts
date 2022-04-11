@@ -55,7 +55,7 @@ export const READ_MY_USER = gql`
 
 export const FOOD_ITEM_FIELDS = gql `
   fragment FoodItemFields on FoodItem{
-    id, filename, name, expiration, entered, enteredBy {id, name}, storage { id, name, type }
+    id, filename, name, expiration, entered, enteredBy {id, name}, storage { id, name, type }, tags
   }
 `
 
