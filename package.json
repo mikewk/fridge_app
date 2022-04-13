@@ -23,6 +23,7 @@
     "@auth0/angular-jwt": "^5.0.2",
     "apollo-angular": "^3.0.0",
     "apollo3-cache-persist": "^0.14.0",
+    "async": "^3.2.2",
     "ngx-image-compress": "https://gitpkg.now.sh/mikewk/ngx-image-compress/dist/ngx-image-compress?master",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
@@ -42,6 +43,7 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "ng-mocks": "^13.4.2",
     "typescript": "~4.5.2"
   }
 }
