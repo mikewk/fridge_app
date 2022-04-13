@@ -38,6 +38,7 @@ testem.log
 /typings
 .graphqlconfig
 remote-schema.graphql
+.env
 
 # System files
 .DS_Store
