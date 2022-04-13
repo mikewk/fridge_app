@@ -25,7 +25,7 @@ export class RegisterComponent implements OnInit {
   errorMessage = '';
   returnUrl?: string;
 
-  constructor(private authService: AuthService, private tokenStorage: LocalStorageService,
+  constructor(private authService: AuthService, private localStorage: LocalStorageService,
               private router: Router, private route: ActivatedRoute) {
   }
 
@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
           this.isSignUpFailed = true;
         } else {
           //If successful, save our token to keep us logged in
-          this.tokenStorage.saveToken(data.token)
+          this.localStorage.saveToken(data.token)
           this.isSuccessful = true;
           this.isSignUpFailed = false;
 

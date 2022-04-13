@@ -59,7 +59,6 @@ export const RemoveStorageGQL = gql`
 export class StorageService {
 
   constructor(private apollo: Apollo,
-              private localStorage: LocalStorageService,
               private storageHelper: StorageHelperService) {
   }
 

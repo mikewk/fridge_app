@@ -6,6 +6,7 @@ import {LocalStorageService} from "../_services/local-storage.service";
 import {Apollo} from "apollo-angular";
 import {JwtHelperService, JwtModule} from "@auth0/angular-jwt";
 import {RouterTestingModule} from "@angular/router/testing";
+import {MockProvider} from "ng-mocks";
 
 describe('OwnerGuard', () => {
   let guard: OwnerGuard;
@@ -15,17 +16,9 @@ describe('OwnerGuard', () => {
       imports:
       [
         RouterTestingModule,
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: () => localStorage.getItem('access_token')
-            }
-        })
       ],
       providers:[
-        HouseholdService,
-        LocalStorageService,
-        Apollo,
-        JwtHelperService
+        MockProvider(LocalStorageService)
       ]
     });
     guard = TestBed.inject(OwnerGuard);

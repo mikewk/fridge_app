@@ -17,8 +17,7 @@ export class ProfileChangeDefaultComponent implements OnInit {
   households?: Household[];
   user?: User;
 
-  constructor(private snackBar: MatSnackBar,
-              private localStorageService: LocalStorageService) {
+  constructor(private localStorageService: LocalStorageService) {
     //Set our household data
   }
 

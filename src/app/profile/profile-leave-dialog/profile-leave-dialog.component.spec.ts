@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProfileLeaveDialogComponent } from './profile-leave-dialog.component';
 import {LocalStorageService} from "../../_services/local-storage.service";
-import {localStorageSpy} from "../../_mocks/service-spies";
+import {MockInstance, MockProvider} from "ng-mocks";
 
 
 describe('ProfileLeaveDialogComponent', () => {
@@ -12,20 +12,23 @@ describe('ProfileLeaveDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ ProfileLeaveDialogComponent ],
-      providers: [ {provide: LocalStorageService, useValue: localStorageSpy }]
+      providers: [MockProvider(LocalStorageService)]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    getUserSpy = jasmine.createSpy("getUser").and.returnValue({
+        memberHouseholds: [
+          {owner:{id:1}, location:"Test 1", name:"Test 1"},
+          {owner:{id:2}, location:"Test 2", name:"Test 2"}
+        ],
+        id:2});
+    MockInstance(LocalStorageService, ()=>({
+      getUser: getUserSpy}));
     fixture = TestBed.createComponent(ProfileLeaveDialogComponent);
     component = fixture.componentInstance;
-    getUserSpy = localStorageSpy.getUser.and.returnValue({
-      memberHouseholds: [
-        {owner:{id:1}, location:"Test 1", name:"Test 1"},
-        {owner:{id:2}, location:"Test 2", name:"Test 2"}
-        ],
-      id:2});
+
     fixture.detectChanges();
   });
 

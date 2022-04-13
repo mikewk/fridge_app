@@ -29,7 +29,6 @@ export class InviteComponent implements OnInit {
   household?: Household;
   constructor(private route: ActivatedRoute,
               private inviteService: InviteService,
-              private authService: AuthService,
               private snackBar: MatSnackBar,
               private localStorage: LocalStorageService,
               private router: Router) { }

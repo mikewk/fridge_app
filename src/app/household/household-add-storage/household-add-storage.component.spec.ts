@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HouseholdAddStorageComponent} from './household-add-storage.component';
+import {FormsModule} from "@angular/forms";
 
 describe('StorageAddComponent', () => {
   let component: HouseholdAddStorageComponent;
@@ -7,7 +8,8 @@ describe('StorageAddComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HouseholdAddStorageComponent]
+      declarations: [HouseholdAddStorageComponent],
+      imports: [FormsModule]
     })
       .compileComponents();
   });

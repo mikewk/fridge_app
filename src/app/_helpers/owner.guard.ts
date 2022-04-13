@@ -12,8 +12,7 @@ import {LocalStorageService} from "../_services/local-storage.service";
 })
 export class OwnerGuard implements CanActivate {
 
-  constructor(private householdService: HouseholdService,
-              private localStorage: LocalStorageService,
+  constructor(private localStorage: LocalStorageService,
               private router: Router) {
 
   }

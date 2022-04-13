@@ -17,7 +17,7 @@ export class HouseholdHelperService {
   store: ApolloCache<any>;
   constructor(private apollo: Apollo,
               private localStorage: LocalStorageService) {
-    this.store = apollo.client.cache;
+    this.store = this.apollo.client.cache;
   }
 
   /**

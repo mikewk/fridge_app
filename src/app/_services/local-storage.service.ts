@@ -34,8 +34,7 @@ export class LocalStorageService {
 
   public uuid;
 
-  constructor(private jwtHelper: JwtHelperService,
-              private apollo: Apollo,
+  constructor(private apollo: Apollo,
               private authService: AuthService) {
     this.uuid = uuidv4();
   }

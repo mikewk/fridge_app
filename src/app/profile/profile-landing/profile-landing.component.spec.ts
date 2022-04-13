@@ -5,11 +5,11 @@ import {LocalStorageService} from "../../_services/local-storage.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DialogHelperService} from "../../_helpers/dialog-helper.service";
 import {UserService} from "../../_graphql-services/user.service";
-import {Router} from "@angular/router";
-import {snackBarSpy, localStorageSpy, dialogHelperSpy, routerSpy, userSpy} from "../../_mocks/service-spies"
-import {RouterTestingModule} from "@angular/router/testing";
 
-describe('ProfileComponentComponent', () => {
+import {RouterTestingModule} from "@angular/router/testing";
+import {MockInstance, MockProvider} from "ng-mocks";
+
+describe('ProfileLandingComponent', () => {
   let component: ProfileLandingComponent;
   let fixture: ComponentFixture<ProfileLandingComponent>;
   let getUserSpy: any;
@@ -25,25 +25,27 @@ describe('ProfileComponentComponent', () => {
       declarations: [ProfileLandingComponent],
       imports: [RouterTestingModule],
       providers:[
-        {provide: MatSnackBar, useValue: snackBarSpy},
-        {provide: LocalStorageService, useValue: localStorageSpy },
-        {provide: DialogHelperService, useValue: dialogHelperSpy},
-        {provide: UserService, useValue: userSpy}
+        MockProvider(UserService),
+        MockProvider(MatSnackBar),
+        MockProvider(DialogHelperService),
+        MockProvider(LocalStorageService),
       ]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProfileLandingComponent);
-    component = fixture.componentInstance;
-    getUserSpy = localStorageSpy.getUser.and.returnValue({
+    getUserSpy = jasmine.createSpy("getUser").and.returnValue({
       memberHouseholds: [
         {owner:{id:1}, location:"Test 1", name:"Test 1"},
         {owner:{id:2}, location:"Test 2", name:"Test 2"}
-        ],
+      ],
       ownedHouseholds: [],
-      id:2});
+      id:2}
+    );
+    MockInstance(LocalStorageService, ()=>({getUser: getUserSpy}));
+    fixture = TestBed.createComponent(ProfileLandingComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

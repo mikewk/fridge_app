@@ -12,7 +12,7 @@ export class FoodItemHelperService {
   store: ApolloCache<any>;
 
   constructor(private apollo: Apollo) {
-    this.store = apollo.client.cache;
+    this.store = this.apollo.client.cache;
   }
 
   /**

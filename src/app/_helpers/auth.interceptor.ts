@@ -10,13 +10,13 @@ const SOURCE_ID_KEY = 'SourceID'
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private token: LocalStorageService) {
+  constructor(private localStorage: LocalStorageService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
-    const token = this.token.getToken(); // Get our possible JWT token
-    const uuid = this.token.uuid;
+    const token = this.localStorage.getToken(); // Get our possible JWT token
+    const uuid = this.localStorage.uuid;
 
     //If we have a token, add it to the request
     if (token != null) {

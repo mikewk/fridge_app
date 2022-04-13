@@ -11,7 +11,8 @@ import {LocalStorageService} from "../_services/local-storage.service";
 })
 export class DefaultGuard implements CanActivate {
 
-  constructor(private localStorageService: LocalStorageService, private router: Router) {
+  constructor(private localStorage: LocalStorageService,
+              private router: Router) {
   }
 
   canActivate(
@@ -19,7 +20,7 @@ export class DefaultGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     //Get household from local storage
-    const household = this.localStorageService.getSelectedHouseholdId();
+    const household = this.localStorage.getSelectedHouseholdId();
     //If it exists, return true
     if (household) {
       return true;
