@@ -3,6 +3,9 @@ import {Household, User} from "../../graphql.types";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {LocalStorageService} from "../../_services/local-storage.service";
 
+/**
+ * A simple dialog to let a household owner remove a household member
+ */
 @Component({
   selector: 'app-household-remove-member',
   templateUrl: './household-remove-member.component.html',

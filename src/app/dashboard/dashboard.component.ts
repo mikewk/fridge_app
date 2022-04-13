@@ -43,18 +43,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //This is the new safe way because DefaultGuard won't let us in without a selected Household
     this.localStorageService.selectedHouseholdId.pipe(
       switchMap(householdId=>{
-          if( householdId )
-          {
+          if( householdId ) {
             return this.householdService.getHousehold(householdId!);
-          }
-          else
-          {
+          } else {
             this.loading=false;
             this.household = undefined;
             return NEVER;
           }
         }),
-        takeUntil(this.stop$)
+      takeUntil(this.stop$)  // Clean up this subscription, as it was causing serious problems
       ).subscribe({
         next: data => {
           console.log("Checking out a household");
@@ -94,6 +91,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return "FoodItem:" + item.id;
   }
 
+  /**
+   * Compare to food items to determine their ordering
+   * @param itemA
+   * @param itemB
+   */
   compFoodItems(itemA: FoodItem, itemB: FoodItem)
   {
     if( !itemA.expiration ) {
@@ -148,13 +150,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get ALL the household data identified by id
-   * (getHousehold) is a watchQuery that sends multiple returns as the query changes
+   * Update local storage with the currently selected storages, in case we navigate away
    */
-  getHousehold(id: number): void {
-
-  }
-
   updateSelectedStorages() {
     this.localStorageService.setSelectedStorages(this.selectedStorages);
   }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import { Observable } from 'rxjs';
-import {HouseholdService} from "../_graphql-services/household.service";
 import {LocalStorageService} from "../_services/local-storage.service";
 
 /**

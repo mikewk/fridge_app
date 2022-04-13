@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {MatSnackBar} from "@angular/material/snack-bar";
 
 import {Household, User} from "../../graphql.types";
 import {LocalStorageService} from "../../_services/local-storage.service";

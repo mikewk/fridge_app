@@ -16,6 +16,10 @@ const InformationList = [
   "Accepted, Rejected, and Expired entries automatically delete after 30 days."
 ];
 
+
+/**
+ * Displays status of existing invites and allows for creation of new invites
+ */
 @Component({
   selector: 'app-household-invite-manager',
   templateUrl: './household-invite-manager.component.html',
@@ -38,11 +42,13 @@ export class HouseholdInviteManagerComponent implements OnInit {
 
   }
 
+  /**
+   * Get the invites for this household on init
+   */
   ngOnInit(): void {
      this.localStorage.selectedHouseholdId.pipe(switchMap(householdId=>
      {
-       if( householdId )
-       {
+       if( householdId ) {
          this.householdId = householdId;
          return this.inviteService.getInvites(householdId);
        }
@@ -59,6 +65,10 @@ export class HouseholdInviteManagerComponent implements OnInit {
      }}});
   }
 
+  /**
+   * Copies the invite URL to clipboard
+   * @param invite
+   */
   onCopy(invite: Invite)
   {
     if(this.clipboard.copy(this.baseUrl+"invite/"+invite.id)) {
@@ -88,6 +98,9 @@ export class HouseholdInviteManagerComponent implements OnInit {
     }
   }
 
+  /**
+   * Launches the add invite dialog
+   */
   createInvite() {
     this.copy = false;
     this.dialogHelper.launchDialog(HouseholdAddInviteComponent, (x:any)=>{

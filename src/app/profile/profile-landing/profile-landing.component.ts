@@ -10,7 +10,6 @@ import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add
 import {Household, User} from "../../graphql.types";
 import {ProfileLeaveDialogComponent} from "../profile-leave-dialog/profile-leave-dialog.component";
 import {Router} from "@angular/router";
-import {AuthService} from "../../_graphql-services/auth.service";
 
 /**
  * Landing page for profile management

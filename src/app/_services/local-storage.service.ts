@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {JwtHelperService} from "@auth0/angular-jwt";
 import {GetUser_Query, QL_Storage, User} from "../graphql.types";
 import {BehaviorSubject, map, Observable} from "rxjs";
 import {Apollo} from "apollo-angular";
@@ -26,17 +25,20 @@ export class LocalStorageService {
   private userType: BehaviorSubject<string> =
     new BehaviorSubject<string>(LocalStorageService.initUserType());
 
+  //Tracks the currently selected household
   public selectedHouseholdId: BehaviorSubject<number | undefined> =
     new BehaviorSubject<number | undefined>(LocalStorageService.initSelectedHousehold());
 
+  //Tracks the storages last selected in the Dashboard, so we don't lose them in between page views
   public selectedStorages: BehaviorSubject<QL_Storage[] | undefined> =
     new BehaviorSubject<QL_Storage[] | undefined>(this.getSelectedStorages());
 
+  //A UUID for the websocket source_id
   public uuid;
 
   constructor(private apollo: Apollo,
               private authService: AuthService) {
-    this.uuid = uuidv4();
+    this.uuid = uuidv4(); //Generate UUID
   }
 
   getSelectedHouseholdObservable()
@@ -44,12 +46,20 @@ export class LocalStorageService {
     return this.selectedHouseholdId.asObservable();
   }
 
+  /**
+   * Clear local and session storage on sign out
+   * This will sign out other tabs
+   */
   signOut(): void {
     window.localStorage.clear();
     window.sessionStorage.clear();
   }
 
 
+  /**
+   * Generate an initial user type, use the one from sessionStorage if it exists.
+   * @private
+   */
   private static initUserType()
   {
     return window.sessionStorage.getItem(USER_TYPE_KEY)??"";
@@ -82,12 +92,18 @@ export class LocalStorageService {
     this.selectedHouseholdId.subscribe((x)=>callBack(x));
   }
 
+  /**
+   * Get the currently selected house id
+   */
   public getSelectedHouseholdId(): number | undefined
   {
     return this.selectedHouseholdId.getValue();
   }
 
 
+  /**
+   * Get a new token from AuthService
+   */
   public refreshToken(): Observable<boolean> {
     const observable = this.authService.refreshToken();
     //Subscribe so we can get the data and save it

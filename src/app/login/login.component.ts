@@ -32,6 +32,9 @@ export class LoginComponent implements OnInit {
 
   }
 
+  /**
+   * Setup returnURL and check if we're already logged in
+   */
   ngOnInit(): void {
     //Set returnURL and triple check that we're not logged in already
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
@@ -42,6 +45,9 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  /**
+   * Determine where to go after log in
+   */
   determineRoute(): void {
 
     //If there was a returnURL go there
@@ -71,12 +77,6 @@ export class LoginComponent implements OnInit {
         } else {
           //If there's no error, then save the token and route them
           this.localStorage.saveToken(data.token);
-          /*if( data.user?.defaultHousehold ) {
-            let userType = "member";
-            if( data.user.defaultHousehold.id == data.user.id)
-              userType = "owner";
-            this.localStorage.switchHousehold(data.user.defaultHousehold.id, userType)
-          }*/
           this.isLoginFailed = false;
           this.isLoggedIn = true;
           this.loggedIn.emit();
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
 
   /**
    * Reload the page for some reason
-   * TODO: Determine if we actually need this
+   * Facebook does it, so we do it.
    */
   reloadPage(): void {
     window.location.reload();

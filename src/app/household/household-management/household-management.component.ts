@@ -10,9 +10,8 @@ import {HouseholdRemoveStorageComponent} from "../household-remove-storage/house
 import {Household} from "../../graphql.types";
 import {EMPTY, NEVER, switchMap} from "rxjs";
 import {HouseholdRemoveMemberComponent} from "../household-remove-member/household-remove-member.component";
-import {
-  HouseholdRemoveHouseholdDialogComponent
-} from "../household-remove-household/household-remove-household-dialog.component";
+import {HouseholdRemoveHouseholdDialogComponent} from
+    "../household-remove-household/household-remove-household-dialog.component";
 import {Router} from "@angular/router";
 import {ManagementService} from "../../_graphql-services/management.service";
 
@@ -39,6 +38,9 @@ export class HouseholdManagementComponent implements OnInit {
               private router: Router) {
   }
 
+  /**
+   * Get the current household on init
+   */
   ngOnInit(): void {
     this.localStorage.selectedHouseholdId.pipe(switchMap(householdId=>
       {
@@ -139,11 +141,10 @@ export class HouseholdManagementComponent implements OnInit {
 
   }
 
-   /**
-   * Create the storage in the currently selected household
-   */
+  /**
+  * Create a storage in the currently selected household
+  */
   addStorage() {
-
     this.dialogHelper.launchDialog(HouseholdAddStorageComponent,
                                   (x: any) => this.storageService.addStorage(x, this.household!.id)).subscribe({
       next: data => {

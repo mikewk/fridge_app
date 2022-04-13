@@ -8,7 +8,6 @@ import {HttpLink} from 'apollo-angular/http';
 import {environment} from "../environments/environment";
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from '@apollo/client/utilities';
-import * as http from "http";
 
 
 
@@ -18,6 +17,7 @@ import * as http from "http";
 const wsUri = environment.graphql_wsUri;
 const httpUri = environment.graphql_httpUri;
 
+//Set up the cache and the persistent cache backup
 const cache = new InMemoryCache();
 persistCacheSync({cache,
   storage: new SessionStorageWrapper(window.sessionStorage)});
@@ -25,6 +25,7 @@ persistCacheSync({cache,
 
 function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   let wsClient;
+  //Try to create a websocket link
   try {
     wsClient = new WebSocketLink({
       uri: wsUri,
@@ -37,6 +38,7 @@ function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   }
   const httpClient = httpLink.create({uri: httpUri});
   let link;
+  //If we were able to make a WS client, use it, otherwise just use HTTP
   if( wsClient ) {
     link = split(({query}) => {
         const definition = getMainDefinition(query);

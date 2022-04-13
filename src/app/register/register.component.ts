@@ -33,6 +33,9 @@ export class RegisterComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
   }
 
+  /**
+   * Process form submission
+   */
   onSubmit(): void {
     const {name, email, password, password2} = this.form;
 

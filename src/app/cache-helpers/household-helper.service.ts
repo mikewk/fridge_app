@@ -4,10 +4,9 @@ import {Apollo, gql} from "apollo-angular";
 import {HOUSEHOLD_CORE, READ_MY_USER} from "../graphql.fragments";
 import {LocalStorageService} from "../_services/local-storage.service";
 import {ApolloCache} from "@apollo/client/cache";
-import {defaultRippleAnimationConfig} from "@angular/material/core";
 
 /**
- * A series of functions to help update the cache
+ * A series of functions to help update the cache for Household operations
  */
 @Injectable({
   providedIn: 'root'

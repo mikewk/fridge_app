@@ -4,7 +4,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {InviteService} from "../_graphql-services/invite.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {LocalStorageService} from "../_services/local-storage.service";
-import {AuthService} from "../_graphql-services/auth.service";
 
 /**
  * Some strings that should be moved into some global area to be easily changed out / i18n
@@ -13,6 +12,9 @@ const CanSee = ["Your name", "Activity in this household"];
 const CanNotSee = ["Your email", "Households you have created",
                    "Other households of which you're a member", "Activity in any other households"];
 
+/**
+ * The page shown when a user follows an invite link
+ */
 @Component({
   selector: 'app-invite',
   templateUrl: './invite.component.html',
@@ -33,6 +35,9 @@ export class InviteComponent implements OnInit {
               private localStorage: LocalStorageService,
               private router: Router) { }
 
+  /**
+   * Get the ID field from the URL and try to get the invite from the server
+   */
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get("id")
     if ( id ) {
@@ -51,7 +56,9 @@ export class InviteComponent implements OnInit {
     }
   }
 
-
+  /**
+   * Change the household if the user clicks the button
+   */
   changeHousehold() {
     if( this.household ) {
       const userId = this.localStorage.getUser()!.id;
@@ -63,15 +70,16 @@ export class InviteComponent implements OnInit {
     }
   }
 
+  /**
+   * Reject the currently displayed invite
+   */
   reject() {
     this.inviteService.rejectInvite(this.invite!).subscribe({
       next: data => {
-        if( data.error )
-        {
+        if( data.error ) {
           this.snackBar.open("Rejection failed. Try Again.", undefined, {panelClass:"simple-snack-bar", duration:2000});
         }
-        else
-        {
+        else {
           this.snackBar.open("Rejection successful.", undefined, {panelClass:"simple-snack-bar", duration:2000});
           this.rejected = true;
           this.invite = undefined;
@@ -80,16 +88,17 @@ export class InviteComponent implements OnInit {
     });
   }
 
+  /**
+   * Try to accept the currently displayed invite
+   */
   accept() {
     const userId = this.localStorage.getUser()!.id;
     this.inviteService.acceptInvite(this.invite!, userId).subscribe({
       next: data => {
-        if( data.error || !data.households)
-        {
+        if( data.error || !data.households) {
           this.snackBar.open("Accept failed. Try Again.", undefined, {panelClass:"simple-snack-bar", duration:2000});
         }
-        else
-        {
+        else {
           //If an invite is accepted, we need to get a new token ASAP
           this.localStorage.refreshToken().subscribe(success=>{
               this.tokenRefresh = success;
@@ -100,6 +109,5 @@ export class InviteComponent implements OnInit {
         }
       }
     });
-
   }
 }

@@ -2,6 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Household} from "../../graphql.types";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
+/**
+ * A simple dialog to let the user select a household to delete
+ */
 @Component({
   selector: 'app-household-remove-household',
   templateUrl: './household-remove-household-dialog.component.html',

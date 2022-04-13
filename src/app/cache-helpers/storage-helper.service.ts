@@ -4,6 +4,9 @@ import {Messages_Payload, QL_Storage} from "../graphql.types";
 import {STORAGE_FIELDS} from "../graphql.fragments";
 import {ApolloCache} from "@apollo/client/cache";
 
+/**
+ * Helper class for Storage subscription messages
+ */
 @Injectable({
   providedIn: 'root'
 })

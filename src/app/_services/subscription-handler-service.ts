@@ -33,6 +33,9 @@ const MESSAGES_GQL = gql`
   ${HOUSEHOLD_CORE},
 `
 
+/**
+ * Handles messages coming in from Websocket subscription
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -46,6 +49,12 @@ export class SubscriptionHandlerService {
 
   }
 
+  /**
+   * Initialize the subscription with the token and source_id
+   * We need to send these to the subscription because they can't be sent in the headers
+   * @param sourceId
+   * @param token
+   */
   initSubscription(sourceId:string, token:string) {
     this.apollo.subscribe<Messages_Subscription>({
       query: MESSAGES_GQL,
@@ -63,6 +72,7 @@ export class SubscriptionHandlerService {
         return result.data.messages;
       }
     })).subscribe((data) => {
+      // Process the incoming messages based on data type
       switch (data.type) {
         case "error":
           console.log(data.action);

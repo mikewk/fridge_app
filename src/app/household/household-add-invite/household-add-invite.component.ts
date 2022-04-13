@@ -3,6 +3,9 @@ import {Household, Invite} from "../../graphql.types";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdService} from "../../_graphql-services/household.service";
 
+/**
+ * Dialog to create a new invite to the household
+ */
 @Component({
   selector: 'app-household-add-invite',
   templateUrl: './household-add-invite.component.html',
@@ -17,14 +20,10 @@ export class HouseholdAddInviteComponent implements OnInit {
               private householdService: HouseholdService)
   {
     this.householdService.getHousehold(this.localStorage.selectedHouseholdId.getValue()!).subscribe(
-      (data)=>
-      {
-        if( data.households )
-        {
+      (data)=> {
+        if( data.households ) {
           this.household=data.households[0];
-        }
-        else
-        {
+        } else {
           this.error = true;
         }
       }

@@ -4,6 +4,9 @@ import {FoodItem, Messages_Payload} from "../graphql.types";
 import {ApolloCache} from "@apollo/client/cache";
 import {FOOD_ITEM_FIELDS} from "../graphql.fragments";
 
+/**
+ * Helper class for FoodItem subscription messages
+ */
 @Injectable({
   providedIn: 'root'
 })

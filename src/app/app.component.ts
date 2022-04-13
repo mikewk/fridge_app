@@ -9,6 +9,9 @@ import {HouseholdService} from "./_graphql-services/household.service";
 import {AuthService} from "./_graphql-services/auth.service";
 import {SubscriptionHandlerService} from "./_services/subscription-handler-service";
 
+/**
+ * The main application component
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -39,6 +42,10 @@ export class AppComponent {
 
   }
 
+  /**
+   * Initialize subscription with Websocket
+   * @private
+   */
   private initializeSubscription()
   {
     const token = this.localStorageService.getToken();
@@ -48,10 +55,13 @@ export class AppComponent {
     }
   }
 
+  /**
+   * Get messages from the login or registration pages
+   * @param componentRef
+   */
   onActivate(componentRef: any)
   {
-    if( componentRef.loggedIn )
-    {
+    if( componentRef.loggedIn ) {
       componentRef.loggedIn.subscribe(()=>
       {
         this.loading = true;
@@ -59,9 +69,14 @@ export class AppComponent {
     }
   }
 
+  /**
+   * Set up our app
+   */
   ngOnInit(): void {
+    // check if we're logged in
     this.isLoggedIn = !!this.localStorageService.getToken();
 
+    //Subscripe to usertype so we can show the appropriate menus
     this.localStorageService.subscribeUsertype((x:any)=>{this.userType=x; console.log("Usertype Changed to "+x);})
 
     //Watch window storage to see if we've been logged out
@@ -72,6 +87,7 @@ export class AppComponent {
       }
     }
 
+    // Watch the currently selected household and get the new household if it changes
     this.localStorageService.getSelectedHouseholdObservable().pipe(switchMap(
         (householdId:number | undefined)=>{
           if( householdId )
@@ -87,21 +103,17 @@ export class AppComponent {
             });
 
     if (this.isLoggedIn) {
-      //If we're logged in, let's refresh the token
+      //If we're logged in when the app loads, let's refresh the token
       this.localStorageService.refreshToken();
       this.initializeSubscription();
 
       //If we're logged in, get our user from localstorage
-      this.authService.getUser().subscribe(data=>
-      {
-        if( data.users )
-        {
+      this.authService.getUser().subscribe(data=> {
+        if( data.users ) {
           this.user = data.users[0];
-          if( !this.selectedHousehold )
-          {
+          if( !this.selectedHousehold ) {
             //check for default household
-            if( this.user.defaultHousehold )
-            {
+            if( this.user.defaultHousehold ) {
               //Set selected household
               let userType = "member";
               if(this.user.id == this.user.defaultHousehold.owner!.id)
@@ -119,14 +131,13 @@ export class AppComponent {
         }
       });
     }
-    else
-    {
+    else {
       this.loading = false;
     }
   }
 
   /**
-   * Log the user out by telling the token service to Mount Doom the token.
+   * Log the user out by telling the token service to Mount Doom local and session storage
    */
   logout(): void {
     this.localStorageService.signOut();
@@ -159,6 +170,7 @@ export class AppComponent {
 
   /**
    * Change the selected household to the household picked in the menu
+   * The rest of the code will pick up this change via Observable
    * @param household
    */
   changeSelected(household: Household) {
@@ -168,11 +180,19 @@ export class AppComponent {
     this.localStorageService.switchHousehold(household.id, userType);
   }
 
+  /**
+   * Go to signup page if they click signup button
+   * Save the current returnURL
+   */
   signup() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'];
     this.router.navigate(["/register"], {queryParams: {returnUrl: returnUrl}});
   }
 
+  /**
+   * Go to login page if they click login button
+   * Save the current returnURL
+   */
   login() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'];
     this.router.navigate(["/login"], {queryParams: {returnUrl: returnUrl}});

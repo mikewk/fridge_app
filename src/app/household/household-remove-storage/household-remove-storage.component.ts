@@ -2,6 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Household, QL_Storage} from "../../graphql.types";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
+/**
+ * A simple dialog to allow a household owner to select a storage to remove
+ */
 @Component({
   selector: 'app-household-remove-storage',
   templateUrl: './household-remove-storage.component.html',

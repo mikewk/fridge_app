@@ -119,6 +119,9 @@ export class FoodItemAddComponent implements OnInit {
     }
   }
 
+  /**
+   * Get AI driven name and tag suggestions (NYI on backend)
+   */
   getSuggestion() {
     //If we haven't gotten the suggestions back from the API
     if (!this.suggestion) {
