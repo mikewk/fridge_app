@@ -1,13 +1,15 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ProfileAddHouseholdComponent} from './profile-add-household.component';
+import {FormsModule} from "@angular/forms";
 
-describe('HouseholdAddComponent', () => {
+describe('ProfileAddHouseholdComponent', () => {
   let component: ProfileAddHouseholdComponent;
   let fixture: ComponentFixture<ProfileAddHouseholdComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports:[FormsModule],
       declarations: [ProfileAddHouseholdComponent]
     })
       .compileComponents();

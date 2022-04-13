@@ -1,12 +1,13 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-
+const graphql_base_uri = "192.168.50.130:8000"
 export const environment = {
   production: false,
   image_base_url: "https://d33stfk6gvmz1c.cloudfront.net/",
   invite_base_url: "http://192.168.50.130:4201/",
-  graphql_uri: '192.168.50.130:8000'
+  graphql_wsUri: "ws://"+graphql_base_uri+"/ws",
+  graphql_httpUri: "http://"+graphql_base_uri+"/graphql"
 };
 
 /*

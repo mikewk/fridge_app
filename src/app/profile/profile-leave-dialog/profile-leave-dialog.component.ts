@@ -3,6 +3,7 @@ import {Household, User} from "../../graphql.types";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {first} from "rxjs";
 import {AuthService} from "../../_graphql-services/auth.service";
+import {LocalStorageService} from "../../_services/local-storage.service";
 
 @Component({
   selector: 'app-profile-leave-dialog',
@@ -15,19 +16,11 @@ export class ProfileLeaveDialogComponent implements OnInit {
   households?: Household[];
   user?: User;
 
-  constructor(private snackBar: MatSnackBar,
-              private authService: AuthService) {
-    //Set our household data
+  constructor(private localStorage: LocalStorageService) {
   }
 
   ngOnInit(): void {
-    this.authService.getUser().pipe(first()).subscribe(data=>
-    {
-      if( data.users )
-      {
-        this.user = data.users[0];
-        this.households = this.user.memberHouseholds.filter(x=>x.owner!.id!=this.user!.id);
-      }
-    });
+    this.user = this.localStorage.getUser();
+    this.households = this.user?.memberHouseholds.filter(x=>x.owner!.id!=this.user!.id)
   }
 }

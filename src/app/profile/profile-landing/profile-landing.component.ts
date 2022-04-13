@@ -28,21 +28,14 @@ export class ProfileLandingComponent implements OnInit {
               private snackBar: MatSnackBar,
               private dialogHelper: DialogHelperService,
               private localStorage: LocalStorageService,
-              private authService: AuthService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    this.authService.getUser().subscribe((data)=> {
-        if (data.users) {
-          this.user = data.users[0];
-          if( this.user.memberHouseholds.length > 1 )
-            this.moreThanOneHousehold = true;
-        } else {
-          console.log(data.error);
-        }
-      }
-    );
+    this.user = this.localStorage.getUser();
+    if (this.user && this.user.memberHouseholds.length > 1) {
+      this.moreThanOneHousehold = true;
+    }
   }
 
 

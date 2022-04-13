@@ -1,14 +1,21 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ProfileChangeDefaultComponent} from './profile-change-default.component';
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {localStorageSpy, snackBarSpy} from "../../_mocks/service-spies";
+import {LocalStorageService} from "../../_services/local-storage.service";
 
-describe('HouseholdChangeDefaultComponent', () => {
+describe('ProfileChangeDefaultComponent', () => {
   let component: ProfileChangeDefaultComponent;
   let fixture: ComponentFixture<ProfileChangeDefaultComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ProfileChangeDefaultComponent]
+      declarations: [ProfileChangeDefaultComponent],
+      providers: [
+        {provide: MatSnackBar, useValue: snackBarSpy},
+        {provide: LocalStorageService, useValue: localStorageSpy}
+      ]
     })
       .compileComponents();
   });

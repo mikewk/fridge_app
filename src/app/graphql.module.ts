@@ -8,13 +8,15 @@ import {HttpLink} from 'apollo-angular/http';
 import {environment} from "../environments/environment";
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from '@apollo/client/utilities';
+import * as http from "http";
 
 
 
 
 //Replace this URI with your own endpoint if you want to run your own API server somewhere else
 //const uri = 'https://fridge.michealkok.com/api/graphql';
-const uri = environment.graphql_uri;
+const wsUri = environment.graphql_wsUri;
+const httpUri = environment.graphql_httpUri;
 
 const cache = new InMemoryCache();
 persistCacheSync({cache,
@@ -22,23 +24,33 @@ persistCacheSync({cache,
 
 
 function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
-  const wsClient = new WebSocketLink({
-    uri: `ws://`+uri+"/ws",
-    options: {
-      reconnect: true,
-    }
-  });
-  const httpClient = httpLink.create({uri: "http://"+uri+"/graphql"});
-  const link = split(({query}) => {
-            const definition = getMainDefinition(query);
-            return (
-                  definition.kind === 'OperationDefinition' && definition.operation=== 'subscription'
-                );
-              },
-              wsClient,
-              httpClient,
-            );
-
+  let wsClient;
+  try {
+    wsClient = new WebSocketLink({
+      uri: wsUri,
+      options: {
+        reconnect: true,
+      }
+    });
+  } catch(error) {
+    wsClient = null;
+  }
+  const httpClient = httpLink.create({uri: httpUri});
+  let link;
+  if( wsClient ) {
+    link = split(({query}) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+        );
+      },
+      wsClient,
+      httpClient,
+    );
+  }
+  else {
+    link = httpClient;
+  }
   return {
     link: link,
     cache: cache,
