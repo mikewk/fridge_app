@@ -22,7 +22,8 @@
 
     </div>
     <p>
-      <button (click)="openAddDialog()">Add Item</button>
+      <label for="dashboard-add-item" class="mat-raised-button">Add Item</label>
+      <input id="dashboard-add-item" type="file" accept="image/*" (change)="openAddDialog($event)">
     </p>
   </div>
   <ng-template #message>

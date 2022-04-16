@@ -131,22 +131,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /**
    * Opens add/edit dialog in add mode
    */
-  openAddDialog() {
-
-    this.itemDialogService.addItem(this.household!).subscribe({
-      next: data => {
-        //If the API call was successful
-        if (data.addFoodItemToStorage.foodItems) {
-          this.snackBar.open("Food Item Added Successfully", undefined,
-            {duration: 2000, panelClass: ['simple-snack-bar']});
-        } else {
-          console.log(data);
+  openAddDialog(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if( input.files && input.files[0]) {
+      this.itemDialogService.addItem(this.household!, input.files[0]).subscribe({
+        next: data => {
+          //If the API call was successful
+          if (data.addFoodItemToStorage.foodItems) {
+            this.snackBar.open("Food Item Added Successfully", undefined,
+              {duration: 2000, panelClass: ['simple-snack-bar']});
+          } else {
+            console.log(data)
+          }
+        },
+        error: err => {
+          console.log(err);
         }
-      },
-      error: err => {
-        console.log(err);
-      }
-    });
+      });
+      input.files = null;
+    }
   }
 
   /**

@@ -148,23 +148,26 @@ export class AppComponent {
    * Show the add item dialog if the Add Item icon is clicked in the toolbar
    * Can be called from anywhere as long as there is a selected household
    */
-  addItemToSelected() {
-    if (this.selectedHousehold) {
-      this.addFoodItemHandler.addItem(this.selectedHousehold).subscribe(
-        {
-          next: data => {
-            //If the API call was successful
-            if (data.addFoodItemToStorage) {
-              this.snackBar.open("Food Item Added Successfully", undefined,
-                {duration: 2000, panelClass: ['simple-snack-bar']});
-            } else {
-              console.log(data);
+  addItemToSelected(event: Event) {
+    let input = event.target as HTMLInputElement;
+    if( input.files && input.files.length > 0) {
+      if (this.selectedHousehold) {
+        this.addFoodItemHandler.addItem(this.selectedHousehold, input.files[0]).subscribe(
+          {
+            next: data => {
+              //If the API call was successful
+              if (data.addFoodItemToStorage) {
+                this.snackBar.open("Food Item Added Successfully", undefined,
+                  {duration: 2000, panelClass: ['simple-snack-bar']});
+              } else {
+                console.log(data);
+              }
+            },
+            error: err => {
+              console.log(err);
             }
-          },
-          error: err => {
-            console.log(err);
-          }
-        });
+          });
+      }
     }
   }
 

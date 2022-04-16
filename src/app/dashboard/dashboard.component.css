@@ -63,4 +63,8 @@ mat-card
 
 }
 
+#dashboard-add-item
+{
+  display:none;
+}
 

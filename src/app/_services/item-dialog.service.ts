@@ -35,20 +35,38 @@ export class ItemDialogService {
   /**
    * Display an add food item dialog for the household defined in household.
    * @param household
+   * @param file
    */
-  addItem(household: Household): Observable<any> {
-    return from(this.imageCompress.uploadFile().then(
-      ({image, orientation}) => {
-        return this.imageCompress.compressFile(image, orientation, undefined, 75, 1024, 1024, "image/jpeg").then((compressedImage) => {
-          return compressedImage;
+  addItem(household: Household, file: File): Observable<any> {
+    return from(this.imageCompress.getOrientation(file).then((orientation)=> {
+        return this.fileToDataURL(file).then((image)=> {
+          return this.imageCompress.compressFile(image, orientation, undefined, 75, 1024, 1024, "image/jpeg").then(
+            (compressedImage) => {
+              return compressedImage;
+            });
         })
-      })).pipe(
+      }
+    )).pipe(
       mergeMap((image) => {
           return this.dialogHelper.launchDialog(FoodItemAddComponent,
             this.foodItemService.addFoodItem.bind(this.foodItemService),
             {household: household, image: image});
         }
-      )
-    );
+      ));
   }
+
+  private fileToDataURL = (file: File) : Promise<any> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            resolve(e?.target?.result);
+        };
+        try {
+            reader.readAsDataURL(file);
+        }
+        catch (e) {
+            reject("Unknown Error")
+        }
+    });
+  };
 }

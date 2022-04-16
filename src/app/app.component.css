@@ -35,3 +35,17 @@ mat-toolbar
   margin-right: auto;
   background: indianred;
 }
+
+#add-item
+{
+  display:none;
+}
+
+.add-photo-button:hover {
+  background-color: rgba(255, 255, 255, .15);
+}
+
+.add-photo-button mat-icon
+{
+      vertical-align: middle;
+}

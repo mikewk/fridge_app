@@ -1,9 +1,9 @@
 <div id="app">
   <mat-toolbar color="primary"><span>Fridge Tracker</span>
-     <button *ngIf="this.selectedHousehold&&this.selectedHousehold.storages?.length"
-             (click)="addItemToSelected()" mat-icon-button>
-       <mat-icon>add_a_photo</mat-icon>
-     </button>
+     <span *ngIf="isLoggedIn && this.selectedHousehold && this.selectedHousehold.storages?.length">
+       <label for="add-item" class="mat-icon-button add-photo-button"><mat-icon>add_a_photo</mat-icon></label>
+       <input type="file" id="add-item" accept="image/*" (change)="addItemToSelected($event)">
+     </span>
     <span class="spacer"></span>
     <span *ngIf="!isLoggedIn">
         <button mat-button (click)="signup()">Sign Up</button>
