@@ -148,7 +148,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           console.log(err);
         }
       });
-      input.files = null;
+      input.value = "";
     }
   }
 

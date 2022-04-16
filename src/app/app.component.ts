@@ -168,6 +168,7 @@ export class AppComponent {
             }
           });
       }
+      input.value = "";
     }
   }
 
