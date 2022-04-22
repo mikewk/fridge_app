@@ -39,6 +39,7 @@ testem.log
 .graphqlconfig
 remote-schema.graphql
 .env
+./environments/url_signature.ts
 
 # System files
 .DS_Store
