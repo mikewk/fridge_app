@@ -5,7 +5,6 @@ import {ApolloTestingController, ApolloTestingModule} from "apollo-angular/testi
 import {GraphQLModule} from "../graphql.module";
 import {Apollo} from "apollo-angular";
 import {MockProvider} from "ng-mocks";
-import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 import {FoodItemHelperService} from "../cache-helpers/food-item-helper.service";
 
 describe('FoodItemService', () => {

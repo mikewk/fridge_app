@@ -4,8 +4,6 @@ import {HouseholdService} from './household.service';
 import {ApolloTestingController, ApolloTestingModule} from "apollo-angular/testing";
 import {GraphQLModule} from "../graphql.module";
 import {Apollo} from "apollo-angular";
-import {MockProvider} from "ng-mocks";
-import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
 describe('HouseholdService', () => {
   let service: HouseholdService;
