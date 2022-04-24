@@ -7,33 +7,21 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
 import {MatCardModule} from "@angular/material/card";
-import {MatChipsModule} from "@angular/material/chips";
 import {MatIconModule} from "@angular/material/icon";
-import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatSelectModule} from "@angular/material/select";
-import {MatListModule} from "@angular/material/list";
 
-import {FoodItemCardComponent} from './food-item-card/food-item-card.component';
 import {FoodItemAddComponent} from "./food-item-add/food-item-add.component";
 import {SecureImageComponent} from "../_helpers/secure-image.component";
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
-    FoodItemCardComponent,
     FoodItemAddComponent,
     SecureImageComponent
   ],
   exports: [
-    FoodItemCardComponent,
     FoodItemAddComponent,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatInputModule,
-    MatCardModule,
-    MatChipsModule,
-    MatIconModule,
-    MatSidenavModule,
+    SecureImageComponent,
   ],
   imports: [
     CommonModule,
@@ -43,11 +31,9 @@ import {SecureImageComponent} from "../_helpers/secure-image.component";
     MatButtonModule,
     MatInputModule,
     MatCardModule,
-    MatChipsModule,
     MatIconModule,
-    MatSidenavModule,
     MatSelectModule,
-    MatListModule,
+    MatChipsModule,
   ]
 })
 export class FoodItemModule {

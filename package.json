@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 192.168.50.130 --port 4201",
-    "build": "ng build",
+    "build": "npm run gensig && ng build",
+    "gensig": "ts-node -O {\\\"module\\\":\\\"commonjs\\\"} gensig.ts",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -37,6 +38,8 @@
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "@types/uuid": "^8.3.4",
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.0",
     "jasmine-core": "~4.0.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
@@ -44,6 +47,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "ng-mocks": "^13.4.2",
+    "pbkdf2-hmac": "^1.0.4",
     "typescript": "~4.5.2"
   }
 }

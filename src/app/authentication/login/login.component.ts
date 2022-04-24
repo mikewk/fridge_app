@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {AuthService} from '../_graphql-services/auth.service';
-import {LocalStorageService} from '../_services/local-storage.service';
+import {AuthService} from '../../_graphql-services/auth.service';
+import {LocalStorageService} from '../../_services/local-storage.service';
 
 /**
  * A material UI login prompt component with validation

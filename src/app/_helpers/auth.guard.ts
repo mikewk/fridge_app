@@ -24,8 +24,7 @@ export class AuthGuard implements CanActivate {
       //TODO: Figure out token refresh as well
       return true;
     } else {
-      this.router.navigate(["/login"], {queryParams: {returnUrl: state.url}});
-      return false;
+      return this.router.parseUrl("/auth/login");
     }
   }
 

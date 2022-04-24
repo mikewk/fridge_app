@@ -7,12 +7,21 @@ import {FormsModule} from "@angular/forms";
 import {MatDividerModule} from "@angular/material/divider";
 import {FoodItemModule} from "../food-item/food-item.module";
 import {DashboardRoutingModule} from "./dashboard-routing.module";
-
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatListModule} from "@angular/material/list";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatButtonModule} from "@angular/material/button";
+import {FoodItemCardComponent} from "./food-item-card/food-item-card.component";
 
 export {DashboardComponent}
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [
+    DashboardComponent,
+    FoodItemCardComponent
+  ],
   imports: [
     CommonModule,
     MatInputModule,
@@ -20,7 +29,13 @@ export {DashboardComponent}
     FormsModule,
     MatDividerModule,
     FoodItemModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    MatCardModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatChipsModule,
+    MatButtonModule
   ],
   exports: [
     DashboardComponent

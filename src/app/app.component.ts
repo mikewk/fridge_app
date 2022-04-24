@@ -190,7 +190,7 @@ export class AppComponent {
    */
   signup() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-    this.router.navigate(["/register"], {queryParams: {returnUrl: returnUrl}});
+    this.router.navigate(["/auth/register"], {queryParams: {returnUrl: returnUrl}});
   }
 
   /**
@@ -199,6 +199,6 @@ export class AppComponent {
    */
   login() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-    this.router.navigate(["/login"], {queryParams: {returnUrl: returnUrl}});
+    this.router.navigate(["/auth/login"], {queryParams: {returnUrl: returnUrl}});
   }
 }

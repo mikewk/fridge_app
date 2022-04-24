@@ -6,11 +6,12 @@ import {
   AuthPayload,
   GetUser_Query,
   Login_Mutation,
-  RefreshToken_Mutation,
-  Signup_Mutation,
+  RefreshToken_Mutation, SendPasswordReset_Mutation,
+  Signup_Mutation, TryPasswordReset_Mutation,
   UsersPayload
 } from '../graphql.types'
 import {USER_FIELDS} from "../graphql.fragments";
+import {environment} from "../../environments/environment";
 
 //GraphQL Constants
 const LoginGQL = gql`
@@ -54,6 +55,18 @@ export const GetUser_GQL = gql`
 
 `
 
+const SendPasswordReset_GQL = gql`
+  mutation sendPasswordReset($email: String!, $urlRoot: String!, $urlSignature: String!){
+    sendPasswordReset(email:$email, urlRoot:$urlRoot, urlSignature: $urlSignature)
+  }
+`;
+
+
+const TryPasswordReset_GQL = gql`
+  mutation tryPasswordReset($password: String!, $key: String!){
+    tryPasswordReset(password: $password, key: $key)
+  }
+`;
 
 /**
  * This class implements an authorization service.
@@ -148,6 +161,49 @@ export class AuthService {
         return {"error": "No data returned", users: undefined};
       } else {
         return result.data.getUser;
+      }
+    }));
+  }
+
+  sendPasswordReset(email: string): Observable<string>
+  {
+    return this.apollo.mutate<SendPasswordReset_Mutation>({
+      mutation: SendPasswordReset_GQL,
+      variables: {
+        email: email,
+        urlRoot: environment.invite_base_url,
+        urlSignature: environment.url_signature
+      }
+    }).pipe(map((result)=>
+    {
+      if (result.errors) {
+        return result.errors.join(",");
+      } else if (!result.data?.sendPasswordReset) {
+        return "No data returned";
+      }
+      else {
+        return result.data?.sendPasswordReset;
+      }
+    }));
+  }
+
+  tryPasswordReset(password: string, key:string): Observable<string>
+  {
+    return this.apollo.mutate<TryPasswordReset_Mutation>({
+      mutation: TryPasswordReset_GQL,
+      variables: {
+        password: password,
+        key: key
+      }
+    }).pipe(map((result)=>
+    {
+      if (result.errors) {
+        return result.errors.join(",");
+      } else if (!result.data?.tryPasswordReset) {
+        return "No data returned";
+      }
+      else {
+        return result.data?.tryPasswordReset;
       }
     }));
   }

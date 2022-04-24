@@ -4,8 +4,8 @@ import {RegisterComponent} from './register.component';
 import {RouterTestingModule} from "@angular/router/testing";
 import {FormsModule} from "@angular/forms";
 import {MockProvider} from "ng-mocks";
-import {AuthService} from "../_graphql-services/auth.service";
-import {LocalStorageService} from "../_services/local-storage.service";
+import {AuthService} from "../../_graphql-services/auth.service";
+import {LocalStorageService} from "../../_services/local-storage.service";
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;

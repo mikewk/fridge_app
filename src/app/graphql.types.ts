@@ -200,6 +200,14 @@ export type RemoveHousehold_Mutation = {
   removeHousehold: RemovalPayload
 }
 
+export type SendPasswordReset_Mutation = {
+  sendPasswordReset: string
+}
+
+export type TryPasswordReset_Mutation = {
+  tryPasswordReset: string
+}
+
 export type Messages_Subscription = {
   messages: Messages_Payload;
 }
