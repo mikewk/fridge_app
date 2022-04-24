@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PasswordResetRequestComponent } from './password-reset-request.component';
+import {MockProvider} from "ng-mocks";
+import {AuthService} from "../../_graphql-services/auth.service";
+import {FormsModule} from "@angular/forms";
 
 describe('PasswordResetRequestComponent', () => {
   let component: PasswordResetRequestComponent;
@@ -8,7 +11,11 @@ describe('PasswordResetRequestComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PasswordResetRequestComponent ]
+      declarations: [ PasswordResetRequestComponent ],
+      imports: [FormsModule],
+      providers: [
+        MockProvider(AuthService),
+      ]
     })
     .compileComponents();
   });
