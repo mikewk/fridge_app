@@ -110,13 +110,13 @@ export class InviteService {
 
   getInvite(id: string):Observable<InvitesPayload>
   {
-    return this.apollo.watchQuery<GetInvite_Query>({
+    return this.apollo.query<GetInvite_Query>({
       query: GetInvite_GQL,
       variables: {
         id: id
       },
       fetchPolicy: "network-only"
-    }).valueChanges.pipe(map((result) => {
+    }).pipe(map((result) => {
       if (result.errors) {
         return {error: result.errors.join(",")};
       } else if (!result.data?.getInvite) {

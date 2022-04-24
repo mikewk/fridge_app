@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Household, Invite} from "../../graphql.types";
 import {LocalStorageService} from "../../_services/local-storage.service";
 import {HouseholdService} from "../../_graphql-services/household.service";
+import {take} from "rxjs";
 
 /**
  * Dialog to create a new invite to the household
@@ -19,7 +20,7 @@ export class HouseholdAddInviteComponent implements OnInit {
   constructor(private localStorage: LocalStorageService,
               private householdService: HouseholdService)
   {
-    this.householdService.getHousehold(this.localStorage.selectedHouseholdId.getValue()!).subscribe(
+    this.householdService.getHousehold(this.localStorage.selectedHouseholdId.getValue()!).pipe(take(1)).subscribe(
       (data)=> {
         if( data.households ) {
           this.household=data.households[0];

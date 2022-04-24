@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {InviteService} from "../../_graphql-services/invite.service";
@@ -6,7 +6,7 @@ import {DialogHelperService} from "../../_helpers/dialog-helper.service";
 import {HouseholdAddInviteComponent} from "../household-add-invite/household-add-invite.component";
 import {Clipboard} from "@angular/cdk/clipboard";
 import {LocalStorageService} from "../../_services/local-storage.service";
-import {NEVER, switchMap} from "rxjs";
+import {NEVER, Subject, switchMap, takeUntil} from "rxjs";
 import {Invite} from "../../graphql.types";
 
 const InformationList = [
@@ -25,7 +25,7 @@ const InformationList = [
   templateUrl: './household-invite-manager.component.html',
   styleUrls: ['./household-invite-manager.component.css']
 })
-export class HouseholdInviteManagerComponent implements OnInit {
+export class HouseholdInviteManagerComponent implements OnInit, OnDestroy {
   baseUrl: string = environment.invite_base_url;
   invites?: Invite[];
   copy: boolean = false;
@@ -33,6 +33,7 @@ export class HouseholdInviteManagerComponent implements OnInit {
   status: string[] = ["Waiting", "Accepted", "Rejected", "Rescinded", "Expired"];
   information: string[] = InformationList;
   householdId?: number;
+  private stop$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private clipboard: Clipboard,
               private snackBar: MatSnackBar,
@@ -40,6 +41,14 @@ export class HouseholdInviteManagerComponent implements OnInit {
               private inviteService: InviteService,
               private localStorage: LocalStorageService) {
 
+  }
+
+  /**
+   * Clean up subscriptions on destroy
+   */
+  ngOnDestroy(): void {
+    this.stop$.next(true);
+    this.stop$.complete();
   }
 
   /**
@@ -55,7 +64,7 @@ export class HouseholdInviteManagerComponent implements OnInit {
        else {
          return NEVER;
        }
-     })).subscribe({
+     }), takeUntil(this.stop$)).subscribe({
         next: data=> {
           if( data.invites ) {
             this.invites = data.invites;

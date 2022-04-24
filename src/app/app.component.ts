@@ -4,7 +4,7 @@ import {Household, User} from "./graphql.types";
 import {ItemDialogService} from "./_services/item-dialog.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
-import {NEVER, switchMap} from "rxjs";
+import {NEVER, switchMap, take} from "rxjs";
 import {HouseholdService} from "./_graphql-services/household.service";
 import {AuthService} from "./_graphql-services/auth.service";
 import {SubscriptionHandlerService} from "./_services/subscription-handler-service";
@@ -62,7 +62,7 @@ export class AppComponent {
   onActivate(componentRef: any)
   {
     if( componentRef.loggedIn ) {
-      componentRef.loggedIn.subscribe(()=>
+      componentRef.loggedIn.pipe(take(1)).subscribe(()=>
       {
         this.loading = true;
       });
@@ -104,7 +104,7 @@ export class AppComponent {
 
     if (this.isLoggedIn) {
       //If we're logged in when the app loads, let's refresh the token
-      this.localStorageService.refreshToken();
+      this.localStorageService.refreshToken().pipe(take(1)).subscribe();
       this.initializeSubscription();
 
       //If we're logged in, get our user from localstorage
