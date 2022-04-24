@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {
-  AddHousehold_Mutation,
-  ChangeDefaultHousehold_Mutation,
+  AddHousehold_Mutation, AuthPayload,
+  ChangeDefaultHousehold_Mutation, ChangePassword_Mutation, ChangeUsername_Mutation,
   Household,
   HouseholdsPayload,
   LeaveHousehold_Mutation,
@@ -49,6 +49,23 @@ export const LeaveHousehold_GQL = gql`
   }
 `
 
+export const ChangePassword_GQL = gql`
+  mutation changePassword($oldPassword: String!, $newPassword: String!)
+  {
+    changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+      token, error
+    }
+  }
+`
+
+export const ChangeUsername_GQL = gql`
+  mutation changeUsername($newUsername: String!, $password: String!)
+  {
+    changeUsername(email: $newUsername, password: $password) {
+      token, error
+    }
+  }
+`
 
 @Injectable({
   providedIn: 'root'
@@ -138,6 +155,58 @@ export class UserService {
         return {error: "An unknown error occurred"};
       } else {
         return result.data.createHousehold;
+      }
+    }));
+  }
+
+  /**
+   * Change the password for the current user, verify by requiring the old password
+   * @param oldPassword
+   * @param password
+   */
+  changePassword(oldPassword: string, password: string): Observable<AuthPayload> {
+    return this.apollo.mutate<ChangePassword_Mutation>(
+      {
+        mutation: ChangePassword_GQL,
+        variables: {
+          oldPassword: oldPassword,
+          newPassword: password
+        }
+      }
+    ).pipe(map((result) => {
+      //Standardizes error and payload return
+      if (result.errors) {
+        return {error: result.errors.join(","), token:""};
+      } else if (!result.data?.changePassword) {
+        return {error: "An unknown error occurred", token:""};
+      } else {
+        return result.data.changePassword;
+      }
+    }));
+  }
+
+  /**
+   * Change the username/email for the current user, verify by requiring password
+   * @param newUsername
+   * @param password
+   */
+  changeUsername(newUsername: string, password: string): Observable<AuthPayload> {
+    return this.apollo.mutate<ChangeUsername_Mutation>(
+      {
+        mutation: ChangeUsername_GQL,
+        variables: {
+          newUsername: newUsername,
+          password: password
+        }
+      }
+    ).pipe(map((result) => {
+      //Standardizes error and payload return
+      if (result.errors) {
+        return {error: result.errors.join(","), token:""};
+      } else if (!result.data?.changeUsername) {
+        return {error: "An unknown error occurred", token:""};
+      } else {
+        return result.data.changeUsername;
       }
     }));
   }

@@ -1,0 +1,51 @@
+<div>
+  <h2 mat-dialog-title>
+    Change Username/Email
+  </h2>
+  <form
+  #f="ngForm"
+  name="form"
+  novalidate
+  >
+  <div mat-dialog-content>
+      <mat-form-field>
+        <mat-label>New Username/Email</mat-label>
+        <input
+          matInput
+          #newUsername="ngModel"
+          [(ngModel)]="form.newUsername"
+          class="form-control"
+          email
+          name="newUsername"
+          required
+          type="email"
+        />
+        <mat-error *ngIf="newUsername.errors">
+          <div *ngIf="newUsername.errors['required']">New username is required</div>
+          <div *ngIf="newUsername.errors['email']">New username must be a valid email address</div>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          #password="ngModel"
+          [(ngModel)]="form.password"
+          class="form-control"
+          name="password"
+          required
+          type="password"
+        />
+        <mat-error *ngIf="password.errors">
+          <div *ngIf="password.errors['required']">Password is required</div>
+        </mat-error>
+      </mat-form-field>
+
+
+  </div>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [disabled]="!f.form.valid" [mat-dialog-close]="form" mat-button>Change Username/Email</button>
+  </mat-dialog-actions>
+  </form>
+</div>

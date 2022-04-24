@@ -22,6 +22,9 @@ import {RegisterComponent} from "./register/register.component";
     RegisterComponent,
     MustMatchDirective
   ],
+  exports: [
+    MustMatchDirective
+  ],
   imports: [
     CommonModule,
     MatCardModule,

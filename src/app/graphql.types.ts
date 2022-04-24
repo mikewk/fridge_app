@@ -208,6 +208,14 @@ export type TryPasswordReset_Mutation = {
   tryPasswordReset: string
 }
 
+export type ChangePassword_Mutation = {
+  changePassword: AuthPayload
+}
+
+export type ChangeUsername_Mutation = {
+  changeUsername: AuthPayload
+}
+
 export type Messages_Subscription = {
   messages: Messages_Payload;
 }

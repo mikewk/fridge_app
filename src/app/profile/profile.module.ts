@@ -15,6 +15,10 @@ import {ProfileAddHouseholdComponent} from "./profile-add-household/profile-add-
 import {ProfileLandingComponent} from './profile-landing/profile-landing.component';
 import {ProfileLeaveDialogComponent } from './profile-leave-dialog/profile-leave-dialog.component';
 import {ProfileRoutingModule} from "./profile-routing.module";
+import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component';
+import {AuthenticationModule} from "../authentication/authentication.module";
+import {MatCardModule} from "@angular/material/card";
+import { ChangeUsernameDialogComponent } from './change-username-dialog/change-username-dialog.component';
 
 export {ProfileLandingComponent}
 
@@ -24,6 +28,8 @@ export {ProfileLandingComponent}
     ProfileAddHouseholdComponent,
     ProfileChangeDefaultComponent,
     ProfileLeaveDialogComponent,
+    ChangePasswordDialogComponent,
+    ChangeUsernameDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -35,7 +41,9 @@ export {ProfileLandingComponent}
     MatButtonModule,
     MatSelectModule,
     MatCheckboxModule,
-    ProfileRoutingModule
+    ProfileRoutingModule,
+    AuthenticationModule,
+    MatCardModule
   ],
   exports:
     [

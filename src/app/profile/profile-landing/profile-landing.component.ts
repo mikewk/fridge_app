@@ -10,6 +10,9 @@ import {ProfileAddHouseholdComponent} from "../profile-add-household/profile-add
 import {Household, User} from "../../graphql.types";
 import {ProfileLeaveDialogComponent} from "../profile-leave-dialog/profile-leave-dialog.component";
 import {Router} from "@angular/router";
+import {ChangePasswordDialogComponent} from "../change-password-dialog/change-password-dialog.component";
+import {ChangeUsernameDialogComponent} from "../change-username-dialog/change-username-dialog.component";
+import {take} from "rxjs";
 
 /**
  * Landing page for profile management
@@ -71,7 +74,7 @@ export class ProfileLandingComponent implements OnInit {
           next: data => {
             //If the API call was successful
             if (data.households) {
-              this.localStorage.refreshToken().subscribe();
+              this.localStorage.refreshToken().pipe(take(1)).subscribe();
               this.snackBar.open("Household Added Successfully", undefined,
                 {duration: 2000, panelClass: ['simple-snack-bar']});
               if( this.redirectAfterAdd )
@@ -97,7 +100,7 @@ export class ProfileLandingComponent implements OnInit {
       next: data => {
         //If the API call was successful
         if (data.success) {
-          this.localStorage.refreshToken().subscribe();
+          this.localStorage.refreshToken().pipe(take(1)).subscribe();
           this.snackBar.open("Left Household Successfully", undefined,
             {duration: 2000, panelClass: ['simple-snack-bar']});
         } else {
@@ -114,7 +117,41 @@ export class ProfileLandingComponent implements OnInit {
 
   }
 
-  changeUserPass() {
+  changePassword() {
+    this.dialogHelper.launchDialog(ChangePasswordDialogComponent,
+                                  (x: any) => this.userService.changePassword(x.oldPassword, x.password)).subscribe({
+      next: data => {
+        //If the API call was successful
+        if (data.token) {
+          this.localStorage.saveToken(data.token);
+          this.snackBar.open("Password Changed Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+        } else {
+          console.log(data);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
+  }
 
+  changeUsername() {
+    this.dialogHelper.launchDialog(ChangeUsernameDialogComponent,
+                                  (x: any) => this.userService.changeUsername(x.newUsername, x.password)).subscribe({
+      next: data => {
+        //If the API call was successful
+        if (data.token) {
+          this.localStorage.saveToken(data.token);
+          this.snackBar.open("Username Changed Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+        } else {
+          console.log(data);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 }
