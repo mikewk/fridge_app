@@ -1,0 +1,20 @@
+<form #myForm="ngForm">
+  <h2 mat-dialog-title>
+    Edit Household
+  </h2>
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input [(ngModel)]="household.name" matInput name="name" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Location</mat-label>
+      <input [(ngModel)]="household.location" matInput name="location" required>
+    </mat-form-field>
+
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close=>Cancel</button>
+    <button [disabled]=myForm.invalid [mat-dialog-close]=household mat-button>Edit Household</button>
+  </div>
+</form>

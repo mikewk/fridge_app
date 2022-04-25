@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>
+  Edit storage
+</h2>
+<form>
+<mat-form-field>
+  <mat-label>Select storage to edit</mat-label>
+  <mat-select [(ngModel)]="selectedStorage" name="selectedStorage">
+    <mat-option *ngFor="let storage of storages" [value]="storage">{{storage.name}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<div *ngIf="selectedStorage" mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input [(ngModel)]="selectedStorage.name" matInput name="name" required>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Type</mat-label>
+    <input [(ngModel)]="selectedStorage.type" matInput name="type" required>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close=>Cancel</button>
+  <button [disabled]="!selectedStorage" [mat-dialog-close]="selectedStorage" mat-button>Edit Storage</button>
+</div>
+</form>

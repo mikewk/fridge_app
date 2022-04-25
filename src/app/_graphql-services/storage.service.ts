@@ -6,9 +6,8 @@ import {
   GetStorage_Query,
   QL_Storage,
   RemovalPayload, RemoveStorage_Mutation,
-  StoragesPayload
+  StoragesPayload, UpdateStorage_Mutation
 } from "../graphql.types";
-import {LocalStorageService} from "../_services/local-storage.service";
 import {StorageHelperService} from "../cache-helpers/storage-helper.service";
 import {STORAGE_FIELDS} from "../graphql.fragments";
 
@@ -48,6 +47,20 @@ export const RemoveStorageGQL = gql`
         error
       }
     }
+`
+
+export const UpdateStorageGQL = gql`
+    mutation updateStorage($storageId: Int!, $name: String!, $storageType: String!) {
+      updateStorage(storageId: $storageId, name: $name, storageType: $storageType)
+      {
+        error,
+        storages
+        {
+          ...StorageFields
+        }
+      }
+    }
+    ${STORAGE_FIELDS}
 `
 
 /**
@@ -140,6 +153,38 @@ export class StorageService {
         return {error: "An unknown error occurred", success:0, id:-1};
       } else {
         return result.data.removeStorage;
+      }
+    }));
+  }
+
+  /**
+   * Update Storage
+   */
+  updateStorage(storage: QL_Storage): Observable<StoragesPayload> {
+    return this.apollo.mutate<UpdateStorage_Mutation>(
+      {
+        mutation: UpdateStorageGQL,
+        variables: {
+          storageId: storage.id,
+          name: storage.name,
+          storageType: storage.type
+        },
+         update: (store, {data: payload}) => {
+           if (payload && payload.updateStorage.storages) {
+             //Write the removal back to the cache
+             //Get the current household
+            this.storageHelper.updateStorage(payload.updateStorage.storages[0]);
+           }
+         }
+      }
+    ).pipe(map((result) => {
+      //Standardizes error and payload return
+      if (result.errors) {
+        return {error: result.errors.join(","), storages: []};
+      } else if (!result.data?.updateStorage) {
+        return {error: "An unknown error occurred", storages: []};
+      } else {
+        return result.data.updateStorage;
       }
     }));
   }

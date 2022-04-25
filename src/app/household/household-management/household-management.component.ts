@@ -14,6 +14,8 @@ import {HouseholdRemoveHouseholdDialogComponent} from
     "../household-remove-household/household-remove-household-dialog.component";
 import {Router} from "@angular/router";
 import {ManagementService} from "../../_graphql-services/management.service";
+import {HouseholdEditStorageComponent} from "../household-edit-storage/household-edit-storage.component";
+import {HouseholdEditHouseholdComponent} from "../household-edit-household/household-edit-household.component";
 
 /**
  * Displays household management menu and handles the callbacks from GraphQL API calls
@@ -147,7 +149,22 @@ export class HouseholdManagementComponent implements OnInit, OnDestroy {
    * Edit basic household metadata
    */
   editHousehold() {
-
+    this.dialogHelper.launchDialog(HouseholdEditHouseholdComponent,
+                                   (x: any) => this.managementService.updateHousehold(x),
+                                   {household:this.household}).subscribe({
+      next: data => {
+        //If the API call was successful
+        if (!data.error) {
+          this.snackBar.open("HouseholdEdited Successfully", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+        } else {
+          console.log(data);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   /**
@@ -176,7 +193,30 @@ export class HouseholdManagementComponent implements OnInit, OnDestroy {
    * Edit basic storage metadata
    */
   editStorage() {
-
+    if(this.household?.storages?.length != 0)
+    {
+      this.dialogHelper.launchDialog(HouseholdEditStorageComponent,
+                                     (x: any) => this.storageService.updateStorage(x),
+                                     {household:this.household}).subscribe({
+        next: data => {
+          //If the API call was successful
+          if (data.storages) {
+            this.snackBar.open("Storage Edited Successfully", undefined,
+              {duration: 2000, panelClass: ['simple-snack-bar']});
+          } else {
+            console.log(data);
+          }
+        },
+        error: err => {
+          console.log(err);
+        }
+      });
+    }
+    else
+    {
+      this.snackBar.open("No Storages To Edit", undefined,
+            {duration: 2000, panelClass: ['simple-snack-bar']});
+    }
   }
 
   /**

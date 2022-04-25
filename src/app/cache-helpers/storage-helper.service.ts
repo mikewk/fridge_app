@@ -30,7 +30,7 @@ export class StorageHelperService {
         this.addStorage(storage);
         break;
       case "edit":
-        this.editStorage(storage);
+        this.updateStorage(storage);
         break;
       case "remove":
         this.removeStorage(storage);
@@ -55,8 +55,23 @@ export class StorageHelperService {
     }
   }
 
-  editStorage(storage: QL_Storage) {
-
+  updateStorage(storage: QL_Storage) {
+    /*const data = this.readStoragesFromCache(storage.householdId);
+    //If we have a storages array, which we should even if it's empty
+    if (data.storages) {
+      //Find the storage in the household
+      let index = data.storages.findIndex((item: { id: number | undefined; }) => item.id == storage.id);
+      //Check to see if it's in storages, in case it's been removed already somehow
+      if( index != -1 ) {
+        let newStorages = [...data.storages];
+        //Edit our storage
+        let newStorage = Object.assign({}, newStorages[index])
+        newStorage.name = storage.name
+        newStorage.type = storage.type;
+        newStorages[index] = newStorage;
+        this.writeStoragesToCache(storage.householdId, newStorages);
+      }
+    }*/
   }
 
   /**
@@ -69,7 +84,7 @@ export class StorageHelperService {
     if (data.storages) {
       //Find the storage in the household
       let index = data.storages.findIndex((item: { id: number | undefined; }) => item.id == storage.id);
-      //Check to see if it's in storages, in case it's been removed already somehowrede4444
+      //Check to see if it's in storages, in case it's been removed already somehow
       if( index != -1 ) {
         let newStorages = [...data.storages];
         newStorages.splice(index, 1);

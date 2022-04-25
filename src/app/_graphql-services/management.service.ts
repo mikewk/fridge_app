@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-  Household,
+  Household, HouseholdsPayload,
   RemovalPayload,
   RemoveHousehold_Mutation,
-  RemoveUserFromHousehold_Mutation,
+  RemoveUserFromHousehold_Mutation, UpdateHousehold_Mutation,
   User
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
@@ -24,6 +24,17 @@ export const RemoveUserFromHousehold_GQL = gql`
   mutation removeUserFromHousehold($householdId: Int!, $userId: Int!) {
     removeUserFromHousehold(householdId: $householdId, userId: $userId) {
       error, success, id
+    }
+  }
+`
+
+export const UpdateHousehold_GQL = gql`
+  mutation updateHousehold($householdId: Int!, $name: String!, $location: String!) {
+    updateHousehold(householdId: $householdId, name: $name, location: $location) {
+      error, households
+      {
+        id, name, location
+      }
     }
   }
 `
@@ -116,6 +127,34 @@ export class ManagementService {
         return {error: "An unknown error occurred", success:0, id:-1};
       } else {
         return result.data.removeHousehold;
+      }
+    }));
+  }
+
+  updateHousehold(household: Household): Observable<HouseholdsPayload> {
+    return this.apollo.mutate<UpdateHousehold_Mutation>(
+      {
+        mutation: UpdateHousehold_GQL,
+        variables: {
+          householdId: household.id,
+          name: household.name,
+          location: household.location
+        },
+        update: (store, {data: payload}) => {
+          //If we have removed the household
+          if (payload && !payload.updateHousehold.error) {
+            this.householdHelper.editHousehold(household);
+          }
+        }
+      }
+    ).pipe(map((result) => {
+      //Standardizes error and payload return
+      if (result.errors) {
+        return {error: result.errors.join(","), households: []};
+      } else if (!result.data?.updateHousehold) {
+        return {error: "An unknown error occurred", households: []};
+      } else {
+        return result.data.updateHousehold;
       }
     }));
   }

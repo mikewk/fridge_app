@@ -19,6 +19,8 @@ import {MatCardModule} from "@angular/material/card";
 import {HouseholdRoutingModule} from "./household-routing.module";
 import { HouseholdRemoveMemberComponent } from './household-remove-member/household-remove-member.component';
 import { HouseholdRemoveHouseholdDialogComponent } from './household-remove-household/household-remove-household-dialog.component';
+import { HouseholdEditStorageComponent } from './household-edit-storage/household-edit-storage.component';
+import { HouseholdEditHouseholdComponent } from './household-edit-household/household-edit-household.component';
 
 export {HouseholdManagementComponent}
 export {HouseholdInviteManagerComponent}
@@ -31,7 +33,9 @@ export {HouseholdInviteManagerComponent}
     HouseholdInviteManagerComponent,
     HouseholdAddInviteComponent,
     HouseholdRemoveMemberComponent,
-    HouseholdRemoveHouseholdDialogComponent
+    HouseholdRemoveHouseholdDialogComponent,
+    HouseholdEditStorageComponent,
+    HouseholdEditHouseholdComponent
   ],
   imports: [
     CommonModule,

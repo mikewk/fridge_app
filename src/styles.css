@@ -23,6 +23,7 @@ html
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-variant-ligatures: none !important;
 }
 
 .simple-snack-bar .mat-simple-snackbar {

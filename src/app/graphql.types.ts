@@ -157,7 +157,7 @@ export type AddFoodItem_Mutation = {
 }
 
 export type AddStorageToHousehold_Mutation = {
-  addStorageToHousehold: StoragesPayload;
+  addStorageToHousehold: StoragesPayload
 }
 
 export type ChangeDefaultHousehold_Mutation = {
@@ -166,6 +166,14 @@ export type ChangeDefaultHousehold_Mutation = {
 
 export type RemoveStorage_Mutation = {
   removeStorage: RemovalPayload
+}
+
+export type UpdateStorage_Mutation = {
+  updateStorage: StoragesPayload
+}
+
+export type UpdateHousehold_Mutation = {
+  updateHousehold: HouseholdsPayload
 }
 
 export type InviteUserToHousehold_Mutation = {
