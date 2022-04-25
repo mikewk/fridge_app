@@ -14,6 +14,7 @@ import {
 import {HOUSEHOLD_CORE, INVITE_FIELDS} from "../graphql.fragments";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
+// GraphQL queries
 const GetInvites_GQL = gql`
   query getInvites($householdId: Int!)
   {
@@ -82,6 +83,9 @@ const AcceptHouseholdInvite_GQL = gql`
   ${HOUSEHOLD_CORE}
 `
 
+/**
+ * Provides GraphQL api access for invite related calls
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -90,6 +94,10 @@ export class InviteService {
   constructor(private apollo: Apollo,
               private householdHelper: HouseholdHelperService) { }
 
+  /**
+   * Get all invites for a given household
+   * @param householdId
+   */
   getInvites(householdId: number):Observable<InvitesPayload>
   {
     return this.apollo.watchQuery<GetInvites_Query>({
@@ -108,6 +116,10 @@ export class InviteService {
     }));
   }
 
+  /**
+   * Get the specific invite for id
+   * @param id
+   */
   getInvite(id: string):Observable<InvitesPayload>
   {
     return this.apollo.query<GetInvite_Query>({
@@ -127,6 +139,11 @@ export class InviteService {
     }));
   }
 
+  /**
+   * Attempt to create the invite for a given household
+   * @param invite
+   * @param household
+   */
   createInvite(invite: Invite, household:Household): Observable<InvitesPayload> {
     return this.apollo.mutate<InviteUserToHousehold_Mutation>({
         mutation: InviteUserToHousehold_GQL,
@@ -153,6 +170,11 @@ export class InviteService {
     }));
   }
 
+  /**
+   * Delete an invite from a household
+   * @param invite
+   * @param householdId
+   */
   deleteInvite(invite: Invite, householdId: number): Observable<RemovalPayload>
   {
     return this.apollo.mutate<DeleteInvite_Mutation>({
@@ -179,6 +201,10 @@ export class InviteService {
     }));
   }
 
+  /**
+   * Reject invite to household
+   * @param invite
+   */
   rejectInvite(invite: Invite): Observable<RemovalPayload> {
     return this.apollo.mutate<RejectHouseholdInvite_Mutation>( {
       mutation: RejectHouseholdInvite_GQL,
@@ -197,7 +223,11 @@ export class InviteService {
     }));
   }
 
-  acceptInvite(invite: Invite, userId: number): Observable<HouseholdsPayload>{
+  /**
+   * Attempt to accept the invite to a household.
+   * @param invite
+   */
+  acceptInvite(invite: Invite): Observable<HouseholdsPayload>{
     return this.apollo.mutate<AcceptHouseholdInvite_Mutation>( {
       mutation: AcceptHouseholdInvite_GQL,
       variables: {

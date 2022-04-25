@@ -55,6 +55,10 @@ export class ItemDialogService {
       ));
   }
 
+  /**
+   * Convert an image file to a dataURL, so it can be used by the image compression service
+   * @param file
+   */
   private fileToDataURL = (file: File) : Promise<any> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();

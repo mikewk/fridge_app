@@ -34,6 +34,7 @@ export class PasswordResetComponent implements OnInit {
   }
 
   onSubmit() {
+    //Try the password reset and return the results
     this.authService.tryPasswordReset(this.form.password, this.key).subscribe((result)=>
     {
       if( result == "Success" ) {

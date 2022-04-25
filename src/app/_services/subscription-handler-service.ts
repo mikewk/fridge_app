@@ -7,7 +7,7 @@ import {Injectable} from "@angular/core";
 import {StorageHelperService} from "../cache-helpers/storage-helper.service";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
-
+// GraphQL Query
 const MESSAGES_GQL = gql`
   subscription messages($sourceId: String, $token: String)
   {

@@ -10,6 +10,7 @@ import {map, Observable} from "rxjs";
 import {Apollo, gql} from "apollo-angular";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
+// GraphQL Queries
 export const RemoveHousehold_GQL = gql`
   mutation removeHousehold($householdId: Int!)
   {
@@ -39,6 +40,9 @@ export const UpdateHousehold_GQL = gql`
   }
 `
 
+/**
+ * Provides GraphQL Api calls for functions needed solely by the HouseholdManagement component
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -47,6 +51,12 @@ export class ManagementService {
   constructor(private apollo: Apollo,
               private householdHelper: HouseholdHelperService) { }
 
+  /**
+   * Remove user from the household
+   * Only valid for the owner of the household
+   * @param user
+   * @param household
+   */
   removeMember(user: User, household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveUserFromHousehold_Mutation>(
       {
@@ -104,7 +114,11 @@ export class ManagementService {
     }));
   }
 
-
+  /**
+   * Remove the household from the application
+   * This removes EVERYTHING in the household
+   * @param household
+   */
   removeHousehold(household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveHousehold_Mutation>(
       {
@@ -131,6 +145,10 @@ export class ManagementService {
     }));
   }
 
+  /**
+   * Update the household with new name and location, if changed
+   * @param household
+   */
   updateHousehold(household: Household): Observable<HouseholdsPayload> {
     return this.apollo.mutate<UpdateHousehold_Mutation>(
       {

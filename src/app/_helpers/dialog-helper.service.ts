@@ -16,6 +16,12 @@ export class DialogHelperService {
   constructor(private dialog: MatDialog) {
   }
 
+  /**
+   * Launch the dialog, injecting data if it exists.  Take the returned object and call it with modelCallback
+   * @param dialog
+   * @param modelCallback
+   * @param data
+   */
   launchDialog(dialog: ComponentType<any>, modelCallback: Function, data?: any): Observable<any> {
     //Open a dialog
     const dialogRef = this.dialog.open(dialog,
@@ -34,7 +40,7 @@ export class DialogHelperService {
     return dialogRef.afterClosed().pipe(mergeMap(
       (result) => {
         console.log(result);
-        //If we have a result, make the add food item call
+        //If we have a result, call the callback
         if (result) {
           return modelCallback(result);
         } else {

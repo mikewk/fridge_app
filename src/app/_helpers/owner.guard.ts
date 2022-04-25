@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import {LocalStorageService} from "../_services/local-storage.service";
 
 /**
- * Guards pages that require the user to be the owner of the currently selected houehold.
+ * Guards pages that require the user to be the owner of the currently selected household.
  */
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,6 @@ export class OwnerGuard implements CanActivate {
               private router: Router) {
 
   }
-
 
   canActivate(
     route: ActivatedRouteSnapshot,

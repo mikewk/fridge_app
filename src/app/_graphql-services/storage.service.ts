@@ -76,7 +76,9 @@ export class StorageService {
   }
 
   /**
-   * Add a storage to the household identified by id
+   * Add a storage to the household identified by householdId
+   * @param storage
+   * @param householdId
    */
   addStorage(storage: QL_Storage, householdId: number): Observable<StoragesPayload> {
     return this.apollo.mutate<AddStorageToHousehold_Mutation>({
@@ -106,6 +108,7 @@ export class StorageService {
 
   /**
    * Get the storage identified by id
+   * @param id
    */
   getStorage(id: number): Observable<StoragesPayload> {
     return this.apollo.watchQuery<GetStorage_Query>(
@@ -127,8 +130,11 @@ export class StorageService {
       }
     }));
   }
-   /**
-   * Remove Storage
+
+  /**
+   * Remove storage from household
+   * Deletes all fooditems in the storage
+   * @param storage
    */
   removeStorage(storage: QL_Storage): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveStorage_Mutation>(
@@ -158,7 +164,8 @@ export class StorageService {
   }
 
   /**
-   * Update Storage
+   * Update storage name and type, if changed
+   * @param storage
    */
   updateStorage(storage: QL_Storage): Observable<StoragesPayload> {
     return this.apollo.mutate<UpdateStorage_Mutation>(

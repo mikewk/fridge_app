@@ -99,7 +99,6 @@ export class FoodItemService {
     return this.apollo.mutate<UpdateFoodItem_Mutation>(
       {
         mutation: UpdateFoodItem,
-        //refetchQueries: [GetHousehold],
         variables: {
           foodItemId: foodItem.id,
           name: foodItem.name,
@@ -123,7 +122,6 @@ export class FoodItemService {
     return this.apollo.mutate<RemoveFoodItem_Mutation>(
       {
         mutation: RemoveFoodItem,
-       // refetchQueries: [GetHousehold],
         variables: {
           foodItemId: foodItem.id
         },

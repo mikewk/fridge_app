@@ -12,6 +12,7 @@ import {map, Observable} from "rxjs";
 import {HOUSEHOLD_CORE} from "../graphql.fragments";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
+// GraphQL Queries
 export const AddHousehold = gql`
   mutation createHousehold($name: String!, $location: String!)
   {
@@ -26,7 +27,6 @@ export const AddHousehold = gql`
   }
   ${HOUSEHOLD_CORE}
 `;
-
 
 const ChangeDefaultHousehold_GQL = gql`
   mutation changeDefaultHousehold($householdId: Int!) {
@@ -67,6 +67,9 @@ export const ChangeUsername_GQL = gql`
   }
 `
 
+/**
+ * Provides GraphQL api calls for User related functions
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -107,6 +110,10 @@ export class UserService {
     }));
   }
 
+  /**
+   * Leave the household for the current user
+   * @param household
+   */
    leaveHousehold(household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<LeaveHousehold_Mutation>(
       {
@@ -210,6 +217,4 @@ export class UserService {
       }
     }));
   }
-
-
 }

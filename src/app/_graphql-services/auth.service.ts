@@ -93,11 +93,9 @@ export class AuthService {
         }
     }).pipe(map((result) => {
       if (result.errors) {
-        let payload: AuthPayload = {error: result.errors.join(","), token: ""};
-        return payload;
+        return {error: result.errors.join(","), token: ""};
       } else if (!result.data?.login) {
-        let payload: AuthPayload = {"error": "No data returned", token: ""};
-        return payload;
+        return {"error": "No data returned", token: ""};
       } else {
         return result.data.login;
       }
@@ -118,28 +116,27 @@ export class AuthService {
         }
     }).pipe(map((result) => {
       if (result.errors) {
-        let payload: AuthPayload = {error: result.errors.join(","), token: ""};
-        return payload;
+        return {error: result.errors.join(","), token: ""};
       } else if (!result.data?.signup) {
-        let payload: AuthPayload = {"error": "No data returned", token: ""};
-        return payload;
+        return {"error": "No data returned", token: ""};
       } else {
         return result.data.signup;
       }
     }));
   }
 
+  /**
+   * Call the refresh token mutation and get a new token with updated expiration
+   */
   refreshToken(): Observable<AuthPayload>
   {
     return this.apollo.mutate<RefreshToken_Mutation>({
       mutation: RefreshToken_GQL
     }).pipe(map((result) => {
       if (result.errors) {
-        let payload: AuthPayload = {error: result.errors.join(","), token: ""};
-        return payload;
+        return {error: result.errors.join(","), token: ""};
       } else if (!result.data?.refreshToken) {
-        let payload: AuthPayload = {"error": "No data returned", token: ""};
-        return payload;
+        return {"error": "No data returned", token: ""};
       } else {
         return result.data.refreshToken;
       }
@@ -165,6 +162,11 @@ export class AuthService {
     }));
   }
 
+  /**
+   * Start the password reset process for the account at email
+   * We don't care if it actually works, because we don't want to let the user know if the account exists
+   * @param email
+   */
   sendPasswordReset(email: string): Observable<string>
   {
     return this.apollo.mutate<SendPasswordReset_Mutation>({
@@ -187,6 +189,11 @@ export class AuthService {
     }));
   }
 
+  /**
+   * Attempt a password reset for a given reset key with the new password
+   * @param password
+   * @param key
+   */
   tryPasswordReset(password: string, key:string): Observable<string>
   {
     return this.apollo.mutate<TryPasswordReset_Mutation>({
@@ -207,7 +214,4 @@ export class AuthService {
       }
     }));
   }
-
-
-
 }

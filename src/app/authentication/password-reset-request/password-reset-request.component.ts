@@ -17,6 +17,7 @@ export class PasswordResetRequestComponent implements OnInit {
   }
 
   onSubmit() {
+    //Fire and forget our password reset email
     this.authService.sendPasswordReset(this.username).subscribe(()=>undefined);
     this.sentRequest = true;
   }

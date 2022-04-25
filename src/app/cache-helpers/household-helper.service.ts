@@ -157,7 +157,7 @@ export class HouseholdHelperService {
 
   editHousehold(household: Household)
   {
-    //TODO: Implement edit household end to end
+    // Discovered that we may not need the "edit" updaters after all.  This may disappear next push
   }
 
   /**
@@ -175,6 +175,7 @@ export class HouseholdHelperService {
       console.log("Updating cache");
       this.store.evict({id: "Household:"+householdId});
 
+      //Remove household from member and owned households
       let memberHouseholds = data.memberHouseholds.filter((x:Household)=>x.id!=householdId)
       let ownedHouseholds = data.ownedHouseholds.filter((x:Household)=>x.id!=householdId)
       let defaultHousehold = data.defaultHousehold

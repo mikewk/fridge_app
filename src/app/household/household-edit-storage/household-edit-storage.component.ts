@@ -2,6 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Household, QL_Storage} from "../../graphql.types";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
+/**
+ * Simple dialog to edit storage name and type
+ */
 @Component({
   selector: 'app-household-edit-storage',
   templateUrl: './household-edit-storage.component.html',

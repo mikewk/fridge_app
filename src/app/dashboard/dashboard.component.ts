@@ -36,11 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    /*This is the old methodology for access, but it might be handy in the future
-    if (this.route.snapshot.paramMap.get("id")) {
-      this.getHousehold(Number(this.route.snapshot.paramMap.get("id")));
-    } else {*/
-    //This is the new safe way because DefaultGuard won't let us in without a selected Household
+    //Dashboard now handles the lack of a selected household via a welcome page, default guard not needed
     this.localStorageService.selectedHouseholdId.pipe(
       switchMap(householdId=>{
           if( householdId ) {

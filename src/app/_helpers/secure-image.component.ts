@@ -43,6 +43,11 @@ export class SecureImageComponent implements OnChanges {
     this.src$.next(this.src!);
   }
 
+  /**
+   * Load the image at URL via ajax call so we can inject auth headers
+   * @param url
+   * @private
+   */
   private loadImage(url: string): Observable<any> {
     url = this.base_url + url;
     return this.httpClient

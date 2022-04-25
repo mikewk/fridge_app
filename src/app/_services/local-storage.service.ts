@@ -122,8 +122,6 @@ export class LocalStorageService {
 
   }
 
-
-
   /**
    * Initialize the selected household, if possible
    */

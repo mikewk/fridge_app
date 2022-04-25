@@ -93,7 +93,7 @@ export class InviteComponent implements OnInit {
    */
   accept() {
     const userId = this.localStorage.getUser()!.id;
-    this.inviteService.acceptInvite(this.invite!, userId).subscribe({
+    this.inviteService.acceptInvite(this.invite!).subscribe({
       next: data => {
         if( data.error || !data.households) {
           this.snackBar.open("Accept failed. Try Again.", undefined, {panelClass:"simple-snack-bar", duration:2000});

@@ -93,6 +93,10 @@ export class ProfileLandingComponent implements OnInit {
 
   }
 
+  /**
+   * Show a dialog to pick a household to leave
+   * Only shows households of which the user is NOT the owner
+   */
   leaveHousehold()
   {
     this.dialogHelper.launchDialog(ProfileLeaveDialogComponent,
@@ -113,10 +117,9 @@ export class ProfileLandingComponent implements OnInit {
     });
   }
 
-  changeName() {
-
-  }
-
+  /**
+   * Show change password dialog
+   */
   changePassword() {
     this.dialogHelper.launchDialog(ChangePasswordDialogComponent,
                                   (x: any) => this.userService.changePassword(x.oldPassword, x.password)).subscribe({
@@ -136,6 +139,9 @@ export class ProfileLandingComponent implements OnInit {
     });
   }
 
+  /**
+   * Show change username dialog
+   */
   changeUsername() {
     this.dialogHelper.launchDialog(ChangeUsernameDialogComponent,
                                   (x: any) => this.userService.changeUsername(x.newUsername, x.password)).subscribe({

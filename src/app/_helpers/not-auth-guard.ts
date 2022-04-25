@@ -3,6 +3,9 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTre
 import { Observable } from 'rxjs';
 import {AuthGuard} from "./auth.guard";
 
+/**
+ * Only allows access if AuthGuard says we're not logged in
+ */
 @Injectable({
   providedIn: 'root'
 })
