@@ -11,10 +11,10 @@ import {Apollo, gql} from "apollo-angular";
 import {HouseholdHelperService} from "../cache-helpers/household-helper.service";
 
 // GraphQL Queries
-export const RemoveHousehold_GQL = gql`
-  mutation removeHousehold($householdId: Int!)
+export const DeleteHousehold_GQL = gql`
+  mutation deleteHousehold($householdId: Int!)
   {
-    removeHousehold(householdId: $householdId)
+    deleteHousehold(householdId: $householdId)
     {
       success, error, id
     }
@@ -29,9 +29,9 @@ export const RemoveUserFromHousehold_GQL = gql`
   }
 `
 
-export const UpdateHousehold_GQL = gql`
-  mutation updateHousehold($householdId: Int!, $name: String!, $location: String!) {
-    updateHousehold(householdId: $householdId, name: $name, location: $location) {
+export const EditHousehold_GQL = gql`
+  mutation editHousehold($householdId: Int!, $name: String!, $location: String!) {
+    editHousehold(householdId: $householdId, name: $name, location: $location) {
       error, households
       {
         id, name, location
@@ -122,7 +122,7 @@ export class ManagementService {
   removeHousehold(household: Household): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveHousehold_Mutation>(
       {
-        mutation: RemoveHousehold_GQL,
+        mutation: DeleteHousehold_GQL,
         variables: {
           householdId: household.id,
         },
@@ -152,7 +152,7 @@ export class ManagementService {
   updateHousehold(household: Household): Observable<HouseholdsPayload> {
     return this.apollo.mutate<UpdateHousehold_Mutation>(
       {
-        mutation: UpdateHousehold_GQL,
+        mutation: EditHousehold_GQL,
         variables: {
           householdId: household.id,
           name: household.name,

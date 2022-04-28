@@ -140,6 +140,14 @@ export class ProfileLandingComponent implements OnInit {
   }
 
   /**
+   * Show change name dialog
+   */
+
+  changeName() {
+
+  }
+
+  /**
    * Show change username dialog
    */
   changeUsername() {

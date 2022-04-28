@@ -49,19 +49,19 @@ export const LeaveHousehold_GQL = gql`
   }
 `
 
-export const ChangePassword_GQL = gql`
-  mutation changePassword($oldPassword: String!, $newPassword: String!)
+export const EditPassword_GQL = gql`
+  mutation editPassword($oldPassword: String!, $newPassword: String!)
   {
-    changePassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+    editPassword(oldPassword: $oldPassword, newPassword: $newPassword) {
       token, error
     }
   }
 `
 
-export const ChangeUsername_GQL = gql`
-  mutation changeUsername($newUsername: String!, $password: String!)
+export const EditUsername_GQL = gql`
+  mutation editUsername($newUsername: String!, $password: String!)
   {
-    changeUsername(email: $newUsername, password: $password) {
+    editUsername(email: $newUsername, password: $password) {
       token, error
     }
   }
@@ -174,7 +174,7 @@ export class UserService {
   changePassword(oldPassword: string, password: string): Observable<AuthPayload> {
     return this.apollo.mutate<ChangePassword_Mutation>(
       {
-        mutation: ChangePassword_GQL,
+        mutation: EditPassword_GQL,
         variables: {
           oldPassword: oldPassword,
           newPassword: password
@@ -200,7 +200,7 @@ export class UserService {
   changeUsername(newUsername: string, password: string): Observable<AuthPayload> {
     return this.apollo.mutate<ChangeUsername_Mutation>(
       {
-        mutation: ChangeUsername_GQL,
+        mutation: EditUsername_GQL,
         variables: {
           newUsername: newUsername,
           password: password

@@ -25,9 +25,9 @@ export const AddFoodItem = gql`
   }
 `
 
-export const UpdateFoodItem = gql`
-  mutation updateFoodItem($foodItemId: Int!, $name: String!, $tags:[String], $expiration: String) {
-    updateFoodItem(foodItemId: $foodItemId, name: $name, expiration: $expiration, tags: $tags)
+export const EditFoodItem = gql`
+  mutation editFoodItem($foodItemId: Int!, $name: String!, $tags:[String], $expiration: String) {
+    editFoodItem(foodItemId: $foodItemId, name: $name, expiration: $expiration, tags: $tags)
     {
       foodItems {id, name, storage {id, name, type}, enteredBy {name}, tags, expiration},
       error
@@ -35,9 +35,9 @@ export const UpdateFoodItem = gql`
   }
 `
 
-export const RemoveFoodItem = gql`
-  mutation removeFoodItem($foodItemId: Int!) {
-    removeFoodItem(foodItemId: $foodItemId)
+export const DeleteFoodItem = gql`
+  mutation deleteFoodItem($foodItemId: Int!) {
+    deleteFoodItem(foodItemId: $foodItemId)
     {
       success,
       id,
@@ -98,7 +98,7 @@ export class FoodItemService {
   editFoodItem(foodItem: FoodItem): Observable<any> {
     return this.apollo.mutate<UpdateFoodItem_Mutation>(
       {
-        mutation: UpdateFoodItem,
+        mutation: EditFoodItem,
         variables: {
           foodItemId: foodItem.id,
           name: foodItem.name,
@@ -121,7 +121,7 @@ export class FoodItemService {
   removeFoodItem(foodItem: FoodItem): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveFoodItem_Mutation>(
       {
-        mutation: RemoveFoodItem,
+        mutation: DeleteFoodItem,
         variables: {
           foodItemId: foodItem.id
         },

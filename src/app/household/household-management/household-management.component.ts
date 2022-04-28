@@ -116,7 +116,7 @@ export class HouseholdManagementComponent implements OnInit, OnDestroy {
   /**
    * Remove the household from the system, LOTS OF WARNINGS THIS IS NOT UNDOABLE WHY ARE WE LETTING THEM DO THIS
    */
-  removeHousehold() {
+  deleteHousehold() {
     const user = this.localStorage.getUser()!;
     this.dialogHelper.launchDialog(HouseholdRemoveHouseholdDialogComponent,
       (x: Household) => {
@@ -222,7 +222,7 @@ export class HouseholdManagementComponent implements OnInit, OnDestroy {
   /**
    * Remove a storage from the system.  Should probably have a warning about no undo
    */
-  removeStorage() {
+  deleteStorage() {
     if(this.household?.storages?.length != 0)
     {
       this.dialogHelper.launchDialog(HouseholdRemoveStorageComponent,

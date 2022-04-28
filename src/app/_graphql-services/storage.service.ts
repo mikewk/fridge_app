@@ -39,9 +39,9 @@ export const AddStorageGQL = gql`
   ${STORAGE_FIELDS}
 `;
 
-export const RemoveStorageGQL = gql`
-    mutation removeStorage($storageId: Int!) {
-      removeStorage(storageId: $storageId)
+export const DeleteStorage_GQL = gql`
+    mutation deleteStorage($storageId: Int!) {
+      deleteStorage(storageId: $storageId)
       {
         success,
         error
@@ -49,9 +49,9 @@ export const RemoveStorageGQL = gql`
     }
 `
 
-export const UpdateStorageGQL = gql`
-    mutation updateStorage($storageId: Int!, $name: String!, $storageType: String!) {
-      updateStorage(storageId: $storageId, name: $name, storageType: $storageType)
+export const EditStorage_GQL = gql`
+    mutation editStorage($storageId: Int!, $name: String!, $storageType: String!) {
+      editStorage(storageId: $storageId, name: $name, storageType: $storageType)
       {
         error,
         storages
@@ -139,7 +139,7 @@ export class StorageService {
   removeStorage(storage: QL_Storage): Observable<RemovalPayload> {
     return this.apollo.mutate<RemoveStorage_Mutation>(
       {
-        mutation: RemoveStorageGQL,
+        mutation: DeleteStorage_GQL,
         variables: {
           storageId: storage.id
         },
@@ -170,7 +170,7 @@ export class StorageService {
   updateStorage(storage: QL_Storage): Observable<StoragesPayload> {
     return this.apollo.mutate<UpdateStorage_Mutation>(
       {
-        mutation: UpdateStorageGQL,
+        mutation: EditStorage_GQL,
         variables: {
           storageId: storage.id,
           name: storage.name,

@@ -4,8 +4,8 @@
     <button *ngIf="user.memberHouseholds.length > 1" (click)="changeDefault()" mat-list-item>Change Default Household</button>
     <button *ngIf="user.memberHouseholds.length > user.ownedHouseholds.length" (click)="leaveHousehold()" mat-list-item>Leave a Household</button>
     <button (click)="addHousehold()" mat-list-item>Add New Household</button>
-    <button (click)="changeName()" mat-list-item>Change Name (NYI)</button>
-    <button (click)="changePassword()" mat-list-item>Change Password</button>
     <button (click)="changeUsername()" mat-list-item>Change Username</button>
+    <button (click)="changePassword()" mat-list-item>Change Password</button>
+    <button (click)="changeName()" mat-list-item>Change Name (NYI)</button>
   </mat-action-list>
 </mat-card>
