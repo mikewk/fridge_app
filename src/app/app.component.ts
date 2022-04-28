@@ -76,7 +76,7 @@ export class AppComponent {
     // check if we're logged in
     this.isLoggedIn = !!this.localStorageService.getToken();
 
-    //Subscripe to usertype so we can show the appropriate menus
+    //Subscribe to usertype so we can show the appropriate menus
     this.localStorageService.subscribeUsertype((x:any)=>{this.userType=x; console.log("Usertype Changed to "+x);})
 
     //Watch window storage to see if we've been logged out

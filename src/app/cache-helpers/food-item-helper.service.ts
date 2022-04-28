@@ -45,22 +45,28 @@ export class FoodItemHelperService {
    */
   addFoodItem(foodItem: FoodItem) {
     const storageId = foodItem.storage?.id;
-    //Get the current storage from cache
-    const data = this.readStorageFromCache(storageId);
-    //Make sure we have data in the cache (we bloody should)
-    if (data) {
-      console.log("Updating cache");
-      let foodItems;
-      //If we have a food items array, spread it and add our new one to the end
-      if (data.foodItems)
-        foodItems = [...data.foodItems, foodItem];
-      //Otherwise, we'll just make one
-      else
-        foodItems = [foodItem];
+    const cache = this.store;  // Create a reference that can be used inside the modify function
 
-      //Write our change back to the cache
-      this.writeStorageToCache(storageId, foodItems)
-    }
+    // use cache.modify to update the storage with our new food item
+    cache.modify({
+        id: "Storage:" + storageId,
+        fields: {
+          foodItems(existingFoodItemRefs = []) {
+            // Get the cache reference to the FoodItem that was just added
+            const newFoodItemRef = cache.writeFragment({
+              data: foodItem,
+              fragment: gql`
+                fragment ThisFoodItem on FoodItem {
+                  id
+                }
+              `
+            });
+            // return the new array with this FoodItem added
+            return [...existingFoodItemRefs, newFoodItemRef];
+          }
+        }
+      }
+    );
   }
 
   /**
@@ -69,7 +75,7 @@ export class FoodItemHelperService {
    */
   editFoodItem(foodItem: FoodItem)
   {
-    //Write our change back to the cache
+    /*Write our change back to the cache
     this.store.writeFragment({
       id: "FoodItem:" + foodItem.id, fragment: gql`
         fragment myItem on FoodItem {
@@ -77,7 +83,7 @@ export class FoodItemHelperService {
           tags,
           expiration
         }`, data: {name: foodItem.name, tags: foodItem.tags, expiration: foodItem.expiration}
-    });
+    });*/
   }
 
   /**
@@ -86,22 +92,20 @@ export class FoodItemHelperService {
    */
   removeFoodItem(foodItem: FoodItem)
   {
-    //Write our change back to the cache
-    //First we need to remove the item from the storage
-    const storageId = foodItem.storage?.id;
-    //Get the current storage from cache
-    const data = this.readStorageFromCache(storageId)
-    //If we have a food items array, get it and remove our food item
-    //If we don't have a food item array anymore... something something race condition we'll just do nothing
-    if (data.foodItems) {
+    const cache = this.store; // Create a reference that can be used inside the modify function
+    // Use cache.modify to remove just the reference from the FoodItems array
+    cache.modify({
+        id: "Storage:" + foodItem.storage?.id,
+        fields: {
+          foodItems(existingFoodItemRefs = [], {readField} ) {
+            return existingFoodItemRefs.filter( (x:any)=>foodItem.id!=readField('id', x));
+          }
+        }
+      }
+    );
+    //clean up the cache
+    cache.gc();
 
-      //Find our foodItem
-      let index = data.foodItems.findIndex((food: { id: number | undefined; })=> food.id == foodItem.id);
-      let foodItems = [...data.foodItems];
-      foodItems.splice(index, 1);
-      //Write our change back to the cache
-      this.writeStorageToCache(storageId, foodItems);
-    }
   }
 
   /**
@@ -116,7 +120,7 @@ export class FoodItemHelperService {
         # noinspection GraphQLSchemaValidation
         fragment myStorage on Storage {
           foodItems
-        }`, data: {foodItems}
+        }`, data: {foodItems: foodItems}
     });
   }
 

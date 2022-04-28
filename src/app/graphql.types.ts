@@ -127,17 +127,17 @@ export type GetUser_Query = {
   getUser: UsersPayload;
 }
 
-export type AddHousehold_Mutation =
+export type CreateHousehold_Mutation =
   {
     createHousehold: HouseholdsPayload;
   }
 
-export type UpdateFoodItem_Mutation = {
-  updateFoodItem: FoodItemsPayload
+export type EditFoodItem_Mutation = {
+  editFoodItem: FoodItemsPayload
 }
 
-export type RemoveFoodItem_Mutation = {
-  removeFoodItem: RemovalPayload
+export type DeleteFoodItem_Mutation = {
+  deleteFoodItem: RemovalPayload
 }
 
 export type GetSuggestions_Mutation = {
@@ -164,16 +164,16 @@ export type ChangeDefaultHousehold_Mutation = {
   changeDefaultHousehold: HouseholdsPayload
 }
 
-export type RemoveStorage_Mutation = {
-  removeStorage: RemovalPayload
+export type DeleteStorage_Mutation = {
+  deleteStorage: RemovalPayload
 }
 
-export type UpdateStorage_Mutation = {
-  updateStorage: StoragesPayload
+export type EditStorage_Mutation = {
+  editStorage: StoragesPayload
 }
 
-export type UpdateHousehold_Mutation = {
-  updateHousehold: HouseholdsPayload
+export type EditHousehold_Mutation = {
+  editHousehold: HouseholdsPayload
 }
 
 export type InviteUserToHousehold_Mutation = {
@@ -204,8 +204,8 @@ export type RemoveUserFromHousehold_Mutation = {
   removeUserFromHousehold: RemovalPayload
 }
 
-export type RemoveHousehold_Mutation = {
-  removeHousehold: RemovalPayload
+export type DeleteHousehold_Mutation = {
+  deleteHousehold: RemovalPayload
 }
 
 export type SendPasswordReset_Mutation = {
@@ -216,12 +216,12 @@ export type TryPasswordReset_Mutation = {
   tryPasswordReset: string
 }
 
-export type ChangePassword_Mutation = {
-  changePassword: AuthPayload
+export type EditPassword_Mutation = {
+  editPassword: AuthPayload
 }
 
-export type ChangeUsername_Mutation = {
-  changeUsername: AuthPayload
+export type EditUsername_Mutation = {
+  editUsername: AuthPayload
 }
 
 export type Messages_Subscription = {

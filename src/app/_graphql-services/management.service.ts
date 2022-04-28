@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   Household, HouseholdsPayload,
   RemovalPayload,
-  RemoveHousehold_Mutation,
-  RemoveUserFromHousehold_Mutation, UpdateHousehold_Mutation,
+  DeleteHousehold_Mutation,
+  RemoveUserFromHousehold_Mutation, EditHousehold_Mutation,
   User
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
@@ -120,7 +120,7 @@ export class ManagementService {
    * @param household
    */
   removeHousehold(household: Household): Observable<RemovalPayload> {
-    return this.apollo.mutate<RemoveHousehold_Mutation>(
+    return this.apollo.mutate<DeleteHousehold_Mutation>(
       {
         mutation: DeleteHousehold_GQL,
         variables: {
@@ -128,7 +128,7 @@ export class ManagementService {
         },
         update: (store, {data: payload}) => {
           //If we have removed the household
-          if (payload && payload.removeHousehold.success) {
+          if (payload && payload.deleteHousehold.success) {
             this.householdHelper.removeHousehold(household);
           }
         }
@@ -137,10 +137,10 @@ export class ManagementService {
       //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), success:0, id:-1};
-      } else if (!result.data?.removeHousehold) {
+      } else if (!result.data?.deleteHousehold) {
         return {error: "An unknown error occurred", success:0, id:-1};
       } else {
-        return result.data.removeHousehold;
+        return result.data.deleteHousehold;
       }
     }));
   }
@@ -150,7 +150,7 @@ export class ManagementService {
    * @param household
    */
   updateHousehold(household: Household): Observable<HouseholdsPayload> {
-    return this.apollo.mutate<UpdateHousehold_Mutation>(
+    return this.apollo.mutate<EditHousehold_Mutation>(
       {
         mutation: EditHousehold_GQL,
         variables: {
@@ -160,7 +160,7 @@ export class ManagementService {
         },
         update: (store, {data: payload}) => {
           //If we have removed the household
-          if (payload && !payload.updateHousehold.error) {
+          if (payload && !payload.editHousehold.error) {
             this.householdHelper.editHousehold(household);
           }
         }
@@ -169,10 +169,10 @@ export class ManagementService {
       //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), households: []};
-      } else if (!result.data?.updateHousehold) {
+      } else if (!result.data?.editHousehold) {
         return {error: "An unknown error occurred", households: []};
       } else {
-        return result.data.updateHousehold;
+        return result.data.editHousehold;
       }
     }));
   }

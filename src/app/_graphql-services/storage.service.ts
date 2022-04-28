@@ -5,8 +5,8 @@ import {
   AddStorageToHousehold_Mutation,
   GetStorage_Query,
   QL_Storage,
-  RemovalPayload, RemoveStorage_Mutation,
-  StoragesPayload, UpdateStorage_Mutation
+  RemovalPayload, DeleteStorage_Mutation,
+  StoragesPayload, EditStorage_Mutation
 } from "../graphql.types";
 import {StorageHelperService} from "../cache-helpers/storage-helper.service";
 import {STORAGE_FIELDS} from "../graphql.fragments";
@@ -137,14 +137,14 @@ export class StorageService {
    * @param storage
    */
   removeStorage(storage: QL_Storage): Observable<RemovalPayload> {
-    return this.apollo.mutate<RemoveStorage_Mutation>(
+    return this.apollo.mutate<DeleteStorage_Mutation>(
       {
         mutation: DeleteStorage_GQL,
         variables: {
           storageId: storage.id
         },
          update: (store, {data: payload}) => {
-           if (payload && payload.removeStorage.success) {
+           if (payload && payload.deleteStorage.success) {
              //Write the removal back to the cache
              //Get the current household
             this.storageHelper.removeStorage(storage);
@@ -155,10 +155,10 @@ export class StorageService {
       //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), success:0, id:-1};
-      } else if (!result.data?.removeStorage) {
+      } else if (!result.data?.deleteStorage) {
         return {error: "An unknown error occurred", success:0, id:-1};
       } else {
-        return result.data.removeStorage;
+        return result.data.deleteStorage;
       }
     }));
   }
@@ -168,7 +168,7 @@ export class StorageService {
    * @param storage
    */
   updateStorage(storage: QL_Storage): Observable<StoragesPayload> {
-    return this.apollo.mutate<UpdateStorage_Mutation>(
+    return this.apollo.mutate<EditStorage_Mutation>(
       {
         mutation: EditStorage_GQL,
         variables: {
@@ -177,10 +177,10 @@ export class StorageService {
           storageType: storage.type
         },
          update: (store, {data: payload}) => {
-           if (payload && payload.updateStorage.storages) {
+           if (payload && payload.editStorage.storages) {
              //Write the removal back to the cache
              //Get the current household
-            this.storageHelper.updateStorage(payload.updateStorage.storages[0]);
+            this.storageHelper.updateStorage(payload.editStorage.storages[0]);
            }
          }
       }
@@ -188,10 +188,10 @@ export class StorageService {
       //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), storages: []};
-      } else if (!result.data?.updateStorage) {
+      } else if (!result.data?.editStorage) {
         return {error: "An unknown error occurred", storages: []};
       } else {
-        return result.data.updateStorage;
+        return result.data.editStorage;
       }
     }));
   }

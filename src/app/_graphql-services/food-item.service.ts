@@ -5,9 +5,9 @@ import {
   FoodItem,
   GetSuggestions_Mutation,
   RemovalPayload,
-  RemoveFoodItem_Mutation,
+  DeleteFoodItem_Mutation,
   SuggestionPayload,
-  UpdateFoodItem_Mutation
+  EditFoodItem_Mutation
 } from "../graphql.types";
 import {map, Observable} from "rxjs";
 import {FoodItemHelperService} from "../cache-helpers/food-item-helper.service";
@@ -96,7 +96,7 @@ export class FoodItemService {
    * @param foodItem FoodItem to edit
    */
   editFoodItem(foodItem: FoodItem): Observable<any> {
-    return this.apollo.mutate<UpdateFoodItem_Mutation>(
+    return this.apollo.mutate<EditFoodItem_Mutation>(
       {
         mutation: EditFoodItem,
         variables: {
@@ -106,8 +106,8 @@ export class FoodItemService {
           expiration: foodItem.expiration
         },
         update: (store, {data: payload}) => {
-          if (payload && payload.updateFoodItem.foodItems) {
-            this.foodItemHelper.editFoodItem(payload.updateFoodItem.foodItems[0])
+          if (payload && payload.editFoodItem.foodItems) {
+            this.foodItemHelper.editFoodItem(payload.editFoodItem.foodItems[0])
           }
         }
       }
@@ -119,14 +119,14 @@ export class FoodItemService {
    * @param foodItem FoodItem to remove
    */
   removeFoodItem(foodItem: FoodItem): Observable<RemovalPayload> {
-    return this.apollo.mutate<RemoveFoodItem_Mutation>(
+    return this.apollo.mutate<DeleteFoodItem_Mutation>(
       {
         mutation: DeleteFoodItem,
         variables: {
           foodItemId: foodItem.id
         },
         update: (store, {data: payload}) => {
-          if (payload && payload.removeFoodItem.success) {
+          if (payload && payload.deleteFoodItem.success) {
             this.foodItemHelper.removeFoodItem(foodItem);
           }
         }
@@ -136,11 +136,11 @@ export class FoodItemService {
       if (result.errors) {
         let payload: RemovalPayload = {error: result.errors.join(","), success: 0, id: -1};
         return payload;
-      } else if (!result.data?.removeFoodItem) {
+      } else if (!result.data?.deleteFoodItem) {
         let payload: RemovalPayload = {"error": "An unknown error occurred", success: 0, id: -1};
         return payload;
       } else {
-        return result.data.removeFoodItem;
+        return result.data.deleteFoodItem;
       }
     }));
   }

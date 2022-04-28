@@ -54,7 +54,7 @@ mat-card
   }
 }
 
-@media screen and (min-width: 1400px) {
+@media screen and (min-width: 1280px) {
   .flex-card
   {
     width: 25%;

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Apollo, gql} from "apollo-angular";
 import {
-  AddHousehold_Mutation, AuthPayload,
-  ChangeDefaultHousehold_Mutation, ChangePassword_Mutation, ChangeUsername_Mutation,
+  CreateHousehold_Mutation, AuthPayload,
+  ChangeDefaultHousehold_Mutation, EditPassword_Mutation, EditUsername_Mutation,
   Household,
   HouseholdsPayload,
   LeaveHousehold_Mutation,
@@ -143,7 +143,7 @@ export class UserService {
    * @param household
    */
   addHousehold(household: Household): Observable<HouseholdsPayload> {
-    return this.apollo.mutate<AddHousehold_Mutation>(
+    return this.apollo.mutate<CreateHousehold_Mutation>(
       {
         mutation: AddHousehold,
         variables: household,
@@ -172,7 +172,7 @@ export class UserService {
    * @param password
    */
   changePassword(oldPassword: string, password: string): Observable<AuthPayload> {
-    return this.apollo.mutate<ChangePassword_Mutation>(
+    return this.apollo.mutate<EditPassword_Mutation>(
       {
         mutation: EditPassword_GQL,
         variables: {
@@ -184,10 +184,10 @@ export class UserService {
       //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), token:""};
-      } else if (!result.data?.changePassword) {
+      } else if (!result.data?.editPassword) {
         return {error: "An unknown error occurred", token:""};
       } else {
-        return result.data.changePassword;
+        return result.data.editPassword;
       }
     }));
   }
@@ -198,7 +198,7 @@ export class UserService {
    * @param password
    */
   changeUsername(newUsername: string, password: string): Observable<AuthPayload> {
-    return this.apollo.mutate<ChangeUsername_Mutation>(
+    return this.apollo.mutate<EditUsername_Mutation>(
       {
         mutation: EditUsername_GQL,
         variables: {
@@ -210,10 +210,10 @@ export class UserService {
       //Standardizes error and payload return
       if (result.errors) {
         return {error: result.errors.join(","), token:""};
-      } else if (!result.data?.changeUsername) {
+      } else if (!result.data?.editUsername) {
         return {error: "An unknown error occurred", token:""};
       } else {
-        return result.data.changeUsername;
+        return result.data.editUsername;
       }
     }));
   }

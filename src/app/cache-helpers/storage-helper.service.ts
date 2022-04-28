@@ -44,15 +44,28 @@ export class StorageHelperService {
    */
   addStorage(storage: QL_Storage) {
     const householdId = storage.householdId;
-    //Get the current household
-    const data = this.readStoragesFromCache(householdId)
-    //If we have a storages array, which we should even if it's empty
-    if (data.storages) {
-      //Make a new array of storages
-      const newStorages = [...data.storages, storage]
-      //Write our change back to the cache
-      this.writeStoragesToCache(householdId, newStorages);
-    }
+    const cache = this.store;  // Create a reference that can be used inside the modify function
+
+    // use cache.modify to update the household storagel ist
+    cache.modify({
+        id: "Household:" + householdId,
+        fields: {
+          storages(existingStorageRefs = []) {
+            // Get the cache reference to the storage that was just added
+            const newStorageRef = cache.writeFragment({
+              data: storage,
+              fragment: gql`
+                fragment ThisStorage on Storage {
+                  id, name
+                }
+              `
+            });
+            // return the new array with this storage added
+            return [...existingStorageRefs, newStorageRef];
+          }
+        }
+      }
+    );
   }
 
   updateStorage(storage: QL_Storage) {
@@ -79,53 +92,21 @@ export class StorageHelperService {
    * @param storage
    */
   removeStorage(storage: QL_Storage) {
-    const data = this.readStoragesFromCache(storage.householdId);
-    //If we have a storages array, which we should even if it's empty
-    if (data.storages) {
-      //Find the storage in the household
-      let index = data.storages.findIndex((item: { id: number | undefined; }) => item.id == storage.id);
-      //Check to see if it's in storages, in case it's been removed already somehow
-      if( index != -1 ) {
-        let newStorages = [...data.storages];
-        newStorages.splice(index, 1);
-        this.writeStoragesToCache(storage.householdId, newStorages);
-      }
-    }
-  }
+    const cache = this.store; // Create a reference that can be used inside the modify function
 
-  /**
-   * Write the array of storages to the household assigned to householdId
-   * @param householdId
-   * @param newStorages
-   * @private
-   */
-  private writeStoragesToCache(householdId: number | undefined, newStorages: any[]) {
-    this.store.writeFragment({
-      id: "Household:" + householdId, fragment: gql`
-        # noinspection GraphQLSchemaValidation
-        fragment MyHousehold on Household {
-          storages
-        }`, data: {storages: newStorages}
-    });
-  }
-
-  /**
-   * Read the storages linked to the household of assigned HouseholdId
-   * @param householdId
-   * @private
-   */
-  private readStoragesFromCache(householdId: number | undefined) {
-    return this.store.readFragment<any>({
-      id: "Household:" + householdId,
-      fragment: gql`
-        fragment MyHouseholdStorages on Household
-        {
-          storages {
-            ...StorageFields
+    // Use cache.modify to remove just the reference from the storages array
+    cache.modify({
+        id: "Household:" + storage.householdId,
+        fields: {
+          storages(existingStorageRefs = [], {readField} ) {
+            return existingStorageRefs.filter( (x:any)=>storage.id!=readField('id', x));
           }
         }
-        ${STORAGE_FIELDS}
-      `, fragmentName: "MyHouseholdStorages"
-    });
+      }
+    );
+    //clean up the cache
+    cache.gc();
+
   }
+
 }

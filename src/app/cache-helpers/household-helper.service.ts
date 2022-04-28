@@ -80,53 +80,19 @@ export class HouseholdHelperService {
   acceptInvite(household: Household)
   {
     const userId = this.localStorage.getUser()?.id!;
-    //Get the current user from cache
-    const data = this.readUserFromCache(userId);
-    //Make sure we have data in the cache (we bloody should)
-    if (data) {
-      console.log("Updating cache");
-      let memberHouseholds = [...data.memberHouseholds, household];
-      //Write our change back to the cache
-      this.updateMemberHouseholds(userId, memberHouseholds);
+    this.addHouseholdToUser(this.store, userId, household)
 
-      //If we don't have a default, then let's set this to default and switch to it
-      if( !data.defaultHousehold )
-      {
-        this.changeDefault(household);
-        //We're accepting an invite, we can't be the owner
-        this.localStorage.switchHousehold(household.id, "member");
-      }
-    }
+
   }
 
   /**
-   * Update memberHouseholds and defaultHousehold by removing the household just left
-   * Does not update ownedHouseholds as a user can't leave a household they own, they must remove it instead
+   * This can actually just use the remove household logic, as the backend prevents leaving an owned household
+   * We will leave the function in place for consistency and if the logic changes in the future
    * @param household
    */
   leaveHousehold(household: Household)
   {
-    const userId = this.localStorage.getUser()?.id!;
-    //If we were successful, remove this household from memberHouseholds
-    //Get the current user from cache
-    const data = this.readUserFromCache(userId);
-    //Make sure we have data in the cache (we bloody should)
-    if (data) {
-      console.log("Updating cache");
-      let memberHouseholds = data.memberHouseholds.filter((x:Household)=>x.id!=household.id)
-      let defaultHousehold = data.defaultHousehold;
-      this.updateMemberHouseholds(userId, memberHouseholds);
-
-      //Update Default Household if we're leaving it
-      defaultHousehold = this.fixDefaultHousehold(defaultHousehold, household.id, memberHouseholds);
-      //Evict this household's data from the catch
-      this.store.evict({id: "Household:"+household.id});
-      //GC things
-      this.store.gc();
-
-      //Check if this was the selected household, switch to default
-      this.checkSelected(household.id, data.id, defaultHousehold);
-    }
+    this.removeHousehold(household);
   }
 
   /**
@@ -135,24 +101,57 @@ export class HouseholdHelperService {
    */
   addHousehold(household: Household)
   {
-    //Add a household needs to be added to member and owned households
-    //So we need a user ID
-    const userId = this.localStorage.getUser()?.id!;
-    //Get the current user from cache
-    const data = this.readUserFromCache(userId);
-    //Make sure we have data in the cache (we bloody should)
-    if (data) {
-      console.log("Updating cache");
-      let memberHouseholds = [...data.memberHouseholds, household];
-      let ownedHouseholds = [...data.ownedHouseholds, household];
-      this.updateMemberHouseholds(userId, memberHouseholds)
-      this.updateOwnedHouseholds(userId, ownedHouseholds);
-      if( !data.defaultHousehold ) {
-        this.changeDefault(household);
-        this.localStorage.switchHousehold(household.id, "owner");
-      }
+    const userId = this.localStorage.getUser()?.id!
+    const cache = this.store;
 
-    }
+    // Use cache.modify to add this household to the arrays and update default if necessary
+    this.addHouseholdToUser(cache, userId, household, true);
+
+  }
+
+  /**
+   * Adds household to user, taking note to properly manage whether or not the user created the household
+   * or accepted an invite
+   * @param cache
+   * @param userId
+   * @param household
+   * @param owner
+   * @private
+   */
+  private addHouseholdToUser(cache: ApolloCache<any>, userId: number, household: Household, owner: boolean = false) {
+    const householdRef = cache.writeFragment({
+      data: household,
+      fragment: gql`
+      fragment ThisHousehold on Household {
+        id
+      }
+      `
+    });
+    cache.modify({
+      id: "User:" + userId,
+      fields: {
+        memberHouseholds(existingRefs = [], {readField}) {
+          return [...existingRefs, householdRef];
+        },
+        ownedHouseholds(existingRefs = [], {readField}) {
+          if( owner )
+            return [...existingRefs, householdRef];
+          else
+            return existingRefs;
+        },
+        defaultHousehold(existingRef, {readField}) {
+          if (existingRef == null) {
+            return householdRef;
+          } else {
+            return existingRef;
+          }
+        }
+      }
+    });
+
+    const defaultHousehold = this.fixDefaultHousehold(userId);
+    //Check if there was no selected household, and switch it to the default (which will be this household)
+    this.checkSelected(undefined, userId, defaultHousehold);
   }
 
   editHousehold(household: Household)
@@ -168,32 +167,36 @@ export class HouseholdHelperService {
   {
     const userId = this.localStorage.getUser()?.id!
     const householdId = household.id
-    //Get the current user from cache
-    const data = this.readUserFromCache(userId);
-    //Make sure we have data in the cache (we bloody should)
-    if (data) {
-      console.log("Updating cache");
-      this.store.evict({id: "Household:"+householdId});
+    const cache = this.store;
 
-      //Remove household from member and owned households
-      let memberHouseholds = data.memberHouseholds.filter((x:Household)=>x.id!=householdId)
-      let ownedHouseholds = data.ownedHouseholds.filter((x:Household)=>x.id!=householdId)
-      let defaultHousehold = data.defaultHousehold
-
-      //Try fixing up default household if we just removed it
-      defaultHousehold = this.fixDefaultHousehold(defaultHousehold, householdId, memberHouseholds);
-      this.updateOwnedHouseholds(userId, ownedHouseholds);
-      this.updateMemberHouseholds(userId, memberHouseholds);
-
-
-      //We may have evicted stuff, so GC it all
-      this.store.gc();
-      //Check if this was the selected household, switch to default
-      this.checkSelected(household.id, data.id, defaultHousehold);
-    }
+    // Use cache.modify to remove this household from all arrays
+    cache.modify({
+        id: "User:" + userId,
+        fields: {
+          memberHouseholds(existingRefs = [], {readField}) {
+            return existingRefs.filter((ref: any) => householdId != readField('id', ref));
+          },
+          ownedHouseholds(existingRefs = [], {readField}) {
+            return existingRefs.filter((ref: any) => householdId != readField('id', ref));
+          },
+          defaultHousehold(existingRef, {readField}) {
+            if (readField('id', existingRef) == householdId) {
+              return null;
+            } else {
+              return existingRef
+            }
+          }
+        }
+      }
+    );
+    const defaultHousehold = this.fixDefaultHousehold(userId);
+    //Evict and GC it all
+    this.store.evict({id: "Household:"+householdId});
+    this.store.gc();
+    //Check if this was the selected household, switch to default
+    this.checkSelected(householdId, userId, defaultHousehold);
   }
-
-  /**
+   /**
    * Read the user from the cache.
    * @param userId
    * @private
@@ -207,56 +210,24 @@ export class HouseholdHelperService {
   }
 
   /**
-   * Update cache for userId with the new memberHouseholds array
-   * @param userId
-   * @param memberHouseholds
-   * @private
-   */
-  private updateMemberHouseholds(userId: number, memberHouseholds: any[]) {
-    //Write our change back to the cache
-    this.store.writeFragment({
-      id: "User:" + userId, fragment: gql`
-        # noinspection GraphQLSchemaValidation
-        fragment MyUserUpdateMemberHouseholds on User {
-          memberHouseholds
-        }`, data: {memberHouseholds}
-    });
-  }
-
-  /**
-   * Update cache for userId with new ownedHouseholds array
-   * @param userId
-   * @param ownedHouseholds
-   * @private
-   */
-  private updateOwnedHouseholds(userId: number, ownedHouseholds: any[])
-  {
-    this.store.writeFragment({
-        id: "User:" + userId, fragment: gql`
-          # noinspection GraphQLSchemaValidation
-          fragment MyUserUpdateOwnedHouseholds on User {
-            ownedHouseholds
-          }`, data: {ownedHouseholds}
-      });
-  }
-
-  /**
    * Check if the household we're removing or leaving is the same as default, if so find a new default if we can
-   * @param defaultHousehold
-   * @param householdId
-   * @param memberHouseholds
    * @private
+   * @param userId
    */
-  private fixDefaultHousehold(defaultHousehold: Household, householdId: number, memberHouseholds: Household[]) {
-    let newDefault: Household|null = defaultHousehold;
-    if (defaultHousehold.id == householdId) {
-      newDefault = null;
-      if (memberHouseholds.length > 0) {
-        newDefault = memberHouseholds[0]
+  private fixDefaultHousehold(userId: number) {
+    let user = this.readUserFromCache(userId);
+    if( !user.defaultHousehold ) {
+      if( user.memberHouseholds.length > 0 ) {
+        this.changeDefault(user.memberHouseholds[0]);
+        return user.memberHouseholds[0];
       }
-      this.changeDefault(newDefault);
+      else {
+        return undefined;
+      }
     }
-    return newDefault;
+    else {
+      return user.defaultHousehold;
+    }
   }
 
   /**
@@ -267,7 +238,7 @@ export class HouseholdHelperService {
    * @param defaultHousehold
    * @private
    */
-  private checkSelected(householdId: number, userId: number, defaultHousehold: Household | null) {
+  private checkSelected(householdId: number | undefined, userId: number, defaultHousehold: Household | undefined) {
     if (this.localStorage.selectedHouseholdId.getValue() == householdId) {
       let userType = "member";
       if (userId == defaultHousehold?.owner!.id)
