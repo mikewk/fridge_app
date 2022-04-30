@@ -8,14 +8,18 @@
     <mat-option *ngFor="let storage of storages" [value]="storage">{{storage.name}}</mat-option>
   </mat-select>
 </mat-form-field>
-<div *ngIf="selectedStorage" mat-dialog-content>
+<div mat-dialog-content>
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
-    <input [(ngModel)]="selectedStorage.name" matInput name="name" required>
+    <input [ngModel]="selectedStorage ? selectedStorage.name:''"
+           (ngModelChange)="selectedStorage ? selectedStorage.name=$event : null"
+           matInput name="name" required [disabled]="!selectedStorage">
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Type</mat-label>
-    <input [(ngModel)]="selectedStorage.type" matInput name="type" required>
+    <input [ngModel]="selectedStorage ? selectedStorage.type:''"
+           (ngModelChange)="selectedStorage ? selectedStorage.type=$event : null"
+           matInput name="type" required [disabled]="!selectedStorage">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>

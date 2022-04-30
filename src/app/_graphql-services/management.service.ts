@@ -69,39 +69,19 @@ export class ManagementService {
           //If we have a removal payload to check
           if (payload && payload.removeUserFromHousehold.success) {
             //Removing the user from the household means removing from the users array
-            //So we need a user ID and householdId
-            const userId = user.id
-            const householdId = household.id
-            //Get the current user from cache
-            const data = store.readFragment<any>({
-              id: "Household:" + householdId,
-              fragment: gql`
-                fragment ReadMyHouseholdMembers on Household {
-                  users {
-                    id, name
-                  }
+
+            //Use modify to remove user from household array
+            store.modify({
+              id: "Household:" + household.id,
+              fields: {
+                users(existingRefs = [], {readField}) {
+                  return existingRefs.filter((ref: any) => user.id != readField('id', ref));
                 }
-              `
+              }
             });
-
-            //Make sure we have data in the cache (we bloody should)
-            if (data) {
-              console.log("Updating cache");
-              const index= data.users.findIndex((user: { id: number })=> user.id == userId);
-              let users = [...data.users];
-              users.splice(index, 1);
-
-              //Write our change back to the cache
-              store.writeFragment({
-                id: "Household:" + householdId, fragment: gql`
-                  # noinspection GraphQLSchemaValidation
-                  fragment UpdateMyHouseholdUsers on Household{
-                     users {
-                       id, name
-                     }
-                  }`, data: {users:users}
-              });
-      } } } }
+          }
+        }
+      }
     ).pipe(map((result) => {
       //Standardizes error and payload return
       if (result.errors) {
