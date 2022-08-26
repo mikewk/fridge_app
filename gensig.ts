@@ -21,7 +21,7 @@ const genSig = async () => {
 
  const baseUrl = env.invite_base_url;
  const prodBaseUrl = prod_env.invite_base_url;
- const secret = process.env['URL_SECRET'];
+ const secret = process.env['URL_SECRET'] || "secret";
  const urlSignatureProdArr = await pbkdf2Hmac(prodBaseUrl, secret, 100000, 32);
  const urlSignatureArr = await pbkdf2Hmac(baseUrl, secret, 100000, 32);
 
